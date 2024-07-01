@@ -1,0 +1,47 @@
+{% from 'bootstrap5/nav.html' import render_nav_item %}
+<!doctype html>
+<html lang="de">
+    <head>
+        {% block head %}
+        <!-- Required meta tags -->
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+        {% block styles %}
+            <!-- Bootstrap CSS -->
+            {{ bootstrap.load_css() }}
+        {% endblock %}
+
+        <title>{{ page_title }}</title>
+        <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}">
+        {% endblock %}
+    </head>
+    <body>
+        <nav class="navbar navbar-expand-lg navbar-light bg-light mb-4">
+            <div class="container">
+                <a class="navbar-brand" href="{{ url_for('index')}}">Rezeptdatenbank</a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
+                        aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                    Test    
+                </button>
+                <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                    <ul class="navbar-nav mr-auto">
+                        {{ render_nav_item('heute', 'Heute') }}
+                        {{ render_nav_item('rezepte', 'Rezepte') }}
+                        {{ render_nav_item('zutaten', 'Zutaten') }}
+                        {{ render_nav_item('wochenplan', 'Wochenplan') }}
+                        {{ render_nav_item('einkaufsliste', 'Einkaufsliste') }}
+                    </ul>
+                </div>
+            </div>
+        </nav>
+        <!-- Your page content -->
+        {% block content %}{% endblock %}
+
+        {% block scripts %}
+            <!-- Optional JavaScript -->
+            {{ bootstrap.load_js() }}
+        {% endblock %}
+    </body>
+</html>

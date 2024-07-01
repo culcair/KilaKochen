@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <h1>Phonebook ({{ data | length }})</h1>
+    <table>
+        {% for entry in data -%}
+        <tr>
+            <td>{{ entry.vorname }}</td> <td>{{ entry.nachname }}</td> <td>{{ entry.mobiltelefon }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+{% endblock %}
