@@ -2,5 +2,7 @@
 
 {% block content %}
     {{ page_title }}</br>
-    Heute ist {{ date.strftime('%A') }} der {{ date.strftime('%d.%m.%Y')}}.
+    Heute ist {{ date.strftime('%A') }} der {{ date.strftime('%d.%m.%Y')}}.</br>
+
+    {{ data }}
 {% endblock %}

@@ -1,5 +1,9 @@
 {% extends 'base.html' %}
 
+{% from 'bootstrap5/table.html' import render_table %}
+
 {% block content %}
     {{ page_title }}
+    {{ render_table(data)}}
+
 {% endblock %}

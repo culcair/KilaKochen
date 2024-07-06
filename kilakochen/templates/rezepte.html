@@ -1,5 +1,14 @@
 {% extends 'base.html' %}
 
 {% block content %}
+
     {{ page_title }}
+    <table>
+    {% for entry in data -%}
+        <tr>
+            <td><a href="{{ url_for('rezepte', id=entry.rezept_id) }}">Link</a></td><td>{{ entry.rezept_name }}</td>
+        </tr>
+    {% endfor %}
+    </table>
+
 {% endblock %}

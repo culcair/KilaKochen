@@ -23,15 +23,14 @@
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
                         aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
-                    Test    
                 </button>
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
                     <ul class="navbar-nav mr-auto">
-                        {{ render_nav_item('heute', 'Heute') }}
-                        {{ render_nav_item('rezepte', 'Rezepte') }}
-                        {{ render_nav_item('zutaten', 'Zutaten') }}
-                        {{ render_nav_item('wochenplan', 'Wochenplan') }}
-                        {{ render_nav_item('einkaufsliste', 'Einkaufsliste') }}
+                        {{- render_nav_item('heute', 'Heute') -}}
+                        {{- render_nav_item('rezepte', 'Rezepte') -}}
+                        {{- render_nav_item('zutaten', 'Zutaten') -}}
+                        {{- render_nav_item('wochenplan', 'Wochenplan') -}}
+                        {{- render_nav_item('einkaufsliste', 'Einkaufsliste') -}}
                     </ul>
                 </div>
             </div>
