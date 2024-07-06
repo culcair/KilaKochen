@@ -16,3 +16,5 @@ build/
 bootstrap*css*
 bootstrap*js*
 *pem
+*db
+*log

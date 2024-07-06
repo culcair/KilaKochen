@@ -1,14 +1,15 @@
 {% extends 'base.html' %}
 
 {% block content %}
-
-    {{ page_title }}
-    <table>
-    {% for entry in data -%}
-        <tr>
-            <td><a href="{{ url_for('rezepte', id=entry.rezept_id) }}">Link</a></td><td>{{ entry.rezept_name }}</td>
-        </tr>
-    {% endfor %}
-    </table>
+    <div class="container">
+        <div class="row justify-content-md-center">
+        {{ page_title }} (Anzahl: {{ data |count}})
+        </div>
+        <div>
+            {% for entry in data -%}
+                <div><a class="btn btn-primary" href="{{ url_for('main.rezepte', id=entry.rezept_id) }}">Link</a>{{ entry.rezept_name }}</div>
+            {% endfor %}
+        </div>
+    </div>
 
 {% endblock %}

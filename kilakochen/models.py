@@ -1,8 +1,8 @@
 from typing import Optional
 
-from sqlalchemy import Date, Double, Index, Text, text
+from sqlalchemy import Date, Double, ForeignKey, Index, Text, text
 from sqlalchemy.dialects.mysql import INTEGER, MEDIUMTEXT, TEXT
-from sqlalchemy.orm import Mapped, mapped_column
+from sqlalchemy.orm import Mapped, mapped_column, relationship
 import datetime
 import decimal
 
@@ -11,29 +11,16 @@ from flask_login import UserMixin
 
 from werkzeug.security import generate_password_hash, check_password_hash
 
+from kilakochen import login, db
 
-db = SQLAlchemy()
 
+
+@login.user_loader
+def load_user(id):
+    return db.session.get(User, int(id))
+
+   
 class User(db.Model, UserMixin):
-    __tablename__ = "users"
-    
-    id            = db.Column(db.Integer, primary_key=True)
-    login         = db.Column(db.String(80), nullable=False)
-    password_hash = db.Column(db.String(50))
-
-    def set_password(self, password):
-        self.password_hash = generate_password_hash(password)
-
-    def check_password(self, password):
-        return check_password_hash(self.password_hash,password)
-    
-
-
-def init_db():
-    db.create_all()
-    # Einfügen von Beispieldaten
-
-class Anwender(db.Model):
     __tablename__ = 'kila_jakobi_anwender'
 
     ID: Mapped[int] = mapped_column(INTEGER(11), primary_key=True)
@@ -44,6 +31,12 @@ class Anwender(db.Model):
     mail: Mapped[str] = mapped_column(Text)
     level: Mapped[int] = mapped_column(INTEGER(11))
     active: Mapped[int] = mapped_column(INTEGER(11))
+
+    def set_password(self, password):
+        self.password = generate_password_hash(password)
+
+    def check_password(self, password):
+        return check_password_hash(self.password,password)
 
 
 class Essensplan(db.Model):
@@ -97,7 +90,7 @@ class Zutaten(db.Model):
     )
 
     zutat_id: Mapped[int] = mapped_column(INTEGER(11), primary_key=True)
-    zutat_gruppe: Mapped[int] = mapped_column(INTEGER(11))
+
     allergen_ei: Mapped[int] = mapped_column(INTEGER(11), server_default=text('0'))
     allergen_en: Mapped[int] = mapped_column(INTEGER(11), server_default=text('0'))
     allergen_fi: Mapped[int] = mapped_column(INTEGER(11), server_default=text('0'))
@@ -130,6 +123,8 @@ class Zutaten(db.Model):
     zutat_quelle: Mapped[Optional[str]] = mapped_column(Text)
     zutat_auth: Mapped[Optional[str]] = mapped_column(Text)
     zutat_date: Mapped[Optional[datetime.date]] = mapped_column(Date)
+    zutat_gruppe: Mapped[int] = mapped_column(ForeignKey("kila_jakobi_zutatengruppe.zutatengruppe_id"))
+    zutaten_gruppe: Mapped["Zutatengruppe"] = relationship("Zutatengruppe", back_populates="zutaten")
 
 
 class ZutatenProRezept(db.Model):
@@ -147,3 +142,4 @@ class Zutatengruppe(db.Model):
 
     zutatengruppe_id: Mapped[int] = mapped_column(INTEGER(11), primary_key=True)
     zutatengruppe_name: Mapped[str] = mapped_column(Text)
+    zutaten: Mapped[list["Zutaten"]] = relationship("Zutaten", back_populates="zutaten_gruppe")

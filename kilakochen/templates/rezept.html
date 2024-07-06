@@ -2,7 +2,7 @@
 {% from 'bootstrap5/table.html' import render_table %}
 
 {% block content %}
-<a href="{{ url_for('rezepte') }}">Zurück zur Übersicht</a> </br>
+<a class="btn btn-primary" href="{{ url_for('main.rezepte') }}">Zurück zur Übersicht</a> </br>
 
 <h1>{{ rezept_name }}</h1>
 {% block zutaten %}
