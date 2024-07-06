@@ -10,6 +10,28 @@ from flask_sqlalchemy import SQLAlchemy
 
 db = SQLAlchemy()
 
+class User(db.Model, UserMixin):
+    __tablename__ = "users"
+    
+    id            = db.Column(db.Integer, primary_key=True)
+    login         = db.Column(db.String(80), nullable=False)
+    password_hash = db.Column(db.String(50))
+
+    def set_password(self, password):
+        self.password_hash = generate_password_hash(password)
+
+    def check_password(self, password):
+        return check_password_hash(self.password_hash,password)
+    
+
+
+def init_db():
+    db.create_all()
+    # Einfügen von Beispieldaten
+
+if __name__ == '__main__':
+    with current_app.app_context():
+        init_db()
 class Anwender(db.Model):
     __tablename__ = 'kila_jakobi_anwender'
 
