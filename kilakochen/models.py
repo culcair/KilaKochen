@@ -7,6 +7,10 @@ import datetime
 import decimal
 
 from flask_sqlalchemy import SQLAlchemy
+from flask_login import UserMixin
+
+from werkzeug.security import generate_password_hash, check_password_hash
+
 
 db = SQLAlchemy()
 
@@ -29,9 +33,6 @@ def init_db():
     db.create_all()
     # Einfügen von Beispieldaten
 
-if __name__ == '__main__':
-    with current_app.app_context():
-        init_db()
 class Anwender(db.Model):
     __tablename__ = 'kila_jakobi_anwender'
 
