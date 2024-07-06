@@ -1,66 +1,81 @@
+import logging
+from logging.handlers import SMTPHandler, RotatingFileHandler
 import os
-
+from flask import Flask, request, current_app
+from flask_sqlalchemy import SQLAlchemy
+from flask_migrate import Migrate
+from flask_login import LoginManager
+from flask_babel import Babel, lazy_gettext as _l
 from flask_bootstrap import Bootstrap5
-from flask import Flask, render_template
-from datetime import datetime
-
-def create_app(test_config=None):
-    # create and configure the app
-    app = Flask(__name__, instance_relative_config=True)
-    app.config.from_mapping(
-        SECRET_KEY='devUESTRA',
-        DATABASE=os.path.join(app.instance_path, 'flaskr.sqlite'),
-        SQLALCHEMY_DATABASE_URI = 'sqlite:///phonebook.db',
-        SQLALCHEMY_TRACK_MODIFICATIONS = False,
-        BOOTSTRAP_BOOTSWATCH_THEME = "minty",
-        BOOTSTRAP_SERVE_LOCAL = True
-
-    )
-
-    if test_config is None:
-        # load the instance config, if it exists, when not testing
-        app.config.from_pyfile('config.py', silent=True)
-    else:
-        # load the test config if passed in
-        app.config.from_mapping(test_config)
-
-    # ensure the instance folder exists
-    try:
-        os.makedirs(app.instance_path)
-    except OSError:
-        pass
-
-    bootstrap = Bootstrap5(app)
-
-    @app.route('/')
-    def index():
-        return render_template('index.html', page_title = "Startseite")
-    
-    @app.route('/heute')
-    def heute():
-        date = datetime.now()
-        return render_template(
-            'heute.html',
-            date = date,
-            page_title = "Essensplan von heute"
-        )
-    
-    @app.route('/rezepte')
-    def rezepte():
-        return render_template('rezepte.html', page_title = "Übersicht der Rezepte")
-
-    @app.route('/zutaten')
-    def zutaten():
-        return render_template('zutaten.html', page_title = "Übersicht aller Zutaten")
-
-    @app.route('/wochenplan')
-    def wochenplan():
-        return render_template('wochenplan.html', page_title = "Wochenplan")
-    
-    @app.route('/einkaufsliste')
-    def einkaufsliste():
-        return render_template('einkaufsliste.html', page_title = "Einkaufsliste")    
-
-    return app    
+from config import Config
 
 
+def get_locale():
+    return request.accept_languages.best_match(current_app.config['LANGUAGES'])
+
+
+db = SQLAlchemy()
+migrate = Migrate()
+login = LoginManager()
+login.login_view = 'auth.login'
+login.login_message = _l('Please log in to access this page.')
+babel = Babel()
+bootstrap = Bootstrap5()
+
+def create_app(config_class=Config):
+    app = Flask(__name__)
+    app.config.from_object(config_class)
+    print(app.config['SQLALCHEMY_DATABASE_URI'])
+
+    db.init_app(app)
+    migrate.init_app(app, db)
+    login.init_app(app)
+    babel.init_app(app, locale_selector=get_locale)
+    bootstrap.init_app(app)
+
+    from kilakochen.errors import bp as errors_bp
+    app.register_blueprint(errors_bp)
+
+    from kilakochen.auth import bp as auth_bp
+    app.register_blueprint(auth_bp, url_prefix='/auth')
+
+    from kilakochen.main import bp as main_bp
+    app.register_blueprint(main_bp)
+
+    from kilakochen.cli import bp as cli_bp
+    app.register_blueprint(cli_bp)
+
+    if not app.debug and not app.testing:
+        if app.config['MAIL_SERVER']:
+            auth = None
+            if app.config['MAIL_USERNAME'] or app.config['MAIL_PASSWORD']:
+                auth = (app.config['MAIL_USERNAME'],
+                        app.config['MAIL_PASSWORD'])
+            secure = None
+            if app.config['MAIL_USE_TLS']:
+                secure = ()
+            mail_handler = SMTPHandler(
+                mailhost=(app.config['MAIL_SERVER'], app.config['MAIL_PORT']),
+                fromaddr='no-reply@' + app.config['MAIL_SERVER'],
+                toaddrs=app.config['ADMINS'], subject='KiLa Kochen Failure',
+                credentials=auth, secure=secure)
+            mail_handler.setLevel(logging.ERROR)
+            app.logger.addHandler(mail_handler)
+
+        if not os.path.exists('logs'):
+            os.mkdir('logs')
+        file_handler = RotatingFileHandler('logs/kilakochen.log',
+                                           maxBytes=10240, backupCount=10)
+        file_handler.setFormatter(logging.Formatter(
+            '%(asctime)s %(levelname)s: %(message)s '
+            '[in %(pathname)s:%(lineno)d]'))
+        file_handler.setLevel(logging.INFO)
+        app.logger.addHandler(file_handler)
+
+        app.logger.setLevel(logging.INFO)
+        app.logger.info('kilakochen startup')
+
+    return app
+
+
+from kilakochen import models

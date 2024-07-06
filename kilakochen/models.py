@@ -1,29 +1,29 @@
 from flask import current_app, g
-import click
 from flask_sqlalchemy import SQLAlchemy
-import os
+from flask_login import UserMixin
 
-import csv
+from werkzeug.security import generate_password_hash, check_password_hash
 
 db = SQLAlchemy()
 
-class Phonebook(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    vorname = db.Column(db.String(80), nullable=False)
-    nachname = db.Column(db.String(80), nullable=False)
-    mobiltelefon = db.Column(db.String(30), nullable=False)
-    standort = db.Column(db.String(30), nullable=False)
+class User(db.Model, UserMixin):
+    __tablename__ = "users"
+    
+    id            = db.Column(db.Integer, primary_key=True)
+    login         = db.Column(db.String(80), nullable=False)
+    password_hash = db.Column(db.String(50))
+
+    def set_password(self, password):
+        self.password_hash = generate_password_hash(password)
+
+    def check_password(self, password):
+        return check_password_hash(self.password_hash,password)
+    
+
 
 def init_db():
     db.create_all()
     # Einfügen von Beispieldaten
-    if not Phonebook.query.first():
-        with open('phonebook/examples/data.csv') as data:
-            data_reader = csv.DictReader(data,delimiter=";")
-            for row in data_reader:
-                entry = Phonebook(**row)
-                db.session.add(entry)
-        db.session.commit()
 
 if __name__ == '__main__':
     with current_app.app_context():

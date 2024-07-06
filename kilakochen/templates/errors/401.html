@@ -1,0 +1,7 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <h1>{{ _('Our are not allowed to reach this page') }}</h1>
+    <p>{{ _('The administrator has been notified.') }}</p>
+    <p><a href="{{ url_for('main.index') }}">{{ _('Back') }}</a></p>
+{% endblock %}
