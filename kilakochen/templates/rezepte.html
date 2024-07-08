@@ -8,7 +8,7 @@
         <table class="table">
             {% for rezept in data -%}
                 <tr>
-                    <td><a class="btn btn-primary" href="{{ url_for('main.rezepte', id=rezept.ID) }}">Link</a></td>
+                    <td><a class="btn btn-primary" href="{{ url_for('main.rezept', id=rezept.ID) }}">Link</a></td>
                     <td>{{ rezept.Titel }}</td>
                 </tr>
             {% endfor %}

@@ -44,21 +44,23 @@ def rezept(id):
         data=data
     )
 
-@bp.route('/rezept/print/<int:id>')
-def rezepte(id):    
+@bp.route('/rezept/<int:id>/print')
+def print_rezept(id):    
     data = Rezepte.query.filter_by(ID=id).one_or_404()
     
+    filename="{}_{}.pdf".format("KiLaKochen",data.ID)
+
     html = render_template(
-        'print_base.html',
+        'print_rezept.html',
         page_title = "Rezept - " + data.Titel,
         rezept_name = data.Titel,
         data=data
     )
 
-    return render_pdf(HTML(string=html))
-
-
-
+    return render_pdf(
+        HTML(string=html),
+        download_filename=filename
+        )
 
 @bp.route('/zutaten')
 def zutaten():

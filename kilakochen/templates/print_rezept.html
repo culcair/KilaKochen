@@ -1,21 +1,12 @@
-{% extends 'base.html' %}
+{% extends 'print_base.html' %}
+
 {% from 'bootstrap5/table.html' import render_table %}
-
 {% block content %}
-<div class="container">
-<div class="row text-center"> 
-    <div class="col"><h1>{{ rezept_name }}</h1> </div>
-    <div class="col">
-        <a class="btn btn-primary" href="{{ url_for('main.rezepte') }}">Zurück zur Übersicht</a><br/>
-        <a class="btn btn-primary" href="{{ url_for('main.print_rezept',id=data.ID) }}">Rezept drucken</a></div>
-</div>
-
-
-
+<h1>{{ rezept_name }}</h1>
 
 <table class="table table-sm table-striped table-hover caption-top">
     <caption>Zutaten</caption>
-        <thead  class="table-dark"> <tr scope="row"><th>Menge</th><th>Zutat</th></tr></thead>
+        <thead  class="table-light"> <tr scope="row"><th>Menge</th><th>Zutat</th></tr></thead>
         {% for zutat in data.rezepte_zutaten -%}
         <tr> 
             <td>{{ "%.2f"|format(zutat.Menge)  }} {{ zutat.einheiten.Kuerzel }}</td>
@@ -47,6 +38,5 @@
     </td>
 </tr>
 </table>
-</div>
 
 {% endblock %}

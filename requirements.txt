@@ -1,3 +1,9 @@
 flask
 bootstrap-flask
 flask-sqlalchemy
+pymysql
+flask-babel
+Flask-Login
+Flask-Migrate
+flask_weasyprint
+python-dotenv

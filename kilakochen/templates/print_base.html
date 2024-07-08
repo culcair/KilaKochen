@@ -1,45 +1,26 @@
-{% extends 'base.html' %}
-{% from 'bootstrap5/table.html' import render_table %}
+<!doctype html>
+<html lang="de">
+    <head>
+        {% block head %}
+        <!-- Required meta tags -->
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
-{% block content %}
-<div class="container"><a class="btn btn-primary" href="{{ url_for('main.rezepte') }}">Zurück zur Übersicht</a></div>
-<h1>{{ rezept_name }}</h1>
+        {% block styles %}
+            <!-- Bootstrap CSS -->
+            {{ bootstrap.load_css() }}
+        {% endblock %}
 
+        <title>{{ page_title }}</title>
+        {% endblock %}
+    </head>
+    <body>
+         <div class="container">
+        {% block content %}{% endblock %}
+        </div>
 
-<table class="table table-sm table-striped table-hover caption-top">
-    <caption>Zutaten</caption>
-        <thead  class="table-dark"> <tr scope="row"><th>Menge</th><th>Zutat</th></tr></thead>
-        {% for zutat in data.rezepte_zutaten -%}
-        <tr> 
-            <td>{{ "%.2f"|format(zutat.Menge)  }} {{ zutat.einheiten.Kuerzel }}</td>
-            <td>{{ zutat.zutaten.Bezeichnung }}</td>
-        </tr>
-        {% endfor %}
-</table>
-
-<table class="table table-responsive table-striped table-hover caption-top">
-    <caption>Allergene</caption>
-    <tr>
-    <td>
-       {% for zutat in data.rezepte_zutaten %}
-            {% for allergen in zutat.zutaten.zutaten_allergene %}
-                <a data-bs-toggle="tooltip" data-bs-placement="top" title="{{ allergen.allergene.Bezeichnung}}">{{ allergen.allergene.Bezeichnung}}</a>,
-            {% endfor %}
-        {% endfor %}
-    </td>
-</tr>
-</table>
-
-<table class="table table-responsive table-striped table-hover caption-top">
-    <caption>Zubereitung</caption>
-    <tr>
-    <td>
-       {% autoescape false %}
-       {{ data.Zubereitung | replace("\n", "<br/>")}}
-       {% endautoescape %}
-    </td>
-</tr>
-</table>
-
-
-{% endblock %}
+    <footer>
+        Copyright: Kinderladen Jakobistraße e.V.
+    </footer>
+    </body>
+</html>
