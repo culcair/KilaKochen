@@ -1,8 +1,15 @@
 {% extends 'base.html' %}
 
 {% block content %}
-    {{ page_title }}</br>
-    Heute ist {{ date.strftime('%A') }} der {{ date.strftime('%d.%m.%Y')}}.</br>
+    <div class="container">
+        Heute ist {{ date.strftime('%A') }} der {{ date.strftime('%d.%m.%Y')}}.
+    </div>
+    <div class="row justify-content-start">
+        <div > Hauptgericht:{{ data.Hauptgericht.Titel }}</div>
+        <div > Beilage: {{ data.Beilage.Titel }}</div>
+        <div > Dessert: {{ data.Dessert.Titel }}</div>
+        <div > Ausfall: {{ data.Ausfall }}</div>
+        <div > Anmerkung: {{ data.Anmerkung }}</div>
+    </div>
 
-    {{ data }}
 {% endblock %}

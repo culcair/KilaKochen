@@ -5,9 +5,12 @@
         <div class="row justify-content-md-center">
         {{ page_title }} (Anzahl: {{ data |count}})
         </div>
-        <div>
-            {% for entry in data -%}
-                <div><a class="btn btn-primary" href="{{ url_for('main.rezepte', id=entry.rezept_id) }}">Link</a>{{ entry.rezept_name }}</div>
+        <table class="table">
+            {% for rezept in data -%}
+                <tr>
+                    <td><a class="btn btn-primary" href="{{ url_for('main.rezepte', id=rezept.ID) }}">Link</a></td>
+                    <td>{{ rezept.Titel }}</td>
+                </tr>
             {% endfor %}
         </div>
     </div>

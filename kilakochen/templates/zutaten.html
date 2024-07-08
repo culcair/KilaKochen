@@ -5,19 +5,28 @@
 {% block content %}
     Anzahl aller Zutaten in der Datenbank: {{ data|count}}
     <table class="table table-striped table-hover">
-        <thead>
+        <thead class="table-dark">
             <tr>
-                <th scope="col">ID</th>            
                 <th scope="col">Name</th>
                 <th scope="col">Zutaten Gruppe</th>
+                <th scope="col">Allergene</th>
             </tr>
         </thead>
-    {% for entry in data %}
+    {% for zutat in data %}
     <tr>
-        <th scope="row">{{ entry.zutat_id }}</td>
-        <td>{{ entry.zutat_name }}</td>
-        <td>{{ entry.zutaten_gruppe.zutatengruppe_name }}</td>
+        <td>{{ zutat.Bezeichnung }}</td>
+        <td>{{ zutat.zutatengruppen.Bezeichnung }}</td>
+        <td>
+        {% for allergen in zutat.zutaten_allergene %}
+            <a data-bs-toggle="tooltip" data-bs-placement="top" title="{{ allergen.allergene.Bezeichnung}}">{{ allergen.allergene.Kuerzel}}</a>
+        {% endfor %}
+        </td>    
     </tr>
     {% endfor %}
     </table>
+    <div>
+        {% for allergen in allergene %}
+            {{ allergen.Kuerzel}}={{ allergen.Bezeichnung }},
+        {% endfor %}
+    </div>
 {% endblock %}
