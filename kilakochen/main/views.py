@@ -1,6 +1,6 @@
 from kilakochen.main import bp    
 from flask import render_template
-from flask_weasyprint import HTML, render_pdf
+#from flask_weasyprint import HTML, render_pdf
 from datetime import datetime
 from kilakochen.models import Allergene, Essensplan, Rezepte, Zutaten
 
@@ -57,11 +57,11 @@ def print_rezept(id):
         data=data
     )
 
-#    return html
-    return render_pdf(
-        HTML(string=html),
-        download_filename=filename
-        )
+    return html
+#    return render_pdf(
+#        HTML(string=html),
+#        download_filename=filename
+#        )
 
 @bp.route('/zutaten')
 def zutaten():
