@@ -1,6 +1,6 @@
 from typing import Any, List, Optional
 
-from sqlalchemy import CHAR, DECIMAL, INTEGER, TEXT, Date, Double, ForeignKeyConstraint, Index, String, TIMESTAMP, Text, text
+from sqlalchemy import CHAR, DECIMAL, INTEGER, TEXT, Date, Double, ForeignKeyConstraint, Index, String, DATETIME, Text, text
 #from sqlalchemy.dialects.mysql import BIT, DECIMAL, INTEGER, LONGTEXT, MEDIUMTEXT
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 import datetime
@@ -41,7 +41,7 @@ class Allergene(db.Model):
     Kuerzel: Mapped[str] = mapped_column(CHAR(2),index=True)
     Bezeichnung: Mapped[str] = mapped_column(String(50),index=True)
     Aktiv: Mapped[int] = mapped_column(INTEGER, default=text('1'))
-    Stand: Mapped[datetime.datetime] = mapped_column(TIMESTAMP, default=lambda: datetime.now(datetime.timezone.utc))
+    Stand: Mapped[datetime.datetime] = mapped_column(DATETIME, default=lambda: datetime.now(datetime.timezone.utc))
     Beschreibung: Mapped[Optional[str]] = mapped_column(Text)
     Kommentar: Mapped[Optional[str]] = mapped_column(Text)
 
@@ -54,7 +54,7 @@ class Einheiten(db.Model):
     Bezeichnung: Mapped[str] = mapped_column(String(50),index=True)
     Beschreibung: Mapped[str] = mapped_column(TEXT)
     Aktiv: Mapped[int] = mapped_column(INTEGER, server_default=text('1'))
-    Stand: Mapped[datetime.datetime] = mapped_column(TIMESTAMP, default=lambda: datetime.now(datetime.timezone.utc))
+    Stand: Mapped[datetime.datetime] = mapped_column(DATETIME, default=lambda: datetime.now(datetime.timezone.utc))
     BasiseinheitID: Mapped[Optional[int]] = mapped_column(INTEGER)
     BasiseinheitFaktor: Mapped[Optional[decimal.Decimal]] = mapped_column(DECIMAL(16, 8))
     Kommentar: Mapped[Optional[str]] = mapped_column(Text)
@@ -69,7 +69,7 @@ class Rezeptkategorien(db.Model):
     BezeichnungPlural: Mapped[str] = mapped_column(String(50),index=True)
     URL: Mapped[str] = mapped_column(String(60),index=True)
     Aktiv: Mapped[int] = mapped_column(INTEGER, server_default=text('1'))
-    Stand: Mapped[datetime.datetime] = mapped_column(TIMESTAMP, default=lambda: datetime.now(datetime.timezone.utc))
+    Stand: Mapped[datetime.datetime] = mapped_column(DATETIME, default=lambda: datetime.now(datetime.timezone.utc))
     Ueberarbeitet: Mapped[Any] = mapped_column(INTEGER)
     Beschreibung: Mapped[Optional[str]] = mapped_column(TEXT)
     Kuerzel: Mapped[Optional[str]] = mapped_column(CHAR(3),index=True)
@@ -83,7 +83,7 @@ class Zutatengruppen(db.Model):
     ID: Mapped[int] = mapped_column(INTEGER, primary_key=True)
     Bezeichnung: Mapped[str] = mapped_column(String(50),index=True)
     Aktiv: Mapped[int] = mapped_column(INTEGER, server_default=text('1'))
-    Stand: Mapped[datetime.datetime] = mapped_column(TIMESTAMP, default=lambda: datetime.now(datetime.timezone.utc))
+    Stand: Mapped[datetime.datetime] = mapped_column(DATETIME, default=lambda: datetime.now(datetime.timezone.utc))
     Ueberarbeitet: Mapped[Any] = mapped_column(INTEGER)
     Kuerzel: Mapped[Optional[str]] = mapped_column(CHAR(3),index=True)
     Sortierung: Mapped[Optional[int]] = mapped_column(INTEGER)
@@ -99,7 +99,7 @@ class Rezepte(db.Model):
     ID: Mapped[int] = mapped_column(INTEGER, primary_key=True)
     Titel: Mapped[str] = mapped_column(String(50),index=True)
     Zubereitung: Mapped[str] = mapped_column(TEXT)
-    updated_at: Mapped[datetime.datetime] = mapped_column(TIMESTAMP, default=lambda: datetime.now(datetime.timezone.utc))
+    updated_at: Mapped[datetime.datetime] = mapped_column(DATETIME, default=lambda: datetime.now(datetime.timezone.utc))
     Ueberarbeitet: Mapped[Any] = mapped_column(INTEGER)
     author: Mapped[str] = mapped_column(TEXT)
     created_at: Mapped[datetime.date] = mapped_column(Date)
@@ -120,7 +120,7 @@ class Zutaten(db.Model):
 
     ID: Mapped[int] = mapped_column(INTEGER, primary_key=True)
     Bezeichnung: Mapped[str] = mapped_column(String(50),index=True)
-    Stand: Mapped[datetime.datetime] = mapped_column(TIMESTAMP, default=lambda: datetime.now(datetime.timezone.utc))
+    Stand: Mapped[datetime.datetime] = mapped_column(DATETIME, default=lambda: datetime.now(datetime.timezone.utc))
     Ueberarbeitet: Mapped[Any] = mapped_column(INTEGER)
     Beschreibung: Mapped[Optional[str]] = mapped_column(TEXT)
     GruppeID: Mapped[Optional[int]] = mapped_column(INTEGER)
@@ -144,7 +144,7 @@ class Essensplan(db.Model):
 
     ID: Mapped[int] = mapped_column(INTEGER, primary_key=True)
     Datum: Mapped[datetime.date] = mapped_column(Date,index=True)
-    Stand: Mapped[datetime.datetime] = mapped_column(TIMESTAMP, default=lambda: datetime.now(datetime.timezone.utc))
+    Stand: Mapped[datetime.datetime] = mapped_column(DATETIME, default=lambda: datetime.now(datetime.timezone.utc))
     HauptgerichtRezeptID: Mapped[Optional[int]] = mapped_column(INTEGER)
     BeilageRezeptID: Mapped[Optional[int]] = mapped_column(INTEGER)
     DessertRezeptID: Mapped[Optional[int]] = mapped_column(INTEGER)
@@ -167,7 +167,7 @@ class RezepteZutaten(db.Model):
     RezeptID: Mapped[int] = mapped_column(INTEGER)
     ZutatID: Mapped[int] = mapped_column(INTEGER)
     Menge: Mapped[decimal.Decimal] = mapped_column(Double(asdecimal=True))
-    Stand: Mapped[datetime.datetime] = mapped_column(TIMESTAMP, default=lambda: datetime.now(datetime.timezone.utc))
+    Stand: Mapped[datetime.datetime] = mapped_column(DATETIME, default=lambda: datetime.now(datetime.timezone.utc))
     Ueberarbeitet: Mapped[Any] = mapped_column(INTEGER)
     EinheitID: Mapped[Optional[int]] = mapped_column(INTEGER)
 
@@ -187,7 +187,7 @@ class Speiseplan(db.Model):
 
     ID: Mapped[int] = mapped_column(INTEGER, primary_key=True)
     Datum: Mapped[datetime.date] = mapped_column(Date)
-    Stand: Mapped[datetime.datetime] = mapped_column(TIMESTAMP, default=lambda: datetime.now(datetime.timezone.utc))
+    Stand: Mapped[datetime.datetime] = mapped_column(DATETIME, default=lambda: datetime.now(datetime.timezone.utc))
     RezeptkategorieID: Mapped[Optional[int]] = mapped_column(INTEGER)
     RezeptID: Mapped[Optional[int]] = mapped_column(INTEGER)
     Anmerkung: Mapped[Optional[str]] = mapped_column(String(400))
@@ -207,7 +207,7 @@ class ZutatenAllergene(db.Model):
     ID: Mapped[int] = mapped_column(INTEGER, primary_key=True)
     ZutatID: Mapped[int] = mapped_column(INTEGER)
     AllergenID: Mapped[int] = mapped_column(INTEGER)
-    Stand: Mapped[datetime.datetime] = mapped_column(TIMESTAMP, default=lambda: datetime.now(datetime.timezone.utc))
+    Stand: Mapped[datetime.datetime] = mapped_column(DATETIME, default=lambda: datetime.now(datetime.timezone.utc))
 
     allergene: Mapped['Allergene'] = relationship('Allergene', back_populates='zutaten_allergene')
     zutaten: Mapped['Zutaten'] = relationship('Zutaten', back_populates='zutaten_allergene')

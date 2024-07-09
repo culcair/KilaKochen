@@ -57,6 +57,7 @@ def print_rezept(id):
         data=data
     )
 
+#    return html
     return render_pdf(
         HTML(string=html),
         download_filename=filename
