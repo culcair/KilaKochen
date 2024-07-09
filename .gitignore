@@ -19,3 +19,5 @@ bootstrap*js*
 *pem
 *db
 *log
+
+.flaskenv
