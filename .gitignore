@@ -24,3 +24,4 @@ bootstrap*js*
 *log
 
 .flaskenv
+*sql

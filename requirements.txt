@@ -5,5 +5,7 @@ pymysql
 flask-babel
 Flask-Login
 Flask-Migrate
-flask_weasyprint
 python-dotenv
+flask-wtf
+
+#flask_weasyprint

@@ -5,11 +5,28 @@
         Heute ist {{ date.strftime('%A') }} der {{ date.strftime('%d.%m.%Y')}}.
     </div>
     <div class="row justify-content-start">
-        <div > Hauptgericht:{{ data.Hauptgericht.Titel }}</div>
-        <div > Beilage: {{ data.Beilage.Titel }}</div>
-        <div > Dessert: {{ data.Dessert.Titel }}</div>
-        <div > Ausfall: {{ data.Ausfall }}</div>
-        <div > Anmerkung: {{ data.Anmerkung }}</div>
+        <div class="col"> Hauptgericht:</div>
+        <div class="col"><a class="btn btn-primary" href="{{ url_for('main.rezept', id=data.Hauptgericht.ID) }}">{{ data.Hauptgericht.Titel }}</a> </div>
     </div>
+    <div class="row justify-content-start">
+        <div class="col"> Beilage:</div>
+        <div class="col"><a class="btn btn-primary" href="{{ url_for('main.rezept', id=data.Beilage.ID) }}">{{ data.Beilage.Titel }}</a> </div>        
+    </div>
+    <div class="row justify-content-start">
+        <div class="col"> Dessert:</div>
+        <div class="col"><a class="btn btn-primary" href="{{ url_for('main.rezept', id=data.Dessert.ID) }}">{{ data.Dessert.Titel }}</a> </div>
+    </div>
+    {% if not data.Ausfall == "None" %}
+    <div class="row justify-content-start">
+        <div class="col"> Ausfall:</div>
+        <div class="col">{{ data.Ausfall }}</div>
+    </div>
+    {% endif %}
+    {% if not data.Anmerkung == "None" %}
+    <div class="row justify-content-start">
+        <div class="col"> Anmerkung:</div>
+        <div class="col">{{ data.Anmerkung }}</div>
+    </div>
+    {% endif %}
 
 {% endblock %}
