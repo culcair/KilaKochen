@@ -17,30 +17,26 @@
         {% endblock %}
     </head>
     <body>
-        <nav class="navbar navbar-expand-lg navbar-light bg-light mb-4">
-            <div class="container">
-                <a class="navbar-brand" href="{{ url_for('main.index')}}">Rezeptdatenbank</a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
-                        aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                    <ul class="navbar-nav mr-auto">
-                        {{ render_nav_item('main.heute', 'Heute') }}
-                        {{ render_nav_item('main.rezepte', 'Rezepte') }}
-                        {{ render_nav_item('main.zutaten', 'Zutaten') }}
-                        {{ render_nav_item('main.wochenplan', 'Wochenplan') }}
-                        {{ render_nav_item('main.einkaufsliste', 'Einkaufsliste') }}
-                    </ul>
-                </div>
-            </div>
-        </nav>
-        <div class="container">
-        {% block content %}{% endblock %}
-        </div>
+        <header class="position-absolute w-100">
+			<!-- Navbar -->
+			{% include "incl_navbar.html" %}
+		</header>
+
+		<main class="flex-shrink-0" style='padding-top: 90px;'>
+            <!-- Start Main content -->
+            {% block content %}
+            {% endblock %}
+            <!-- End Main content -->
+        </main>	
+
+
+        <footer class="footer mt-auto py-3 bg-light">
+            <!-- Footer -->
+            {% include "incl_footer.html" %}
+        </footer>
         {% block scripts %}
-            <!-- Optional JavaScript -->
-            {{ bootstrap.load_js() }}
-        {% endblock %}
+        <!-- Optional JavaScript -->
+        {{ bootstrap.load_js() }}
+    {% endblock %}
     </body>
 </html>
