@@ -20,14 +20,15 @@ def load_user(id):
 
    
 class User(db.Model, UserMixin):
-    ID: Mapped[int] = mapped_column(INTEGER, primary_key=True)
+    id: Mapped[int] = mapped_column(INTEGER, primary_key=True)
     name: Mapped[str] = mapped_column(Text)
     vorname: Mapped[str] = mapped_column(Text)
     user: Mapped[str] = mapped_column(Text)
     password: Mapped[str] = mapped_column(Text)
-    mail: Mapped[str] = mapped_column(Text)
-    level: Mapped[int] = mapped_column(INTEGER)
-    active: Mapped[int] = mapped_column(INTEGER)
+    mail: Mapped[str] = mapped_column(Text,nullable=True)
+    level: Mapped[int] = mapped_column(INTEGER,nullable=True)
+    active: Mapped[int] = mapped_column(INTEGER,default=1)
+
 
     def set_password(self, password):
         self.password = generate_password_hash(password)

@@ -21,7 +21,7 @@ def login():
         print(current_user)
         flash('Logged in successfully.')
 
-        return redirect(url_for('index'))
+        return redirect(url_for('main.index'))
     return render_template('login.html', form=form)
 
 @bp.route('/logout')

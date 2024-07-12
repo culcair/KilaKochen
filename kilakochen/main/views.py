@@ -1,7 +1,8 @@
+from flask_login import login_required
 from kilakochen.main import bp    
 from flask import render_template
 #from flask_weasyprint import HTML, render_pdf
-from datetime import datetime
+from datetime import datetime,timedelta
 from kilakochen.models import Allergene, Essensplan, Rezepte, Zutaten
 
 from kilakochen import db
@@ -80,6 +81,33 @@ def wochenplan():
         'wochenplan.html',
         page_title = "Wochenplan"
     )
+
+@bp.route('/wochenplan/edit/<string:raw_date>')
+@bp.route('/wochenplan/edit/', defaults = {'raw_date' : datetime.now()})
+@login_required
+def edit_wochenplan(raw_date):
+    if type(raw_date) == str:
+        given_date = datetime.fromisoformat(raw_date)
+    else:
+        given_date = raw_date
+
+    weekday = given_date.isoweekday()
+    # The start of the week
+    start = given_date - timedelta(days=weekday-1)
+    # build a simple range
+    dates = [start + timedelta(days=d) for d in range(5)]
+
+    plaene = []
+    for week_date in dates:
+        plaene.append(Essensplan.query.filter_by(Datum=week_date).one_or_none())
+
+    return render_template(
+        'edit_wochenplan.html',
+        page_title = "Wochenplan",
+        data=dates,
+        plaene=plaene
+    )
+
 
 @bp.route('/einkaufsliste')
 def einkaufsliste():
