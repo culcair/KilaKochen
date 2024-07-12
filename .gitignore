@@ -4,6 +4,7 @@ venv/
 .ssh/
 logs/
 
+.viminfo
 *.pyc
 __pycache__/
 
