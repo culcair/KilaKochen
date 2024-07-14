@@ -4,6 +4,7 @@ from sqlalchemy import CHAR, DECIMAL, INTEGER, TEXT, Date, Double, ForeignKeyCon
 #from sqlalchemy.dialects.mysql import BIT, DECIMAL, INTEGER, LONGTEXT, MEDIUMTEXT
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 import datetime
+
 import decimal
 
 from flask_login import UserMixin
@@ -30,11 +31,23 @@ class User(db.Model, UserMixin):
     active: Mapped[int] = mapped_column(INTEGER,default=1)
 
 
-    def set_password(self, password):
+    def set_password(self, password) -> None:
         self.password = generate_password_hash(password)
 
-    def check_password(self, password):
+    def check_password(self, password) -> bool:
         return check_password_hash(self.password,password)
+    
+    def __init__(self,name,vorname, user, level = 1, active = 1, id = "NULL") -> None:
+        self.name = name
+        self.vorname = vorname
+        self.user = user
+        self.id = id
+        self.level = level
+        self.active = active
+
+    def __repr__(self) -> str:
+        return f"<User {self.user} {self.id}>" 
+
 
 
 class Allergene(db.Model):
@@ -100,7 +113,7 @@ class Rezepte(db.Model):
     ID: Mapped[int] = mapped_column(INTEGER, primary_key=True)
     Titel: Mapped[str] = mapped_column(String(50),index=True)
     Zubereitung: Mapped[str] = mapped_column(TEXT)
-    updated_at: Mapped[datetime.datetime] = mapped_column(DATETIME, default=lambda: datetime.now(datetime.timezone.utc))
+    updated_at: Mapped[datetime.datetime] = mapped_column(DATETIME, default=lambda: datetime.datetime.now(datetime.timezone.utc))
     Ueberarbeitet: Mapped[Any] = mapped_column(INTEGER)
     author: Mapped[str] = mapped_column(TEXT)
     created_at: Mapped[datetime.date] = mapped_column(Date)
@@ -145,7 +158,7 @@ class Essensplan(db.Model):
 
     ID: Mapped[int] = mapped_column(INTEGER, primary_key=True)
     Datum: Mapped[datetime.date] = mapped_column(Date,index=True)
-    Stand: Mapped[datetime.datetime] = mapped_column(DATETIME, default=lambda: datetime.now(datetime.timezone.utc))
+    Stand: Mapped[datetime.datetime] = mapped_column(DATETIME, default=lambda: datetime.datetime.now(datetime.timezone.utc))
     HauptgerichtRezeptID: Mapped[Optional[int]] = mapped_column(INTEGER)
     BeilageRezeptID: Mapped[Optional[int]] = mapped_column(INTEGER)
     DessertRezeptID: Mapped[Optional[int]] = mapped_column(INTEGER)

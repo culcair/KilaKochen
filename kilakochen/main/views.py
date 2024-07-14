@@ -1,28 +1,59 @@
-from flask_login import login_required
+from flask_login import current_user, login_required
 from kilakochen.main import bp    
-from flask import render_template
+from flask import redirect, render_template, url_for
 #from flask_weasyprint import HTML, render_pdf
 from datetime import datetime,timedelta
 from kilakochen.models import Allergene, Essensplan, Rezepte, Zutaten
 
+from kilakochen.main.forms import EditHeuteForm
 from kilakochen import db
 
 @bp.route('/')
 def index():
     return render_template('index.html', page_title = "Startseite")
-    
+
+@login_required
+@bp.route('/heute/edit', methods=['GET', 'POST'])
+def heute_edit():
+    form = EditHeuteForm()
+
+    result = Rezepte.query.with_entities(Rezepte.ID,Rezepte.Titel).filter(Rezepte.rezeptkategorien.has(Kuerzel="H")).all()
+    form.hauptgericht.choices = [(x.ID, x.Titel) for x in result]
+    result = Rezepte.query.with_entities(Rezepte.ID,Rezepte.Titel).filter(Rezepte.rezeptkategorien.has(Kuerzel="B")).all()
+    form.beilage.choices = [(x.ID, x.Titel) for x in result]
+    result = Rezepte.query.with_entities(Rezepte.ID,Rezepte.Titel).filter(Rezepte.rezeptkategorien.has(Kuerzel="D")).all()
+    form.dessert.choices = [(x.ID, x.Titel) for x in result]
+    if form.validate_on_submit():
+        heute = Essensplan(
+            Datum = datetime.now(),
+            HauptgerichtRezeptID = form.hauptgericht.data[0],
+            BeilageRezeptID = form.beilage.data[0],
+            DessertRezeptID = form.dessert.data[0],
+            Ausfall = form.ausfall.data,
+            Anmerkung = form.anmerkung.data
+        )
+        db.session.add(heute)
+        db.session.commit()
+        return redirect(url_for('main.heute'))
+    return render_template('edit_heute.html', form=form)
+
 @bp.route('/heute')
 def heute():
     date = datetime.now()
     data = Essensplan.query.filter_by(
-        Datum=date.date()).one_or_404()
+        Datum=date.date()).one_or_none()
 
-    return render_template(
-        'heute.html',
-        date = date,
-        page_title = "Essensplan von heute",
-        data=data
-    )
+    print(data)
+    if data is None and current_user.is_authenticated:
+        data = Essensplan()
+        return redirect(url_for('main.heute_edit'))
+    else:
+        return render_template(
+            'heute.html',
+            date = date,
+            page_title = "Essensplan von heute",
+            data=data
+        )
 
 
 @bp.route('/rezepte')
