@@ -5,16 +5,37 @@
     {{ page_title }} 
     <table class="table table-striped table-hover">
         <thead class="table-dark">
-            <tr>{% for entry in data %}
-                <th  scope="col">{{ entry.strftime('%A, %d.%m.%Y') }}</th>
+            <tr>
+                <th></th>
+                {% for entry in plaene %}
+                <th  scope="col">{{ entry.Datum.strftime('%A, %d.%m.%Y') }}</th>
                 {% endfor %}
             </tr>
+
         </thead>
-    {% for plan in plaene %}
-    <tr>
-        {{ plan }}
-    </tr>
-    {% endfor %}
+        
+        <tr>
+            <td>Test</td>
+            {% for plan in plaene %}
+            <td class="dropdown">
+                    <button class="btn btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                      Dropdown button
+                    </button>
+                    <ul class="dropdown-menu">
+                        {% for entry in rezepte %}
+                      <li><a class="dropdown-item" href="#">{{ entry.Titel }}</a></li>
+                        {% endfor %}
+                    </ul>
+            </td>
+            {% endfor %}
+        </tr>
+        <tr>
+            <td></td>
+            {% for plan in plaene %}
+                <td>{{ plan.Datum }}</td>
+            {% endfor %}
+            
+        </tr>
     </table>
 </div>
 {% endblock %}

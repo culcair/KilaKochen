@@ -99,13 +99,22 @@ def edit_wochenplan(raw_date):
 
     plaene = []
     for week_date in dates:
-        plaene.append(Essensplan.query.filter_by(Datum=week_date).one_or_none())
+        tmp = None
+        res = Essensplan.query.filter_by(Datum=week_date).one_or_none()
+        if  res is None:
+            tmp = Essensplan(Datum=week_date)
+        else:
+            tmp = res
+        plaene.append(tmp)
+
+    rezepte = Rezepte.query.all() 
 
     return render_template(
         'edit_wochenplan.html',
         page_title = "Wochenplan",
         data=dates,
-        plaene=plaene
+        plaene=plaene,
+        rezepte=rezepte
     )
 
 
