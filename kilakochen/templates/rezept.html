@@ -6,13 +6,10 @@
 <div class="row text-center"> 
     <div class="col"><h1>{{ rezept_name }}</h1> </div>
     <div class="col btn-group" role="group">
-        <a class="btn btn-primary" href="{{ url_for('main.rezepte') }}">Zurück zur Übersicht</a>
+        <a class="btn btn-primary" href="{{ url_for('main.rezepte') }}">Rezept Übersicht</a>
         <a class="btn btn-primary" href="{{ url_for('main.print_rezept',id=data.ID) }}">Rezept drucken</a>
     </div>
 </div>
-
-
-
 
 <table class="table table-sm table-striped table-hover caption-top">
     <caption>Zutaten</caption>

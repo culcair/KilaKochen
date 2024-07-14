@@ -1,8 +1,8 @@
 from flask_login import current_user, login_required
 from kilakochen.main import bp    
-from flask import redirect, render_template, url_for
+from flask import abort, redirect, render_template, url_for
 #from flask_weasyprint import HTML, render_pdf
-from datetime import datetime,timedelta
+from datetime import datetime,timedelta,date
 from kilakochen.models import Allergene, Essensplan, Rezepte, Zutaten
 
 from kilakochen.main.forms import EditHeuteForm
@@ -16,7 +16,6 @@ def index():
 @bp.route('/heute/edit', methods=['GET', 'POST'])
 def heute_edit():
     form = EditHeuteForm()
-
     result = Rezepte.query.with_entities(Rezepte.ID,Rezepte.Titel).filter(Rezepte.rezeptkategorien.has(Kuerzel="H")).all()
     form.hauptgericht.choices = [(x.ID, x.Titel) for x in result]
     result = Rezepte.query.with_entities(Rezepte.ID,Rezepte.Titel).filter(Rezepte.rezeptkategorien.has(Kuerzel="B")).all()
@@ -24,11 +23,13 @@ def heute_edit():
     result = Rezepte.query.with_entities(Rezepte.ID,Rezepte.Titel).filter(Rezepte.rezeptkategorien.has(Kuerzel="D")).all()
     form.dessert.choices = [(x.ID, x.Titel) for x in result]
     if form.validate_on_submit():
+        tmp = datetime.now().date()
+        print(tmp)
         heute = Essensplan(
-            Datum = datetime.now(),
-            HauptgerichtRezeptID = form.hauptgericht.data[0],
-            BeilageRezeptID = form.beilage.data[0],
-            DessertRezeptID = form.dessert.data[0],
+            Datum = tmp,
+            HauptgerichtRezeptID = form.hauptgericht.data,
+            BeilageRezeptID = form.beilage.data,
+            DessertRezeptID = form.dessert.data,
             Ausfall = form.ausfall.data,
             Anmerkung = form.anmerkung.data
         )
@@ -43,10 +44,11 @@ def heute():
     data = Essensplan.query.filter_by(
         Datum=date.date()).one_or_none()
 
-    print(data)
     if data is None and current_user.is_authenticated:
         data = Essensplan()
         return redirect(url_for('main.heute_edit'))
+    elif data is None:
+        return abort(404)
     else:
         return render_template(
             'heute.html',
@@ -90,10 +92,6 @@ def print_rezept(id):
     )
 
     return html
-#    return render_pdf(
-#        HTML(string=html),
-#        download_filename=filename
-#        )
 
 @bp.route('/zutaten')
 def zutaten():
@@ -108,13 +106,39 @@ def zutaten():
 
 @bp.route('/wochenplan')
 def wochenplan():
+    date = datetime.today()
+    data = Essensplan.query.filter_by(
+        Datum=date.date()).one_or_none()
+
+    if data is None and current_user.is_authenticated:
+        data = Essensplan()
+        return redirect(url_for('main.heute_edit'))
+    elif data is None:
+        return abort(404)
+    else:
+        return render_template(
+            'heute.html',
+            date = date,
+            page_title = "Essensplan von heute",
+            data=data
+        )
+
     return render_template(
         'wochenplan.html',
         page_title = "Wochenplan"
     )
 
+def get_week(given_date,given_offset=0):
+    weekday = given_date.isoweekday()
+    # The start of the week
+    start = given_date - timedelta(days=weekday-1)
+    # build a simple range
+    dates = [start + timedelta(days=d) for d in range(5)]
+    return dates
+
+
 @bp.route('/wochenplan/edit/<string:raw_date>')
-@bp.route('/wochenplan/edit/', defaults = {'raw_date' : datetime.now()})
+@bp.route('/wochenplan/edit/', defaults = {'raw_date' : datetime.today()})
 @login_required
 def edit_wochenplan(raw_date):
     if type(raw_date) == str:
@@ -122,11 +146,7 @@ def edit_wochenplan(raw_date):
     else:
         given_date = raw_date
 
-    weekday = given_date.isoweekday()
-    # The start of the week
-    start = given_date - timedelta(days=weekday-1)
-    # build a simple range
-    dates = [start + timedelta(days=d) for d in range(5)]
+    dates = get_week(given_date)
 
     plaene = []
     for week_date in dates:
