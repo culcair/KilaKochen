@@ -6,8 +6,13 @@
         <thead class="table-dark">
             <tr>
                 <th></th>
+
                 {% for entry in plaene %}
-                <th  scope="col">{{ entry.Datum.strftime('%A, %d.%m.%Y') }}</th>
+                    {% if current_user.is_authenticated %}
+                        <th scope="col"><a href="{{ url_for('main.day_edit',raw_date=entry.Datum) }}">{{ entry.Datum.strftime('%A, %d.%m.%Y') }}</a></th>
+                    {% else %}
+                        <th scope="col">{{ entry.Datum.strftime('%A, %d.%m.%Y') }}</th>
+                    {% endif %}
                 {% endfor %}
             </tr>
 
@@ -18,7 +23,7 @@
             {% for plan in plaene %}
             <td>
                 {% if plan.Hauptgericht != None %}
-                <a  class="btn btn-primary" href="{{url_for('main.rezept',id=plan.Hauptgericht.ID)}}">{{ plan.Hauptgericht.Titel}}</a>
+                <a  class="btn btn-primary" href="{{url_for('main.recipe',id=plan.Hauptgericht.ID)}}">{{ plan.Hauptgericht.Titel}}</a>
                 {% else %}
                 Kein Eintrag
                 {% endif %}
@@ -30,7 +35,7 @@
             {% for plan in plaene %}
             <td>
                 {% if plan.Beilage != None %}
-                <a  class="btn btn-primary" href="{{url_for('main.rezept',id=plan.Beilage.ID)}}">{{ plan.Beilage.Titel}}</a>
+                <a  class="btn btn-primary" href="{{url_for('main.recipe',id=plan.Beilage.ID)}}">{{ plan.Beilage.Titel}}</a>
                 {% else %}
                 Kein Eintrag
                 {% endif %}
@@ -43,7 +48,7 @@
             {% for plan in plaene %}
             <td>
                 {% if plan.Dessert != None %}
-                <a  class="btn btn-primary" href="{{url_for('main.rezept',id=plan.Dessert.ID)}}">{{ plan.Dessert.Titel}}</a>
+                <a  class="btn btn-primary" href="{{url_for('main.recipe',id=plan.Dessert.ID)}}">{{ plan.Dessert.Titel}}</a>
                 {% else %}
                 Kein Eintrag
                 {% endif %}

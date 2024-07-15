@@ -8,10 +8,10 @@
                 </button>
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
                     <ul class="navbar-nav mr-auto">
-                        {{ render_nav_item('main.heute', 'Heute',_use_li=True)}}
-                        {{ render_nav_item('main.rezepte', 'Rezepte',_use_li=True)}}</li>
-                        {{ render_nav_item('main.zutaten', 'Zutaten',_use_li=True)}}</li>
-                        {{ render_nav_item('main.wochenplan', 'Wochenplan',_use_li=True)}}</li>
+                        {{ render_nav_item('main.day', 'Heute',_use_li=True)}}
+                        {{ render_nav_item('main.recipe_overview', 'Rezepte',_use_li=True)}}</li>
+                        {{ render_nav_item('main.ingredients', 'Zutaten',_use_li=True)}}</li>
+                        {{ render_nav_item('main.week', 'Wochenplan',_use_li=True)}}</li>
                         {{ render_nav_item('main.einkaufsliste', 'Einkaufsliste',_use_li=True)}}</li>
                         {% if current_user.is_anonymous -%}
                         <li class="nav-item">

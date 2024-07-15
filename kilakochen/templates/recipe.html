@@ -6,8 +6,8 @@
 <div class="row text-center"> 
     <div class="col"><h1>{{ rezept_name }}</h1> </div>
     <div class="col btn-group" role="group">
-        <a class="btn btn-primary" href="{{ url_for('main.rezepte') }}">Rezept Übersicht</a>
-        <a class="btn btn-primary" href="{{ url_for('main.print_rezept',id=data.ID) }}">Rezept drucken</a>
+        <a class="btn btn-primary" href="{{ url_for('main.recipe_overview') }}">Rezept Übersicht</a>
+        <a class="btn btn-primary" href="{{ url_for('main.print_recipe',id=data.ID) }}">Rezept drucken</a>
     </div>
 </div>
 
