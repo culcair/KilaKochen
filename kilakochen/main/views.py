@@ -14,8 +14,12 @@ def index():
     return render_template('index.html', page_title = "Startseite")
 
 def get_rezepte(kategorie):
+    from pprint import pprint
     res = Rezepte.query.with_entities(Rezepte.ID,Rezepte.Titel).filter(Rezepte.rezeptkategorien.has(Kuerzel=kategorie)).order_by(Rezepte.Titel).all()
-    return [(x.ID, x.Titel) for x in res]
+    
+    
+    choices = [(x.ID, x.Titel) for x in res]
+    return choices
 
 @login_required
 @bp.route('/day/edit/<string:raw_date>', methods=['GET', 'POST'])
@@ -26,8 +30,6 @@ def day_edit(raw_date):
     else:
         given_date = raw_date
             
-    print(given_date)
-
     plan = Essensplan.query.filter_by(Datum=given_date).one_or_none()
     
     form = EditHeuteForm()
@@ -36,6 +38,12 @@ def day_edit(raw_date):
     form.dessert.choices = get_rezepte("D")
     if plan is not None:
         form.datum.data = plan.Datum
+        if plan.Hauptgericht is not None:
+            form.hauptgericht_old.data = plan.Hauptgericht.Titel
+        if plan.Beilage is not None:
+            form.beilage.default = [4] 
+        if plan.Dessert is not None:
+            form.dessert.default = (plan.Hauptgericht.ID,plan.Hauptgericht.Titel)
     else:
         form.datum.data = given_date
 
@@ -69,7 +77,6 @@ def day(raw_date = datetime.today().date()):
     else:
         given_date = raw_date
  
-    print(raw_date)
     data = Essensplan.query.filter_by(Datum=given_date).one_or_none()
 
     if data is None and current_user.is_authenticated:
@@ -143,7 +150,6 @@ def week():
             plaene.append(Essensplan(Datum=day))
         else:
             plaene.append(res)
-            print(res.Hauptgericht.Titel)
 
     return render_template(
         'week.html',
