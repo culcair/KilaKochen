@@ -1,4 +1,5 @@
-        <nav class="navbar navbar-expand-lg navbar-light bg-light mb-4 fixed-top">
+{% from 'bootstrap5/nav.html' import render_nav_item %}
+    <nav class="navbar navbar-expand-lg navbar-light bg-light mb-4 fixed-top">
             <div class="container">
                 <a class="navbar-brand" href="{{ url_for('main.index')}}">Rezeptdatenbank</a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
@@ -7,21 +8,18 @@
                 </button>
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
                     <ul class="navbar-nav mr-auto">
-                        <li class="nav-item">{{ render_nav_item('main.heute', 'Heute') }}</li>
-                        <li class="nav-item">{{ render_nav_item('main.rezepte', 'Rezepte') }}</li>
-                        <li class="nav-item">{{ render_nav_item('main.zutaten', 'Zutaten') }}</li>
-                        <li class="nav-item">{{ render_nav_item('main.wochenplan', 'Wochenplan') }}</li>
-                        <li class="nav-item">{{ render_nav_item('main.einkaufsliste', 'Einkaufsliste') }}</li>
-                        {% if current_user.is_anonymous %}
+                        {{ render_nav_item('main.heute', 'Heute',_use_li=True)}}
+                        {{ render_nav_item('main.rezepte', 'Rezepte',_use_li=True)}}</li>
+                        {{ render_nav_item('main.zutaten', 'Zutaten',_use_li=True)}}</li>
+                        {{ render_nav_item('main.wochenplan', 'Wochenplan',_use_li=True)}}</li>
+                        {{ render_nav_item('main.einkaufsliste', 'Einkaufsliste',_use_li=True)}}</li>
+                        {% if current_user.is_anonymous -%}
                         <li class="nav-item">
                             <a href="{{ url_for('auth.login') }}" class="btn btn-success" role="button">Login</a>
                         </li>
-                            {% else %}
-                        <li class="nav-item">Benutzer: {{ current_user.user }}
-                        <a href="{{ url_for('auth.logout') }}" class="btn btn-danger" role="button">Logout</a>
-                        </li>
-                            {% endif %}
-
+                            {%- else -%}
+                        <li class="nav-item">Benutzer: {{ current_user.user }}<a href="{{ url_for('auth.logout') }}" class="btn btn-danger" role="button">Logout</a></li>
+                            {%- endif %}
                     </ul>
                 </div>
             </div>

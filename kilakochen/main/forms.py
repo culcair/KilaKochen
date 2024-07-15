@@ -1,20 +1,21 @@
 from flask_wtf          import FlaskForm
-from wtforms            import SelectField, SubmitField, TextAreaField
+from wtforms            import BooleanField, DateField, FormField, RadioField, SelectField, SubmitField, TextAreaField
 
 
 class EditHeuteForm(FlaskForm):
+	datum			= DateField('Datum',render_kw={"disabled" : True})
 	hauptgericht    = SelectField  ('Hauptgericht')
 	beilage			= SelectField('Beilage')
 	dessert			= SelectField('Dessert')
-	ausfall			= TextAreaField('Ausfall')
+	ausfall			= BooleanField('An diesem Tag keine Essen')
 	anmerkung		= TextAreaField('Anmerkung')
 	submit			= SubmitField('Speichern')
 
 
-class EditHeuteForm(FlaskForm):
-	hauptgericht    = SelectField  ('Hauptgericht')
-	beilage			= SelectField('Beilage')
-	dessert			= SelectField('Dessert')
-	ausfall			= TextAreaField('Ausfall')
-	anmerkung		= TextAreaField('Anmerkung')
+class EditWocheForm(FlaskForm):
+	montag			= FormField(EditHeuteForm)
+	dienstag		= FormField(EditHeuteForm)
+	mittwoch		= FormField(EditHeuteForm)
+	donnerstag		= FormField(EditHeuteForm)
+	freitag			= FormField(EditHeuteForm)			
 	submit			= SubmitField('Speichern')

@@ -158,11 +158,13 @@ class Essensplan(db.Model):
 
     ID: Mapped[int] = mapped_column(INTEGER, primary_key=True)
     Datum: Mapped[datetime.date] = mapped_column(Date,index=True)
-    Stand: Mapped[datetime.datetime] = mapped_column(DATETIME, default=lambda: datetime.datetime.now(datetime.timezone.utc))
+    Stand: Mapped[datetime.datetime] = mapped_column(DATETIME, 
+                                                     default=lambda: datetime.datetime.now(datetime.timezone.utc),
+                                                     onupdate=lambda: datetime.datetime.now(datetime.timezone.utc))
     HauptgerichtRezeptID: Mapped[Optional[int]] = mapped_column(INTEGER)
     BeilageRezeptID: Mapped[Optional[int]] = mapped_column(INTEGER)
     DessertRezeptID: Mapped[Optional[int]] = mapped_column(INTEGER)
-    Ausfall: Mapped[Optional[str]] = mapped_column(String(50))
+    Ausfall: Mapped[Optional[int]] = mapped_column(INTEGER)
     Anmerkung: Mapped[Optional[str]] = mapped_column(String(400))
 
     Beilage: Mapped['Rezepte'] = relationship('Rezepte', foreign_keys=[BeilageRezeptID], back_populates='essensplan_beilage')

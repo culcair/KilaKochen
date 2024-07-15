@@ -2,31 +2,30 @@
 
 {% block content %}
     <div class="container">
-        Heute ist {{ date.strftime('%A') }} der {{ date.strftime('%d.%m.%Y')}}.
-    </div>
-    <div class="row justify-content-start">
-        <div class="col"> Hauptgericht:</div>
-        <div class="col"><a class="btn btn-primary" href="{{ url_for('main.rezept', id=data.Hauptgericht.ID) }}">{{ data.Hauptgericht.Titel }}</a> </div>
-    </div>
-    <div class="row justify-content-start">
-        <div class="col"> Beilage:</div>
-        <div class="col"><a class="btn btn-primary" href="{{ url_for('main.rezept', id=data.Beilage.ID) }}">{{ data.Beilage.Titel }}</a> </div>        
-    </div>
-    <div class="row justify-content-start">
-        <div class="col"> Dessert:</div>
-        <div class="col"><a class="btn btn-primary" href="{{ url_for('main.rezept', id=data.Dessert.ID) }}">{{ data.Dessert.Titel }}</a> </div>
-    </div>
-    {% if not data.Ausfall == "None" %}
-    <div class="row justify-content-start">
-        <div class="col"> Ausfall:</div>
-        <div class="col">{{ data.Ausfall }}</div>
-    </div>
-    {% endif %}
-    {% if not data.Anmerkung == "None" %}
-    <div class="row justify-content-start">
-        <div class="col"> Anmerkung:</div>
-        <div class="col">{{ data.Anmerkung }}</div>
-    </div>
-    {% endif %}
-
+        <table>
+            <thead>
+                <th>Heute ist {{ date.strftime('%A') }} der {{ date.strftime('%d.%m.%Y')}}</th>
+            </thead>
+            <tr>
+                <td>Hauptgericht</td>
+                <td><a class="btn btn-primary" href="{{ url_for('main.rezept', id=data.Hauptgericht.ID) }}">{{ data.Hauptgericht.Titel }}</a></td>
+            </tr>
+            <tr>
+                <td>Beilage</td>
+                <td><a class="btn btn-primary" href="{{ url_for('main.rezept', id=data.Beilage.ID) }}">{{ data.Beilage.Titel }}</a></td>
+            </tr>
+            <tr>
+                <td>Dessert</td>
+                <td><a class="btn btn-primary" href="{{ url_for('main.rezept', id=data.Dessert.ID) }}">{{ data.Dessert.Titel }}</a></td>
+            </tr>
+            <tr>
+                <td>Ausfall</td>
+                <td>{{ data.Ausfall }}</td>
+            </tr>
+            <tr>
+                <td>Anmerkung</td>
+                <td>{{ data.Anmerkung }}</td>
+            </tr>  
+        </table>
+</div>
 {% endblock %}
