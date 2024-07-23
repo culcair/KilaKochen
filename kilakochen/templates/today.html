@@ -8,15 +8,15 @@
             </thead>
             <tr>
                 <td>Hauptgericht</td>
-                <td><a class="btn btn-primary" href="{{ url_for('main.recipe', id=data.Hauptgericht.ID) }}">{{ data.Hauptgericht.Titel }}</a></td>
+                <td><a class="btn btn-primary" href="{{ url_for('recipe.view_recipe', id=data.Hauptgericht.ID) }}">{{ data.Hauptgericht.Titel }}</a></td>
             </tr>
             <tr>
                 <td>Beilage</td>
-                <td><a class="btn btn-primary" href="{{ url_for('main.recipe', id=data.Beilage.ID) }}">{{ data.Beilage.Titel }}</a></td>
+                <td><a class="btn btn-primary" href="{{ url_for('recipe.view_recipe', id=data.Beilage.ID) }}">{{ data.Beilage.Titel }}</a></td>
             </tr>
             <tr>
                 <td>Dessert</td>
-                <td><a class="btn btn-primary" href="{{ url_for('main.recipe', id=data.Dessert.ID) }}">{{ data.Dessert.Titel }}</a></td>
+                <td><a class="btn btn-primary" href="{{ url_for('recipe.view_recipe', id=data.Dessert.ID) }}">{{ data.Dessert.Titel }}</a></td>
             </tr>
             <tr>
                 <td>Ausfall</td>

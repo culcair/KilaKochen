@@ -7,7 +7,7 @@
         <table class="table">
             {% for recipe in data -%}
                 <tr>
-                    <td><a class="btn btn-primary" href="{{ url_for('main.recipe', id=recipe.ID) }}">Link</a></td>
+                    <td><a class="btn btn-primary" href="{{ url_for('recipe.view_recipe', id=recipe.ID) }}">Link</a></td>
                     <td>{{ recipe.Titel }}</td>
                 </tr>
             {% endfor %}

@@ -92,42 +92,6 @@ def day(raw_date = datetime.today().date()):
             data=data
         )
 
-
-@bp.route('/recipe/overview')
-def recipe_overview():
-    data = Rezepte.query.order_by(Rezepte.Titel).all()
-    return render_template(
-        'recipe_overview.html',
-        page_title = "Übersicht der Rezepte",
-        data=data
-    )
-
-@bp.route('/recipe/<int:id>')
-def recipe(id):
-    data = Rezepte.query.filter_by(ID=id).one_or_404()
-    
-    return render_template(
-        'recipe.html',
-        page_title = "Rezept - " + data.Titel,
-        rezept_name = data.Titel,
-        data=data
-    )
-
-@bp.route('/recipe/<int:id>/print')
-def print_recipe(id):    
-    data = Rezepte.query.filter_by(ID=id).one_or_404()
-    
-    filename="{}_{}.pdf".format("KiLaKochen",data.ID)
-
-    html = render_template(
-        'print_rezept.html',
-        page_title = "Rezept - " + data.Titel,
-        rezept_name = data.Titel,
-        data=data
-    )
-
-    return html
-
 @bp.route('/ingredients')
 def ingredients():
     zutaten = Zutaten.query.all()
