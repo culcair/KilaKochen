@@ -103,10 +103,38 @@ def ingredients():
         allergene = allergene
     )
 
-@bp.route('/week')
-def week():
+@bp.route('/week/overview')
+def week_overview():
     date = datetime.today().date()
-    week = get_week(date)
+    prefix = 3
+    weeks = []
+    for i in range(2-prefix,2+prefix):
+        tmp = get_week(date,i)
+
+        weeks.append(
+            {
+            "kw" : tmp[0].isocalendar().week ,
+            "year" : tmp[0].isocalendar().year ,
+            "first" : tmp[0],
+            "last" : tmp[-1]
+            }
+        )
+    
+   
+    return render_template(
+        'week_overview.html',
+        page_title = "Wochenplan",
+        weeks = weeks
+    )
+
+@bp.route('/week/<string:raw_date>')
+@bp.route('/week')
+def week(raw_date = datetime.today().date()):
+    if type(raw_date) == str:
+        given_date = datetime.fromisoformat(raw_date).date()
+    else:
+        given_date = raw_date
+    week = get_week(given_date)
     plaene = []
     for day in week:
         res = db.session.scalars(select(Essensplan).filter_by(Datum=day)).one_or_none()
@@ -124,7 +152,7 @@ def week():
 def get_week(given_date,given_offset=0):
     weekday = given_date.isoweekday()
     # The start of the week
-    start = given_date - timedelta(days=weekday-1)
+    start = ( given_date - timedelta(days=weekday-1) ) + timedelta(weeks=given_offset)
     # build a simple range
     dates = [start + timedelta(days=d) for d in range(5)]
     return dates
