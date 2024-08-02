@@ -26,11 +26,8 @@
     <caption>Allergene</caption>
     <tr>
     <td>
-       {% for zutat in data.rezepte_zutaten %}
-            {% for allergen in zutat.zutaten.zutaten_allergene %}
-                <a data-bs-toggle="tooltip" data-bs-placement="top" title="{{ allergen.allergene.Bezeichnung}}">{{ allergen.allergene.Bezeichnung}}</a>,
-            {% endfor %}
-        {% endfor %}
+        {{ allergene }}
+
     </td>
 </tr>
 </table>
@@ -39,9 +36,7 @@
     <caption>Zubereitung</caption>
     <tr>
     <td>
-       {% autoescape false %}
-       {{ data.Zubereitung | replace("\n", "<br/>")}}
-       {% endautoescape %}
+       {{ data.Zubereitung | nl2br }}
     </td>
 </tr>
 </table>

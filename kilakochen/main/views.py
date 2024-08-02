@@ -119,12 +119,13 @@ def week_overview():
             "last" : tmp[-1]
             }
         )
-    
+    kw = date.isocalendar().week
    
     return render_template(
         'week_overview.html',
         page_title = "Wochenplan",
-        weeks = weeks
+        weeks = weeks,
+        kw = kw
     )
 
 @bp.route('/week/<string:raw_date>')

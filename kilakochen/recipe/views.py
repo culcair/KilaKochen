@@ -18,18 +18,24 @@ def overview():
     )
 
 
-@bp.route('/view/<int:id>')
+@bp.route('/<int:id>/view')
 def view_recipe(id):
     data = Rezepte.query.filter_by(ID=id).one_or_404()
+    allergene = set()
+    for zutat in data.rezepte_zutaten:
+            for allergen in zutat.zutaten.zutaten_allergene:
+                 allergene.add(allergen.allergene.Bezeichnung)
+
     return render_template(
         'recipe.html',
         page_title = "Rezept - " + data.Titel,
         rezept_name = data.Titel,
-        data=data
+        data=data,
+        allergene = ", ".join(allergene)
     )
 
 
-@bp.route('/print/<int:id>')
+@bp.route('/<int:id>/print')
 def print_recipe(id):    
     data = Rezepte.query.filter_by(ID=id).one_or_404()
    
@@ -42,3 +48,13 @@ def print_recipe(id):
         data=data
     )
     return html
+
+@bp.route('/<int:id>/edit')
+def edit_recipe(id):
+    data = Rezepte.query.filter_by(ID=id).one_or_404()
+
+    return render_template(
+        'edit_recipe.html',
+        page_title = "Rezept - " + data.Titel,
+        data=data
+    )

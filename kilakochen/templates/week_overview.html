@@ -12,11 +12,19 @@
             </tr>
         </thead>
         {% for entry in weeks %}
+        {% if entry.kw == kw %}
+        <tr scope="row">
+        {% else %}
         <tr>
+        {% endif %}
+            {% if entry.kw == kw %}
+            <td> <a class="btn btn-danger" href="{{ url_for('main.week',raw_date=entry.first) }}">{{entry.kw}}</a></td>
+            {% else %}
             <td> <a class="btn btn-primary" href="{{ url_for('main.week',raw_date=entry.first) }}">{{entry.kw}}</a></td>
+            {% endif %}
             <td> {{ entry.year }}</td>
-            <td> {{ entry.first }}</td>
-            <td> {{ entry.last }}</td>
+            <td> {{ entry.first | format_date }}</td>
+            <td> {{ entry.last | format_date}}</td>
         </tr>
         {% endfor %}
     </table>

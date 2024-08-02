@@ -9,9 +9,9 @@
 
                 {% for entry in plaene %}
                     {% if current_user.is_authenticated %}
-                        <th scope="col"><a href="{{ url_for('main.day_edit',raw_date=entry.Datum) }}">{{ entry.Datum.strftime('%A, %d.%m.%Y') }}</a></th>
+                        <th scope="col"><a href="{{ url_for('main.day_edit',raw_date=entry.Datum) }}">{{ entry.Datum | format_date(format="full") }}</a></th>
                     {% else %}
-                        <th scope="col">{{ entry.Datum.strftime('%A, %d.%m.%Y') }}</th>
+                        <th scope="col">{{ entry.Datum | format_date(format="full") }}</th>
                     {% endif %}
                 {% endfor %}
             </tr>
