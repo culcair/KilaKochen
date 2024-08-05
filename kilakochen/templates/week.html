@@ -2,16 +2,37 @@
 
 {% block content %}
 <div class="container">
+    <nav aria-label="Wochennavigation">
+        <ul class="pagination">
+          <li class="page-item">
+            <a class="page-link" href="{{ url_for('main.week') }}" aria-label="zurück">
+              <span aria-hidden="true">&laquo;</span>
+              <span class="sr-only">Zurück</span>
+            </a>
+          </li>
+          <li class="page-item">
+            <a class="page-link" href="{{ url_for('main.week_overview') }}" aria-label="Wochenübersicht">Wochenübersicht</a>
+          </li>
+          <li class="page-item">
+            <a class="page-link" href="{{ url_for('main.week') }}" aria-label="weiter">
+              <span aria-hidden="true">&raquo;</span>
+              <span class="sr-only">Weiter</span>
+            </a>
+          </li>
+        </ul>
+    </nav>
+    <div class="text-center">
+        <h1>Wochenplan</h1>für die Kalenderwoche <b>{{ kw }}</b> vom {{ plaene[0].Datum | format_date(format="medium") }} bis zum {{ plaene[-1].Datum | format_date(format="medium") }}
+    </div>
     <table class="table table-striped table-hover">
         <thead class="table-dark">
             <tr>
                 <th></th>
-
                 {% for entry in plaene %}
                     {% if current_user.is_authenticated %}
-                        <th scope="col"><a href="{{ url_for('main.day_edit',raw_date=entry.Datum) }}">{{ entry.Datum | format_date(format="full") }}</a></th>
+                        <th scope="col"><a href="{{ url_for('main.day_edit',raw_date=entry.Datum) }}">{{ entry.Datum | return_day }}</a></th>
                     {% else %}
-                        <th scope="col">{{ entry.Datum | format_date(format="full") }}</th>
+                        <th scope="col">{{ entry.Datum | return_day }}</th>
                     {% endif %}
                 {% endfor %}
             </tr>

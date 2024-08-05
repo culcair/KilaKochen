@@ -9,9 +9,14 @@ from markupsafe import Markup, escape
 def format_date(given_date, locale="de",format="medium"):
     return f_d(date=given_date,locale=locale,format=format)
 
+@bp.app_template_filter()
+def return_day(given_date, locale="de"):
+    return f_d(date=given_date,locale=locale,format="E")
+
 
 @pass_eval_context
 @bp.app_template_filter()
 def nl2br(eval_ctx, value):
     result = value.replace('\\r\\n','</br>')
     return Markup(result) if eval_ctx.autoescape else result
+
