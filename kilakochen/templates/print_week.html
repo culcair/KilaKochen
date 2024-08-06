@@ -3,7 +3,7 @@
 {% block content %}
 <div class="container">
     <div class="text-center">
-        <h1>Wochenplan</h1>für die Kalenderwoche <b>{{ kw }}</b> vom {{ plaene[0].Datum | format_date(format="medium") }} bis zum {{ plaene[-1].Datum | format_date(format="medium") }}
+        <h1>Wochenplan</h1>für die Kalenderwoche <strong>{{ kw }}</strong> vom <strong>{{ plaene[0].Datum | format_date(format="medium") }}</strong> bis zum <strong>{{ plaene[-1].Datum | format_date(format="medium") }}</strong>
     </div>
     <table class="table table-striped">
         <thead class="table-dark">
@@ -20,11 +20,17 @@
             <td>Hauptgericht</td>
             {% for plan in plaene %}
             <td>
+                
                 {% if plan.Hauptgericht != None %}
-                {{ plan.Hauptgericht.Titel}}
+                <h6>{{ plan.Hauptgericht.Titel}}</h6>
+                    {% for zutat in plan.Hauptgericht.Zu %}
+
+                    {% endfor %}
                 {% else %}
-                Kein Eintrag
+                <h6>Kein Eintrag</h6>
                 {% endif %}
+                
+
             </td>
             {% endfor %}
         </tr>
@@ -37,6 +43,7 @@
                 {% else %}
                 Kein Eintrag
                 {% endif %}
+            
             </td>
             {% endfor %}
             
