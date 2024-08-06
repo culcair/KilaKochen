@@ -1,0 +1,59 @@
+{% extends 'print_base.html' %}
+
+{% block content %}
+<div class="container">
+    <div class="text-center">
+        <h1>Wochenplan</h1>für die Kalenderwoche <b>{{ kw }}</b> vom {{ plaene[0].Datum | format_date(format="medium") }} bis zum {{ plaene[-1].Datum | format_date(format="medium") }}
+    </div>
+    <table class="table table-striped">
+        <thead class="table-dark">
+            <tr>
+                <th></th>
+                {% for entry in plaene %}
+                        <th scope="col">{{ entry.Datum | return_day }}</th>
+                {% endfor %}
+            </tr>
+
+        </thead>
+        
+        <tr>
+            <td>Hauptgericht</td>
+            {% for plan in plaene %}
+            <td>
+                {% if plan.Hauptgericht != None %}
+                {{ plan.Hauptgericht.Titel}}
+                {% else %}
+                Kein Eintrag
+                {% endif %}
+            </td>
+            {% endfor %}
+        </tr>
+        <tr>
+            <td scope="row">Beilage</td>
+            {% for plan in plaene %}
+            <td>
+                {% if plan.Beilage != None %}
+                {{ plan.Beilage.Titel}}
+                {% else %}
+                Kein Eintrag
+                {% endif %}
+            </td>
+            {% endfor %}
+            
+        </tr>
+        <tr>
+            <td>Dessert</td>
+            {% for plan in plaene %}
+            <td>
+                {% if plan.Dessert != None %}
+                {{ plan.Dessert.Titel}}
+                {% else %}
+                Kein Eintrag
+                {% endif %}
+            </td>
+            {% endfor %}
+            
+        </tr>
+    </table>
+</div>
+{% endblock %}

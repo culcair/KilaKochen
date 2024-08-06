@@ -21,8 +21,12 @@
           </li>
         </ul>
     </nav>
-    <div class="text-center">
-        <h1>Wochenplan</h1>für die Kalenderwoche <b>{{ kw }}</b> vom {{ plaene[0].Datum | format_date(format="medium") }} bis zum {{ plaene[-1].Datum | format_date(format="medium") }}
+    <div class="row">
+        <div class="col-sm-2"><a href="{{ url_for('main.print_week',raw_date=plaene[0].Datum) }}"><img src="{{ url_for('static', filename='print_icon.svg') }}"></a></div>
+        <div class="text-center col-sm-10">
+            <h1>Wochenplan</h1>für die Kalenderwoche <b>{{ kw }}</b> vom {{ plaene[0].Datum | format_date(format="medium") }} bis zum {{ plaene[-1].Datum | format_date(format="medium") }}
+        </div>
+
     </div>
     <div class="table-responsive">
     <table class="table table-striped table-hover">

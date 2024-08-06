@@ -128,6 +128,32 @@ def week_overview():
         kw = kw
     )
 
+
+
+@bp.route('/week/<string:raw_date>/print')
+@bp.route('/week/print')
+def print_week(raw_date = datetime.today().date()):
+    if type(raw_date) == str:
+        given_date = datetime.fromisoformat(raw_date).date()
+    else:
+        given_date = raw_date
+    week = get_week(given_date)
+    kw = given_date.isocalendar().week
+    plaene = []
+    for day in week:
+        res = db.session.scalars(select(Essensplan).filter_by(Datum=day)).one_or_none()
+        if res is None:
+            plaene.append(Essensplan(Datum=day))
+        else:
+            plaene.append(res)
+
+    return render_template(
+        'print_week.html',
+        page_title = "Wochenplan",
+        plaene = plaene,
+        kw = kw
+    )
+
 @bp.route('/week/<string:raw_date>')
 @bp.route('/week')
 def week(raw_date = datetime.today().date()):
