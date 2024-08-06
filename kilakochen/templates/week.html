@@ -5,7 +5,7 @@
     <nav aria-label="Wochennavigation">
         <ul class="pagination">
           <li class="page-item">
-            <a class="page-link" href="{{ url_for('main.week') }}" aria-label="zurück">
+            <a class="page-link" href="{{ url_for('main.week',raw_date=previous) }}" aria-label="zurück">
               <span aria-hidden="true">&laquo;</span>
               <span class="sr-only">Zurück</span>
             </a>
@@ -14,7 +14,7 @@
             <a class="page-link" href="{{ url_for('main.week_overview') }}" aria-label="Wochenübersicht">Wochenübersicht</a>
           </li>
           <li class="page-item">
-            <a class="page-link" href="{{ url_for('main.week') }}" aria-label="weiter">
+            <a class="page-link" href="{{ url_for('main.week',raw_date=next) }}" aria-label="weiter">
               <span aria-hidden="true">&raquo;</span>
               <span class="sr-only">Weiter</span>
             </a>

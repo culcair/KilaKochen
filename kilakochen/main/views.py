@@ -137,6 +137,9 @@ def week(raw_date = datetime.today().date()):
         given_date = raw_date
     week = get_week(given_date)
     kw = given_date.isocalendar().week
+    previous = week[0] + timedelta(weeks=-1)
+    next = week[0] + timedelta(weeks=1)
+
     plaene = []
     for day in week:
         res = db.session.scalars(select(Essensplan).filter_by(Datum=day)).one_or_none()
@@ -149,7 +152,9 @@ def week(raw_date = datetime.today().date()):
         'week.html',
         page_title = "Wochenplan",
         plaene = plaene,
-        kw = kw        
+        kw = kw,
+        previous = previous,
+        next = next
     )
 
 def get_week(given_date,given_offset=0):
