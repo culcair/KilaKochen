@@ -17,13 +17,13 @@ def get_rezepte(kategorie):
     from pprint import pprint
     res = Rezepte.query.with_entities(Rezepte.ID,Rezepte.Titel).filter(Rezepte.rezeptkategorien.has(Kuerzel=kategorie)).order_by(Rezepte.Titel).all()
     
-    
-    choices = [(x.ID, x.Titel) for x in res]
+    choices = [(None,"")] + [(x.ID, x.Titel) for x in res]
     return choices
 
-@login_required
-@bp.route('/day/edit/<string:raw_date>', methods=['GET', 'POST'])
+
+@bp.route('/day/<string:raw_date>/edit', methods=['GET', 'POST'])
 @bp.route('/today/edit', methods=['GET', 'POST'],defaults= {"raw_date" : datetime.today().date()})
+@login_required
 def day_edit(raw_date):
     if type(raw_date) == str:
         given_date = datetime.fromisoformat(raw_date).date()
@@ -31,19 +31,23 @@ def day_edit(raw_date):
         given_date = raw_date
             
     plan = Essensplan.query.filter_by(Datum=given_date).one_or_none()
-    
     form = EditHeuteForm()
-    form.hauptgericht.choices = get_rezepte("H")
-    form.beilage.choices = get_rezepte("B")
-    form.dessert.choices = get_rezepte("D")
+    
     if plan is not None:
         form.datum.data = plan.Datum
         if plan.Hauptgericht is not None:
-            form.hauptgericht_old.data = plan.Hauptgericht.Titel
+            form.hauptgericht.choices = [(plan.Hauptgericht.ID,plan.Hauptgericht.Titel)] + get_rezepte("H")
+        else:
+            form.hauptgericht.choices = get_rezepte("H")
+
         if plan.Beilage is not None:
-            form.beilage.default = [4] 
+            form.beilage.choices = [(plan.Beilage.ID,plan.Beilage.Titel)] + get_rezepte("B")
+        else:
+            form.beilage.choices = get_rezepte("B")
         if plan.Dessert is not None:
-            form.dessert.default = (plan.Hauptgericht.ID,plan.Hauptgericht.Titel)
+            form.dessert.choices = [(plan.Dessert.ID,plan.Dessert.Titel)] +  get_rezepte("D")
+        else:
+            form.beilage.choices = get_rezepte("D")
     else:
         form.datum.data = given_date
 
@@ -79,11 +83,14 @@ def day(raw_date = datetime.today().date()):
  
     data = Essensplan.query.filter_by(Datum=given_date).one_or_none()
 
-    if data is None and current_user.is_authenticated:
-        data = Essensplan()
+    if data is None:
+        data = Essensplan(Datum=given_date)
+        
+    db.session.add(data)
+    db.session.commit()
+    if current_user.is_authenticated:
         return redirect(url_for('main.day_edit',raw_date=given_date))
     else:
-        data = Essensplan(Datum=given_date)
         return render_template(
             'today.html',
             date = given_date,

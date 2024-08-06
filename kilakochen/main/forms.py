@@ -4,7 +4,6 @@ from wtforms            import BooleanField, DateField, FormField, RadioField, S
 
 class EditHeuteForm(FlaskForm):
 	datum			= DateField('Datum',render_kw={"disabled" : True})
-	hauptgericht_old= StringField  ('Hauptgericht Alt',render_kw={"disabled" : True})	
 	hauptgericht    = SelectField  ('Hauptgericht')
 	beilage			= SelectField('Beilage')
 	dessert			= SelectField('Dessert')
