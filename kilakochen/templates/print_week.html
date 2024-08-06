@@ -74,6 +74,7 @@
     </table>
 
     {% for entry in plaene %}
+    {% if not entry.Ausfall %}
     <th scope="col">{{ entry.Datum |format_date(format="full")}}</th>
 
     <table class="table table-striped">
@@ -178,7 +179,7 @@
                 </td>                
             </tr>
     </table>
-
+    {% endif %}
     {% endfor %}   
 </div>
 {% endblock %}
