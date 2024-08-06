@@ -8,23 +8,54 @@
             </thead>
             <tr>
                 <td>Hauptgericht</td>
-                <td><a class="btn btn-primary" href="{{ url_for('recipe.view_recipe', id=data.Hauptgericht.ID) }}">{{ data.Hauptgericht.Titel }}</a></td>
+                <td>
+                    {% if plan.Hauptgericht != None %}
+                    <a  class="btn btn-primary" href="{{url_for('recipe.view_recipe',id=plan.Hauptgericht.ID)}}">{{ plan.Hauptgericht.Titel}}</a>
+                    {% else %}
+                    Kein Eintrag
+                    {% endif %}
+                </td>
             </tr>
             <tr>
                 <td>Beilage</td>
-                <td><a class="btn btn-primary" href="{{ url_for('recipe.view_recipe', id=data.Beilage.ID) }}">{{ data.Beilage.Titel }}</a></td>
+                <td>
+                    {% if plan.Beilage != None %}
+                    <a  class="btn btn-primary" href="{{url_for('recipe.view_recipe',id=plan.Beilage.ID)}}">{{ plan.Beilage.Titel}}</a>
+                    {% else %}
+                    Kein Eintrag
+                    {% endif %}
+                </td>
             </tr>
             <tr>
                 <td>Dessert</td>
-                <td><a class="btn btn-primary" href="{{ url_for('recipe.view_recipe', id=data.Dessert.ID) }}">{{ data.Dessert.Titel }}</a></td>
+                <td>
+                    {% if plan.Dessert != None %}
+                    <a  class="btn btn-primary" href="{{url_for('recipe.view_recipe',id=plan.Dessert.ID)}}">{{ plan.Dessert.Titel}}</a>
+                    {% else %}
+                    Kein Eintrag
+                    {% endif %}
+                </td>
             </tr>
             <tr>
                 <td>Ausfall</td>
-                <td>{{ data.Ausfall }}</td>
+                <td>
+                    {% if plan.Ausfall != None %}
+                    {{ data.Ausfall }}
+                    {% else %}
+                    Kein Eintrag
+                    {% endif %}                    
+                </td>
             </tr>
             <tr>
                 <td>Anmerkung</td>
-                <td>{{ data.Anmerkung }}</td>
+                <td>
+                    {% if plan.Anmerkung != None %}
+                    {{ data.Anmerkung }}
+                    {% else %}
+                    Kein Eintrag
+                    {% endif %}                                    
+
+                </td>
             </tr>  
         </table>
 </div>

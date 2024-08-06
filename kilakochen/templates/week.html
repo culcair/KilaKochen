@@ -15,14 +15,14 @@
           </li>
           <li class="page-item">
             <a class="page-link" href="{{ url_for('main.week',raw_date=next) }}" aria-label="weiter">
-              <span aria-hidden="true">&raquo;</span>
               <span class="sr-only">Weiter</span>
+              <span aria-hidden="true">&raquo;</span>
             </a>
           </li>
         </ul>
     </nav>
     <div class="row">
-        <div class="col-sm-2"><a href="{{ url_for('main.print_week',raw_date=plaene[0].Datum) }}"><img src="{{ url_for('static', filename='print_icon.svg') }}"></a></div>
+        <div class="col-sm-2"><a href="{{ url_for('main.print_week',raw_date=plaene[0].Datum) }}"><img src="{{ url_for('static', filename='print.svg') }}"></a></div>
         <div class="text-center col-sm-10">
             <h1>Wochenplan</h1>für die Kalenderwoche <b>{{ kw }}</b> vom {{ plaene[0].Datum | format_date(format="medium") }} bis zum {{ plaene[-1].Datum | format_date(format="medium") }}
         </div>

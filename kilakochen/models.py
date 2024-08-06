@@ -171,6 +171,8 @@ class Essensplan(db.Model):
     Dessert: Mapped['Rezepte'] = relationship('Rezepte', foreign_keys=[DessertRezeptID], back_populates='essensplan_dessert')
     Hauptgericht: Mapped['Rezepte'] = relationship('Rezepte', foreign_keys=[HauptgerichtRezeptID], back_populates='essensplan_hauptgericht')
 
+    def __repr__(self):
+        return "Essensplan " + self.Datum.isoformat() + " " + str(self.ID)
 
 class RezepteZutaten(db.Model):
     __table_args__ = (

@@ -82,14 +82,13 @@ def day(raw_date = datetime.today().date()):
     if data is None and current_user.is_authenticated:
         data = Essensplan()
         return redirect(url_for('main.day_edit',raw_date=given_date))
-    elif data is None:
-        return abort(404)
     else:
+        data = Essensplan(Datum=given_date)
         return render_template(
             'today.html',
             date = given_date,
             page_title = "Essensplan von heute",
-            data=data
+            plan=data
         )
 
 @bp.route('/ingredients')
