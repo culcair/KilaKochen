@@ -5,8 +5,8 @@
     <div class="text-left">
         Wochenplan für die Kalenderwoche <strong>{{ kw }}</strong> vom <strong>{{ plaene[0].Datum | format_date(format="medium") }}</strong> bis zum <strong>{{ plaene[-1].Datum | format_date(format="medium") }}</strong>
     </div>
-    <table class="table table-striped">
-        <thead class="table-dark">
+    <table class="table table-bordered">
+        <thead class="table-light">
             <tr>
                 <th></th>
                 {% for entry in plaene %}
@@ -75,10 +75,10 @@
 
     {% for entry in plaene %}
     {% if not entry.Ausfall %}
-    <th scope="col">{{ entry.Datum |format_date(format="full")}}</th>
+    <div class="page-break">{{ entry.Datum |format_date(format="full")}}</div>
 
-    <table class="table table-striped">
-            <thead class="table-dark">
+    <table class="table  table-bordered">
+            <thead class="table-light">
                 <tr>
                     <th></th>
                     <th>Hauptgericht</th>

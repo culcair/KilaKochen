@@ -2,7 +2,7 @@ from flask_login import current_user, login_required
 from sqlalchemy import select
 from kilakochen.main import bp    
 from flask import abort, redirect, render_template, url_for
-#from flask_weasyprint import HTML, render_pdf
+from flask_weasyprint import HTML, render_pdf
 from datetime import datetime,timedelta
 from kilakochen.models import Allergene, Essensplan, Rezepte, Zutaten
 
@@ -14,7 +14,6 @@ def index():
     return render_template('index.html', page_title = "Startseite")
 
 def get_rezepte(kategorie):
-    from pprint import pprint
     res = Rezepte.query.with_entities(Rezepte.ID,Rezepte.Titel).filter(Rezepte.rezeptkategorien.has(Kuerzel=kategorie)).order_by(Rezepte.Titel).all()
     
     choices = [(None,"")] + [(x.ID, x.Titel) for x in res]
@@ -153,12 +152,13 @@ def print_week(raw_date = datetime.today().date()):
         else:
             plaene.append(res)
 
-    return render_template(
+    tmp = HTML(string=render_template(
         'print_week.html',
         page_title = "Wochenplan",
         plaene = plaene,
         kw = kw
-    )
+    ))
+    return render_pdf(tmp)
 
 @bp.route('/week/<string:raw_date>')
 @bp.route('/week')
