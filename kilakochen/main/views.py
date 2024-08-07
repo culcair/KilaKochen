@@ -158,7 +158,8 @@ def print_week(raw_date = datetime.today().date()):
         plaene = plaene,
         kw = kw
     ))
-    return render_pdf(tmp)
+    download_filename = "Wochenplan-KW{}.pdf".format(kw)
+    return render_pdf(tmp,automatic_download=True,download_filename=download_filename)
 
 @bp.route('/week/<string:raw_date>')
 @bp.route('/week')
