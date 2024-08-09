@@ -12,7 +12,7 @@
                     {% if plan.Hauptgericht != None %}
                     <a  class="btn btn-primary" href="{{url_for('recipe.view_recipe',id=plan.Hauptgericht.ID)}}">{{ plan.Hauptgericht.Titel}}</a>
                     {% else %}
-                    Kein Eintrag
+                    -
                     {% endif %}
                 </td>
             </tr>
@@ -22,7 +22,7 @@
                     {% if plan.Beilage != None %}
                     <a  class="btn btn-primary" href="{{url_for('recipe.view_recipe',id=plan.Beilage.ID)}}">{{ plan.Beilage.Titel}}</a>
                     {% else %}
-                    Kein Eintrag
+                    -
                     {% endif %}
                 </td>
             </tr>
@@ -32,7 +32,7 @@
                     {% if plan.Dessert != None %}
                     <a  class="btn btn-primary" href="{{url_for('recipe.view_recipe',id=plan.Dessert.ID)}}">{{ plan.Dessert.Titel}}</a>
                     {% else %}
-                    Kein Eintrag
+                    -
                     {% endif %}
                 </td>
             </tr>
@@ -42,7 +42,7 @@
                     {% if plan.Ausfall != None %}
                     {{ plan.Ausfall }}
                     {% else %}
-                    Kein Eintrag
+                    -
                     {% endif %}                    
                 </td>
             </tr>
@@ -52,7 +52,7 @@
                     {% if plan.Anmerkung != None %}
                     {{ plan.Anmerkung }}
                     {% else %}
-                    Kein Eintrag
+                    -
                     {% endif %}                                    
 
                 </td>

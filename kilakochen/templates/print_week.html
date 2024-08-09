@@ -29,7 +29,7 @@
                     {% endfor %}
 
                 {% else %}
-                <h6>Kein Eintrag</h6>
+                <h6>-</h6>
                 {% endif %}
                 
 
@@ -47,7 +47,7 @@
 
                 {% endfor %}
                 {% else %}
-                Kein Eintrag
+                -
                 {% endif %}
             
             </td>
@@ -65,7 +65,7 @@
 
                 {% endfor %}
                 {% else %}
-                Kein Eintrag
+                -
                 {% endif %}
             </td>
             {% endfor %}
@@ -89,9 +89,9 @@
             </thead>
             <tr>
                 <td>Bezeichnung</td>
-                <td>{% if entry.Hauptgericht != None %}{{entry.Hauptgericht.Titel}}{% else %}<h6>Kein Eintrag</h6>{% endif %}</td>
-                <td>{% if entry.Beilage != None %}{{entry.Beilage.Titel}}{% else %}<h6>Kein Eintrag</h6>{% endif %}</td>
-                <td>{% if entry.Dessert != None %}{{entry.Dessert.Titel}}{% else %}<h6>Kein Eintrag</h6>{% endif %}</td>                                
+                <td>{% if entry.Hauptgericht != None %}{{entry.Hauptgericht.Titel}}{% else %}<h6>-</h6>{% endif %}</td>
+                <td>{% if entry.Beilage != None %}{{entry.Beilage.Titel}}{% else %}<h6>-</h6>{% endif %}</td>
+                <td>{% if entry.Dessert != None %}{{entry.Dessert.Titel}}{% else %}<h6>-</h6>{% endif %}</td>                                
 
             </tr>
             <tr>
@@ -102,7 +102,7 @@
                         {{ "%.2f"|format(zutat.Menge)  }} {{ zutat.einheiten.Kuerzel }} {{ zutat.zutaten.Bezeichnung }} </br>
                     {% endfor %}
                 {% else %}
-                <h6>Kein Eintrag</h6>
+                <h6>-</h6>
                 {% endif %}
                 </td>
                 <td>
@@ -111,7 +111,7 @@
                         {{ "%.2f"|format(zutat.Menge)  }} {{ zutat.einheiten.Kuerzel }} {{ zutat.zutaten.Bezeichnung }} </br>
                     {% endfor %}
                 {% else %}
-                <h6>Kein Eintrag</h6>
+                <h6>-</h6>
                 {% endif %}
                 </td>
                 <td>
@@ -120,7 +120,7 @@
                         {{ "%.2f"|format(zutat.Menge)  }} {{ zutat.einheiten.Kuerzel }} {{ zutat.zutaten.Bezeichnung }} </br>
                     {% endfor %}
                 {% else %}
-                <h6>Kein Eintrag</h6>
+                <h6>-</h6>
                 {% endif %}
                 </td>                
             </tr>
@@ -158,7 +158,7 @@
                     {{ entry.Hauptgericht.Zubereitung | nl2br}}
 
                 {% else %}
-                <h6>Kein Eintrag</h6>
+                <h6>-</h6>
                 {% endif %}
                 </td>
                 <td>
@@ -166,7 +166,7 @@
                     {{ entry.Beilage.Zubereitung | nl2br}}
 
                 {% else %}
-                <h6>Kein Eintrag</h6>
+                <h6>-</h6>
                 {% endif %}
                 </td>
                 <td>
@@ -174,7 +174,7 @@
                     {{ entry.Dessert.Zubereitung | nl2br}}
 
                 {% else %}
-                <h6>Kein Eintrag</h6>
+                <h6>-</h6>
                 {% endif %}
                 </td>                
             </tr>
