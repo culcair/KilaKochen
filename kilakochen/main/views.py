@@ -46,8 +46,11 @@ def day_edit(raw_date):
         if plan.Dessert is not None:
             form.dessert.choices = [(plan.Dessert.ID,plan.Dessert.Titel)] +  get_rezepte("D")
         else:
-            form.beilage.choices = get_rezepte("D")
+            form.dessert.choices = get_rezepte("D")
     else:
+        form.hauptgericht.choices = get_rezepte("H")
+        form.beilage.choices = get_rezepte("B")
+        form.dessert.choices = get_rezepte("D")
         form.datum.data = given_date
 
     if form.validate_on_submit():
@@ -69,7 +72,8 @@ def day_edit(raw_date):
 
         db.session.add(plan)
         db.session.commit()
-        return redirect(url_for('main.day'))
+        return redirect(url_for('main.week',raw_date=given_date))
+    
     return render_template('edit_day.html', form=form)
 
 @bp.route('/day/<string:raw_date>')
