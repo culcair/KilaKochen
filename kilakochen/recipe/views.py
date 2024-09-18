@@ -9,7 +9,6 @@ from kilakochen import db
 @bp.route('/')
 @bp.route('/overview')
 def overview():
-    print("start")
     data = Rezepte.query.order_by(Rezepte.Titel).all()
     return render_template(
         'recipe_overview.html',

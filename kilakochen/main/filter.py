@@ -11,7 +11,7 @@ def format_date(given_date, locale="de",format="medium"):
 
 @bp.app_template_filter()
 def return_day(given_date, locale="de"):
-    return f_d(date=given_date,locale=locale,format="E")
+    return f_d(date=given_date,locale=locale,format="EEEE")
 
 
 @pass_eval_context

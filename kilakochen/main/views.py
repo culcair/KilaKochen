@@ -156,12 +156,14 @@ def print_week(raw_date = datetime.today().date()):
         else:
             plaene.append(res)
 
-    tmp = HTML(string=render_template(
+    html_string = render_template(
         'print_week.html',
         page_title = "Wochenplan",
         plaene = plaene,
         kw = kw
-    ))
+    )
+    tmp = HTML(string=html_string)
+#    return html_string
     download_filename = "Wochenplan-KW{}.pdf".format(kw)
     return render_pdf(tmp,automatic_download=True,download_filename=download_filename)
 

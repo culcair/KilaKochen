@@ -2,9 +2,79 @@
 
 {% block content %}
 <div class="container">
-    <div class="text-left">
-        Wochenplan für die Kalenderwoche <strong>{{ kw }}</strong> vom <strong>{{ plaene[0].Datum | format_date(format="medium") }}</strong> bis zum <strong>{{ plaene[-1].Datum | format_date(format="medium") }}</strong>
+    <div>
+        <div class="row align-items-center">
+            <div class="col">
+                <img src="{{ url_for('static', filename='kila-logo.png') }}" alt="Logo Kinderladen Jakobistrasse e.V." class="img-fluid">
+            </div>
+            <div class="col">
+                Wochenplan für die Kalenderwoche <strong>{{ kw }}</strong> vom <strong>{{ plaene[0].Datum | format_date(format="medium") }}</strong> bis zum <strong>{{ plaene[-1].Datum | format_date(format="medium") }}</strong>
+            </div>
+        </div>
+
+        <table class="table table-bordered">
+            <thead class="table-light">
+                <tr>
+                    <th></th>
+                    {% for entry in plaene %}
+                            <th scope="col">{{ entry.Datum | return_day  }}</th>
+                    {% endfor %}
+                </tr>
+            </thead>
+            
+            <tr>
+                <td>Hauptgericht</td>
+                {% for plan in plaene %}
+                <td>
+                    {% if plan.Hauptgericht != None %}
+                    <h6>{{ plan.Hauptgericht.Titel}}</h6>
+                    {% else %}
+                    <h6>-</h6>
+                    {% endif %}
+                </td>
+                {% endfor %}
+            </tr>
+
+            <tr>
+                <td scope="row">Beilage</td>
+                {% for plan in plaene %}
+                <td>
+                    {% if plan.Beilage != None %}
+                    <h6>{{ plan.Beilage.Titel}}</h6>
+                    {% else %}
+                    <h6>-</h6>
+                    {% endif %}
+                
+                </td>
+                {% endfor %}
+                
+            </tr>
+            <tr>
+                <td>Dessert</td>
+                {% for plan in plaene %}
+                <td>
+                    {% if plan.Dessert != None %}
+                    <h6>{{ plan.Dessert.Titel}}</h6>
+                    {% else %}
+                    <h6>-</h6>
+                    {% endif %}
+                </td>
+                {% endfor %}
+                
+            </tr>
+        </table>
+        <div class="text-center">Nur für den internen Gebrauch vom Kinderladen Jakobistraße e.V. </div>
     </div>
+    <div class="page-break"></div>
+    <div class="row align-items-center">
+        <div class="col">
+            <img src="{{ url_for('static', filename='kila-logo.png') }}" alt="Logo Kinderladen Jakobistrasse e.V." class="img-fluid">
+        </div>
+        <div class="col">
+            Wochenplan für die Kalenderwoche <strong>{{ kw }}</strong> vom <strong>{{ plaene[0].Datum | format_date(format="medium") }}</strong> bis zum <strong>{{ plaene[-1].Datum | format_date(format="medium") }}</strong>
+        </div>
+    </div>
+    <div class="small-font">
     <table class="table table-bordered">
         <thead class="table-light">
             <tr>
@@ -72,11 +142,20 @@
             
         </tr>
     </table>
-
+    </div>
     {% for entry in plaene %}
     {% if not entry.Ausfall %}
-    <div class="page-break">{{ entry.Datum |format_date(format="full")}}</div>
-
+    <div class="page-break"></div>
+    
+    <div class="row align-items-center">
+        <div class="col">
+            <img src="{{ url_for('static', filename='kila-logo.png') }}" alt="Logo Kinderladen Jakobistrasse e.V." class="img-fluid">
+        </div>
+        <div class="col">
+            {{ entry.Datum |format_date(format="full")}}
+        </div>
+    </div>
+    <div class="small-font">
     <table class="table  table-bordered">
             <thead class="table-light">
                 <tr>
@@ -179,6 +258,7 @@
                 </td>                
             </tr>
     </table>
+    </div>
     {% endif %}
     {% endfor %}   
 </div>
