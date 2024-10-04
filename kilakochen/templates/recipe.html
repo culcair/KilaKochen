@@ -1,8 +1,8 @@
 {% extends 'base.html' %}
 {% from 'bootstrap5/table.html' import render_table %}
-{% block headers %}
+{% block head %}
 {{ super() }}
-    <meta property="og:title" content="Rezepte | {{ rezept_name }}" />
+        <meta property="og:title" content="Rezepte | {{ rezept_name }}" />
 {% endblock %}
 
 {% block content %}
