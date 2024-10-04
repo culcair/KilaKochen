@@ -15,7 +15,7 @@
         {% if entry.kw == kw %}
         <tr scope="row">
         {% else %}
-        <tr>
+        <tr class="align-items-center">
         {% endif %}
             {% if entry.kw == kw %}
             <td> <a class="btn btn-danger" href="{{ url_for('main.week',raw_date=entry.first) }}">{{entry.kw}}</a></td>
