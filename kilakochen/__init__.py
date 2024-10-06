@@ -7,7 +7,6 @@ from flask_migrate import Migrate
 from flask_login import LoginManager
 from flask_babel import Babel, lazy_gettext as _l
 from flask_bootstrap import Bootstrap5
-from flask_htmlmin import HTMLMIN
 from config import Config
 
 
