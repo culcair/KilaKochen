@@ -27,7 +27,7 @@ def view_recipe(id):
 
     return render_template(
         'recipe.html',
-        page_title = "Rezept - " + data.Titel,
+        page_title = "Rezept | " + data.Titel,
         rezept_name = data.Titel,
         data=data,
         allergene = ", ".join(allergene)

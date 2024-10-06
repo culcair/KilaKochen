@@ -7,6 +7,7 @@ from flask_migrate import Migrate
 from flask_login import LoginManager
 from flask_babel import Babel, lazy_gettext as _l
 from flask_bootstrap import Bootstrap5
+from flask_htmlmin import HTMLMIN
 from config import Config
 
 
@@ -26,7 +27,6 @@ def create_app(config_class=Config):
     app = Flask(__name__)
     app.config.from_object(config_class)
     print(app.config['SQLALCHEMY_DATABASE_URI'])
-
     db.init_app(app)
     migrate.init_app(app, db)
     login.init_app(app)
@@ -35,6 +35,9 @@ def create_app(config_class=Config):
 
     from kilakochen.errors import bp as errors_bp
     app.register_blueprint(errors_bp)
+
+    from kilakochen.user import bp as user_bp
+    app.register_blueprint(user_bp, url_prefix='/user')
 
     from kilakochen.auth import bp as auth_bp
     app.register_blueprint(auth_bp, url_prefix='/auth')

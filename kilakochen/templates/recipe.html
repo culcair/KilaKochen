@@ -1,9 +1,9 @@
 {% extends 'base.html' %}
 {% from 'bootstrap5/table.html' import render_table %}
-{% block head %}
+{%- block head -%}
 {{ super() }}
-        <meta property="og:title" content="Rezepte | {{ rezept_name }}" />
-{% endblock %}
+        <meta property="description" content="www.kila-kochen.de | Rezepte | {{ rezept_name }}" />
+{%- endblock -%}
 
 {% block content %}
 <div class="container">
