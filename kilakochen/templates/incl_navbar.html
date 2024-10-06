@@ -1,26 +1,47 @@
-{% from 'bootstrap5/nav.html' import render_nav_item %}
-    <nav class="navbar navbar-expand-lg navbar-light bg-light mb-4 fixed-top">
-            <div class="container">
+    <nav class="navbar navbar-expand-lg bg-body-tertiary fixed-top">
+        <div class="container-fluid">
                 <a class="navbar-brand" href="{{ url_for('main.index')}}">Rezeptdatenbank</a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
-                        aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarMain" aria-controls="navbarMain" aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
-                <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                    <ul class="navbar-nav mr-auto">
-                        {{ render_nav_item('main.day', 'Heute',_use_li=True)}}
-                        {{ render_nav_item('recipe.overview', 'Rezepte',_use_li=True)}}</li>
-                        {{ render_nav_item('main.ingredients', 'Zutaten',_use_li=True)}}</li>
-                        {{ render_nav_item('main.week_overview', 'Wochenplan',_use_li=True)}}</li>
-                        {{ render_nav_item('main.einkaufsliste', 'Einkaufsliste',_use_li=True)}}</li>
+                <div class="collapse navbar-collapse" id="navbarMain">
+                    <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ url_for('main.day')}}">Heute</a>
+                        </li>
                         {% if current_user.is_anonymous -%}
                         <li class="nav-item">
-                            <a href="{{ url_for('auth.login') }}" class="btn btn-success" role="button">Login</a>
+                        <a class="nav-link" href="{{ url_for('recipe.overview')}}">Rezepte</a>
+                        </li>
+                        {%- else -%}
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                              Rezepte
+                            </a>
+                            <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                              <li><a class="dropdown-item" href="{{ url_for('recipe.overview')}}">Übersicht</a></li>
+                              <li><a class="dropdown-item" href="{{ url_for('main.week_overview')}}">Neues Rezept</a></li>
+                            </ul>
+                        </li>
+                        {%- endif %}
+                        <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('main.ingredients')}}">Zutaten</a>
+                        </li>
+                        <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('main.week_overview')}}">Wochenplan</a>
+                        </li>
+                        <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('main.einkaufsliste')}}">Einkaufsliste</a>
+                        </li>
+                        {% if current_user.is_anonymous -%}
+                        <li class="nav-item">
+                            <a  href="{{ url_for('auth.login') }}" class="btn btn-success nav-link" role="button">Login</a>
                         </li>
                             {%- else -%}
                         <li class="nav-item">Benutzer: {{ current_user.user }}<a href="{{ url_for('auth.logout') }}" class="btn btn-danger" role="button">Logout</a></li>
                             {%- endif %}
-                    </ul>
+                    
+                    </div>
                 </div>
             </div>
-        </nav>
+    </nav>

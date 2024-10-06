@@ -57,3 +57,14 @@ def edit_recipe(id):
         page_title = "Rezept - " + data.Titel,
         data=data
     )
+
+@bp.route('/new')
+def new_recipe():
+    data = Rezepte.query.filter_by(ID=37).one_or_404()
+
+    return render_template(
+        'edit_recipe.html',
+        page_title = "Rezept - " + data.Titel,
+        data=data
+    )
+
