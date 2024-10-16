@@ -1,7 +1,6 @@
 from typing import Any, List, Optional
 
 from sqlalchemy import CHAR, DECIMAL, INTEGER, TEXT, Date, Double, ForeignKeyConstraint, Index, String, DATETIME, Text, text
-#from sqlalchemy.dialects.mysql import BIT, DECIMAL, INTEGER, LONGTEXT, MEDIUMTEXT
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 import datetime
 
@@ -37,7 +36,7 @@ class User(db.Model, UserMixin):
     def check_password(self, password) -> bool:
         return check_password_hash(self.password,password)
     
-    def __init__(self,name,vorname, user, level = 1, active = 1, id = "NULL") -> None:
+    def __init__(self,name,vorname, user, level = 1, active = 1, id = None) -> None:
         self.name = name
         self.vorname = vorname
         self.user = user

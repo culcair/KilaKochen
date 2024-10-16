@@ -35,7 +35,7 @@ def view_recipe(id):
 
 
 @bp.route('/<int:id>/print')
-def print_recipe(id):    
+def print(id):    
     data = Rezepte.query.filter_by(ID=id).one_or_404()
    
     filename="{}_{}.pdf".format("KiLaKochen",data.ID)
@@ -49,7 +49,7 @@ def print_recipe(id):
     return html
 
 @bp.route('/<int:id>/edit')
-def edit_recipe(id):
+def edit(id):
     data = Rezepte.query.filter_by(ID=id).one_or_404()
 
     return render_template(
@@ -59,7 +59,7 @@ def edit_recipe(id):
     )
 
 @bp.route('/new')
-def new_recipe():
+def new():
     data = Rezepte.query.filter_by(ID=37).one_or_404()
 
     return render_template(

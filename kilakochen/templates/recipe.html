@@ -10,8 +10,11 @@
 <div class="row text-center"> 
     <div class="col"><h1>{{ rezept_name }}</h1> </div>
     <div class="col btn-group" role="group">
-        <a class="btn btn-primary" href="{{ url_for('recipe.overview') }}">Rezept Übersicht</a>
-        <a class="btn btn-primary" href="{{ url_for('recipe.print_recipe',id=data.ID) }}">Rezept drucken</a>
+        <a class="btn btn-primary" href="{{ url_for('recipe.overview') }}">Übersicht</a>
+        <a class="btn btn-primary" href="{{ url_for('recipe.print',id=data.ID) }}">Drucken</a>
+        {% if current_user.is_authenticated  -%}
+        <a class="btn btn-primary" href="{{ url_for('recipe.edit',id=data.ID) }}">Editieren</a>
+        {% endif %}
     </div>
 </div>
 
