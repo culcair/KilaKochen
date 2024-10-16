@@ -23,10 +23,10 @@
                               <li><a class="dropdown-item" href="{{ url_for('recipe.new')}}">Neues Rezept</a></li>
                             </ul>
                         </li>
+                        <a class="nav-link nav-item" href="{{ url_for('main.einkaufsliste')}}">Einkaufsliste</a>
                         {%- endif %}
 						<a class="nav-link nav-item" href="{{ url_for('main.ingredients')}}">Zutaten</a>
                         <a class="nav-link nav-item" href="{{ url_for('main.week_overview')}}">Wochenplan</a>
-                        <a class="nav-link nav-item" href="{{ url_for('main.einkaufsliste')}}">Einkaufsliste</a>
                      </div>
                         {% if current_user.is_anonymous -%}
                     <div class="ms-auto">

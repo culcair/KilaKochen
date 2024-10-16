@@ -1,11 +1,11 @@
 flask
-bootstrap-flask
-flask-sqlalchemy
+bootstrap - flask
+flask - sqlalchemy
 pymysql
-flask-babel
-Flask-Login
-Flask-Migrate
-python-dotenv
-flask-wtf
+flask - babel
+Flask - Login
+Flask - Migrate
+python - dotenv
+flask - wtf
 
-#flask_weasyprint
+# flask_weasyprint

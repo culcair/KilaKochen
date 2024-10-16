@@ -14,12 +14,12 @@ def login():
     if form.validate_on_submit():
         user = User.query.filter_by(user=form.username.data).first()
         if user is None or not user.check_password(form.password.data):
-            flash("Falscher Benutzername oder falsches Passwort")
+            flash("Falscher Benutzername oder falsches Passwort",category="danger")
             return redirect(url_for('auth.login'))
             
-        login_user(user, remember=form.remember_me.data)
+        login_user(user)
         print(current_user)
-        flash('Logged in successfully.')
+        flash('Login erfolgreich.',category="success")
 
         return redirect(url_for('main.index'))
     return render_template('login.html', form=form)
@@ -27,4 +27,5 @@ def login():
 @bp.route('/logout')
 def logout():
     logout_user()
+    flash('Logout erfolgreich.',category="success")
     return redirect(url_for('main.index'))
