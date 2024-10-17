@@ -6,7 +6,7 @@
 
    <div class="container">
         <h1>Neues Rezept erstellen</h1>
-        <form method="POST" action="{{ url_for('recipe.new') }}">
+        <form method="POST" action="{{ url_for('recipe.new_recipe') }}">
             {{ form.hidden_tag() }}
 
             <!-- Titel des Rezepts -->
@@ -65,20 +65,20 @@
             <h3>Zutaten</h3>
             <div id="zutaten-list">
                 {% for subform in form.zutaten %}
-                    <div class="zutaten-eintrag">
-                        <div class="form-group">
-                            <label>Zutat</label>
-                            {{ subform.zutat(class="form-control") }}
+                        <div class="zutaten-eintrag row">
+                            <div class="form-group col-md-4">
+                                <label>Zutat</label>
+                                {{ subform.zutat(class="form-control") }}
+                            </div>
+                            <div class="form-group col-md-4">
+                                <label>Menge</label>
+                                {{ subform.menge(class="form-control", placeholder="Menge") }}
+                            </div>
+                            <div class="form-group col-md-4">
+                                <label>Einheit</label>
+                                {{ subform.einheit(class="form-control") }}
+                            </div>
                         </div>
-                        <div class="form-group">
-                            <label>Menge</label>
-                            {{ subform.menge(class="form-control", placeholder="Menge") }}
-                        </div>
-                        <div class="form-group">
-                            <label>Einheit</label>
-                            {{ subform.einheit(class="form-control") }}
-                        </div>
-                    </div>
                 {% endfor %}
             </div>
 

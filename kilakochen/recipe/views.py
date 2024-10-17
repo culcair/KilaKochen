@@ -103,13 +103,13 @@ def print(id):
 
 
 @bp.route("/new", methods=['GET', 'POST'])
-
-def new():
+def new_recipe():
     form = RezeptForm()
     if form.validate_on_submit():
         # Verarbeite das Formular, um das Rezept und die Zutaten zu speichern
         zutaten_liste = []
         for zutat_form in form.zutaten.entries:
+            print(zutat_form)
             zutaten_liste.append(
                 {
                     "zutat_id": zutat_form.zutat.data.ID,
@@ -126,7 +126,7 @@ def new():
             kategorie_id=form.kategorie.data.ID if form.kategorie.data else None,
             zutaten=zutaten_liste,
         )
-
+        print(result)
         flash(result)
         return redirect(url_for("recipe_overview"))
 
