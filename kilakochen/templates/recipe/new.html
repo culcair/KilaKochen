@@ -6,59 +6,32 @@
 
    <div class="container">
         <h1>Neues Rezept erstellen</h1>
-        <form method="POST" action="{{ url_for('recipe.new_recipe') }}">
-            {{ form.hidden_tag() }}
+        <form method="POST" action="{{ url_for('recipe.new') }}">
+            {{ form.csrf_token }}
+
 
             <!-- Titel des Rezepts -->
             <div class="form-group">
                 <label for="titel">Titel</label>
                 {{ form.titel(class="form-control", placeholder="Titel des Rezepts") }}
-                {% if form.titel.errors %}
-                    <div class="text-danger">
-                        {% for error in form.titel.errors %}
-                            <p>{{ error }}</p>
-                        {% endfor %}
-                    </div>
-                {% endif %}
-            </div>
+                </div>
 
             <!-- Zubereitung -->
             <div class="form-group">
                 <label for="zubereitung">Zubereitung</label>
                 {{ form.zubereitung(class="form-control", placeholder="Beschreiben Sie die Zubereitung des Rezepts") }}
-                {% if form.zubereitung.errors %}
-                    <div class="text-danger">
-                        {% for error in form.zubereitung.errors %}
-                            <p>{{ error }}</p>
-                        {% endfor %}
-                    </div>
-                {% endif %}
             </div>
 
             <!-- Autor -->
             <div class="form-group">
                 <label for="author">Autor</label>
                 {{ form.author(class="form-control", placeholder="Autor des Rezepts") }}
-                {% if form.author.errors %}
-                    <div class="text-danger">
-                        {% for error in form.author.errors %}
-                            <p>{{ error }}</p>
-                        {% endfor %}
-                    </div>
-                {% endif %}
             </div>
 
             <!-- Kategorie -->
             <div class="form-group">
                 <label for="kategorie">Kategorie</label>
                 {{ form.kategorie(class="form-control") }}
-                {% if form.kategorie.errors %}
-                    <div class="text-danger">
-                        {% for error in form.kategorie.errors %}
-                            <p>{{ error }}</p>
-                        {% endfor %}
-                    </div>
-                {% endif %}
             </div>
 
             <!-- Zutaten -->

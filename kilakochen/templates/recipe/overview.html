@@ -9,7 +9,7 @@
         <table class="table table-responsive">
             {% for recipe in data -%}
                 <tr>
-                    <td><a class="btn btn-primary" href="{{ url_for('recipe.view_recipe', id=recipe.ID) }}">zum Rezept</a></td>
+                    <td><a class="btn btn-primary" href="{{ url_for('recipe.view', id=recipe.ID) }}">zum Rezept</a></td>
                     <td>{{ recipe.Titel }}</td>
                 </tr>
             {% endfor %}

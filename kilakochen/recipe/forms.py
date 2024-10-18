@@ -2,13 +2,21 @@ from flask_wtf import FlaskForm
 from wtforms import (
     BooleanField,
     DateField,
+    Form,
     FormField,
-    RadioField,
     SelectField,
     StringField,
     SubmitField,
     TextAreaField,
+    FieldList,
+    DecimalField,
 )
+
+from wtforms.validators import DataRequired, Optional
+from wtforms_sqlalchemy.fields import QuerySelectField
+from wtforms import ValidationError
+from decimal import Decimal
+from kilakochen.models import Rezeptkategorien, Zutaten, Einheiten
 
 
 class EditHeuteForm(FlaskForm):
@@ -20,23 +28,6 @@ class EditHeuteForm(FlaskForm):
     ausfall = BooleanField("An diesem Tag keine Essen")
     anmerkung = TextAreaField("Anmerkung")
     submit = SubmitField("Speichern")
-
-
-from flask_wtf import FlaskForm
-from wtforms import (
-    StringField,
-    TextAreaField,
-    SelectField,
-    FieldList,
-    FormField,
-    DecimalField,
-    SubmitField,
-)
-from wtforms.validators import DataRequired, Optional
-from wtforms_sqlalchemy.fields import QuerySelectField
-from wtforms import ValidationError
-from decimal import Decimal
-from kilakochen.models import Rezeptkategorien, Zutaten, Einheiten
 
 
 # Hilfsfunktionen, um Kategorien, Zutaten und Einheiten für SelectFields bereitzustellen
@@ -53,7 +44,7 @@ def get_einheiten():
 
 
 # Formular für einzelne Zutateneinträge
-class ZutatenForm(FlaskForm):
+class ZutatenForm(Form):
     zutat = QuerySelectField(
         "Zutat",
         query_factory=get_zutaten,
