@@ -1,0 +1,30 @@
+{# Render ingredients form.
+
+    This macro is intended to render both regular ingredients subforms (received from the
+    server) and the template form used to dynamically add more forms.
+    
+    Arguments:
+        - subform: Form object to render
+        - index: Index of the form. For proper subforms rendered in the form loop,
+                 this should match `loop.index0`, and for the template it should be
+                 '_'
+    #}
+    {%- macro render_ingredient_form(subform, index) %}
+            <div id="ingredient-{{ index }}-form" class="row {% if index != '_' %}subform{% else %}d-none{% endif %} row"  data-index="{{ index }}">
+                <hr/>
+                <div class="form-group col-md-3">
+                    <label>Zutat</label>
+                    {{ subform.zutat(class="form-control") }}
+                </div>
+                <div class="form-group col-md-3">
+                    <label>Menge</label>
+                    {{ subform.menge(class="form-control", placeholder="Menge") }}
+                </div>
+                <div class="form-group col-md-3">
+                    <label>Einheit</label>
+                    {{ subform.einheit(class="form-control") }}
+                </div>
+                <a class="remove col-md-3" href="#">Remove</a>
+                <hr/>
+            </div>
+    {%- endmacro %}

@@ -7,6 +7,7 @@ from flask_migrate import Migrate
 from flask_login import LoginManager
 from flask_babel import Babel, lazy_gettext as _l
 from flask_bootstrap import Bootstrap5
+from sqlalchemy import MetaData
 from config import Config
 
 
@@ -14,13 +15,24 @@ def get_locale():
     return request.accept_languages.best_match(current_app.config['LANGUAGES'])
 
 
-db = SQLAlchemy()
 migrate = Migrate()
 login = LoginManager()
 login.login_view = 'auth.login'
 login.login_message = _l('Please log in to access this page.')
 babel = Babel()
 bootstrap = Bootstrap5()
+
+metadata = MetaData(
+    naming_convention={
+    "ix": 'ix_%(column_0_label)s',
+    "uq": "uq_%(table_name)s_%(column_0_name)s",
+    "ck": "ck_%(table_name)s_%(constraint_name)s",
+    "fk": "fk_%(table_name)s_%(column_0_name)s_%(referred_table_name)s",
+    "pk": "pk_%(table_name)s"
+    }
+)
+
+db=SQLAlchemy(metadata=metadata)
 
 def create_app(config_class=Config):
     app = Flask(__name__)

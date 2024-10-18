@@ -22,8 +22,8 @@
         <td>{{ zutat.Bezeichnung }}</td>
         <td>{{ zutat.zutatengruppen.Bezeichnung }}</td>
         <td>
-        {% for allergen in zutat.zutaten_allergene %}
-            <a data-bs-toggle="tooltip" data-bs-placement="top" title="{{ allergen.allergene.Bezeichnung}}">{{ allergen.allergene.Kuerzel}}</a>
+        {% for allergen in zutat.allergene %}
+            <a data-bs-toggle="tooltip" data-bs-placement="top" title="{{ allergen.Bezeichnung}}">{{ allergen.Kuerzel}}</a>
         {% endfor %}
         </td>    
     </tr>

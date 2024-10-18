@@ -1,6 +1,7 @@
 {% extends 'base.html' %}
 {% from 'bootstrap5/form.html' import render_form %}
 
+{% import "macros.html" as macros %}
 {% block content %}
 <div class="container">
 
@@ -36,42 +37,29 @@
 
             <!-- Zutaten -->
             <h3>Zutaten</h3>
-            <div id="zutaten-list">
+            <div id="zutaten-list" class="subforms-container">
                 {% for subform in form.zutaten %}
-                        <div class="zutaten-eintrag row">
-                            <div class="form-group col-md-4">
-                                <label>Zutat</label>
-                                {{ subform.zutat(class="form-control") }}
-                            </div>
-                            <div class="form-group col-md-4">
-                                <label>Menge</label>
-                                {{ subform.menge(class="form-control", placeholder="Menge") }}
-                            </div>
-                            <div class="form-group col-md-4">
-                                <label>Einheit</label>
-                                {{ subform.einheit(class="form-control") }}
-                            </div>
-                        </div>
+                    {{ macros.render_ingredient_form(subform, loop.index0) }}
                 {% endfor %}
             </div>
 
-            <button type="button" id="add-zutat-btn" class="btn btn-secondary">Zutat hinzufügen</button>
+            <button type="button" id="add-zutat-btn" class="btn btn-secondary add " href="#">Zutat hinzufügen</button>
 
             <!-- Submit Button -->
             <div class="form-group mt-3">
                 {{ form.submit(class="btn btn-primary") }}
             </div>
         </form>
-    </div>
 
-    <script>
-        // Script to dynamically add ingredients
-        document.getElementById('add-zutat-btn').addEventListener('click', function() {
-            let newZutat = document.querySelector('.zutaten-eintrag').cloneNode(true);
-            document.getElementById('zutaten-list').appendChild(newZutat);
-        });
-    </script>
+    </div>
+    {% if form.errors %}
+    {{ form.errors }}
+    {% endif %}
+
+    {# Form template #}
+    {{ macros.render_ingredient_form(_template, '_') }}
     
 </div>
-
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<script src="{{ url_for('static', filename='custom.js') }}"></script>
 {% endblock %}

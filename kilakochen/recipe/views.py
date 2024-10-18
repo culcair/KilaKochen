@@ -8,7 +8,7 @@ from flask import flash, redirect, render_template, request, url_for
 from kilakochen.models import Rezepte, RezepteZutaten, Rezeptkategorien
 
 from kilakochen import db
-from kilakochen.recipe.forms import RezeptForm
+from kilakochen.recipe.forms import RezeptForm, ZutatenForm
 
 
 def create_new_recipe(
@@ -74,8 +74,8 @@ def view(id):
     data = Rezepte.query.filter_by(ID=id).one_or_404()
     allergene = set()
     for zutat in data.rezepte_zutaten:
-        for allergen in zutat.zutaten.zutaten_allergene:
-            allergene.add(allergen.allergene.Bezeichnung)
+        for allergen in zutat.zutaten.allergene:
+            allergene.add(allergen.Bezeichnung)
 
     return render_template(
         "recipe/view.html",
@@ -104,6 +104,7 @@ def recipe_print(id):
 @bp.route("/new", methods=["GET", "POST"])
 def new():
     form = RezeptForm()
+    template_form = ZutatenForm(prefix='ingredient-_-')
     if form.validate_on_submit():
         # Verarbeite das Formular, um das Rezept und die Zutaten zu speichern
         zutaten_liste = []
@@ -129,7 +130,7 @@ def new():
         flash(result,category="info")
         return redirect(url_for("recipe.overview"))
 
-    return render_template("recipe/new.html", form=form)
+    return render_template("recipe/new.html", form=form,_template=template_form)
 
 
 @bp.route("/<int:id>/edit")
