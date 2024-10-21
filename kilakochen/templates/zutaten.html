@@ -3,36 +3,37 @@
 {% from 'bootstrap5/table.html' import render_table %}
 
 {% block content %}
-<div class="container">
-    <div class="row">
-        <div class="text-center">
-        Anzahl aller Zutaten in der Datenbank: {{ data|count}}
-    </div>
-    </div>
-    <table class="table table-striped table-hover">
-        <thead class="table-dark">
+    <div class="container">
+        <div class="row">
+            <div class="text-center">
+                Anzahl aller Zutaten in der Datenbank: {{ data|count }}
+            </div>
+        </div>
+        <table class="table table-striped table-hover">
+            <thead class="table-dark">
             <tr>
                 <th scope="col">Name</th>
                 <th scope="col">Zutaten Gruppe</th>
                 <th scope="col">Allergene</th>
             </tr>
-        </thead>
-    {% for zutat in data %}
-    <tr>
-        <td>{{ zutat.Bezeichnung }}</td>
-        <td>{{ zutat.zutatengruppen.Bezeichnung }}</td>
-        <td>
-        {% for allergen in zutat.allergene %}
-            <a data-bs-toggle="tooltip" data-bs-placement="top" title="{{ allergen.Bezeichnung}}">{{ allergen.Kuerzel}}</a>
-        {% endfor %}
-        </td>    
-    </tr>
-    {% endfor %}
-    </table>
-    <div>
-        {% for allergen in allergene %}
-            {{ allergen.Kuerzel}}={{ allergen.Bezeichnung }},
-        {% endfor %}
+            </thead>
+            {% for zutat in data %}
+                <tr>
+                    <td>{{ zutat.Bezeichnung }}</td>
+                    <td>{{ zutat.zutatengruppen.Bezeichnung }}</td>
+                    <td>
+                        {% for allergen in zutat.allergene %}
+                            <a data-bs-toggle="tooltip" data-bs-placement="top"
+                               title="{{ allergen.Bezeichnung }}">{{ allergen.Kuerzel }}</a>
+                        {% endfor %}
+                    </td>
+                </tr>
+            {% endfor %}
+        </table>
+        <div>
+            {% for allergen in allergene %}
+                {{ allergen.Kuerzel }}={{ allergen.Bezeichnung }},
+            {% endfor %}
+        </div>
     </div>
-</div>
 {% endblock %}

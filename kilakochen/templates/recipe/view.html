@@ -1,52 +1,57 @@
 {% extends 'base.html' %}
 {% from 'bootstrap5/table.html' import render_table %}
 {%- block head -%}
-{{ super() }}
-        <meta property="description" content="Rezepte | {{ rezept_name }}" />
+    {{ super() }}
+    <meta property="description" content="Rezepte | {{ rezept_name }}"/>
 {%- endblock -%}
 
 {% block content %}
-<div class="container">
-<div class="row text-center"> 
-    <div class="col"><h1>{{ rezept_name }}</h1> </div>
-    <div class="col btn-group" role="group">
-        <a class="btn btn-primary" href="{{ url_for('recipe.overview') }}">Übersicht</a>
-        <a class="btn btn-primary" href="{{ url_for('recipe.recipe_print',id=data.ID) }}">Drucken</a>
-        {% if current_user.is_authenticated  -%}
-        <a class="btn btn-primary" href="{{ url_for('recipe.edit',id=data.ID) }}">Editieren</a>
-        {% endif %}
+    <div class="container">
+        <div class="row text-center">
+            <div class="col"><h1>{{ rezept_name }}</h1></div>
+            <div class="col btn-group" role="group">
+                <a class="btn btn-primary" href="{{ url_for('recipe.overview') }}">Übersicht</a>
+                <a class="btn btn-primary" href="{{ url_for('recipe.recipe_print',recipe_id=data.ID) }}">Drucken</a>
+                {% if current_user.is_authenticated -%}
+                    <a class="btn btn-primary" href="{{ url_for('recipe.edit',recipe_id=data.ID) }}">Editieren</a>
+                {% endif %}
+            </div>
+        </div>
+
+        <table class="table table-sm table-striped table-hover caption-top">
+            <caption>Zutaten</caption>
+            <thead class="table-dark">
+            <tr>
+                <th>Menge</th>
+                <th>Zutat</th>
+            </tr>
+            </thead>
+            {% for zutat in data.rezepte_zutaten -%}
+                <tr>
+                    <td>{{ "%.2f"|format(zutat.Menge) }} {{ zutat.einheiten.Kuerzel }}</td>
+                    <td>{{ zutat.zutaten.Bezeichnung }}</td>
+                </tr>
+            {% endfor %}
+        </table>
+
+        <table class="table table-responsive table-striped table-hover caption-top">
+            <caption>Allergene</caption>
+            <tr>
+                <td>
+                    {{ allergene }}
+
+                </td>
+            </tr>
+        </table>
+
+        <table class="table table-responsive table-striped table-hover caption-top">
+            <caption>Zubereitung</caption>
+            <tr>
+                <td>
+                    {{ data.Zubereitung | nl2br }}
+                </td>
+            </tr>
+        </table>
     </div>
-</div>
-
-<table class="table table-sm table-striped table-hover caption-top">
-    <caption>Zutaten</caption>
-        <thead  class="table-dark"> <tr scope="row"><th>Menge</th><th>Zutat</th></tr></thead>
-        {% for zutat in data.rezepte_zutaten -%}
-        <tr> 
-            <td>{{ "%.2f"|format(zutat.Menge)  }} {{ zutat.einheiten.Kuerzel }}</td>
-            <td>{{ zutat.zutaten.Bezeichnung }}</td>
-        </tr>
-        {% endfor %}
-</table>
-
-<table class="table table-responsive table-striped table-hover caption-top">
-    <caption>Allergene</caption>
-    <tr>
-    <td>
-        {{ allergene }}
-
-    </td>
-</tr>
-</table>
-
-<table class="table table-responsive table-striped table-hover caption-top">
-    <caption>Zubereitung</caption>
-    <tr>
-    <td>
-       {{ data.Zubereitung | nl2br }}
-    </td>
-</tr>
-</table>
-</div>
 
 {% endblock %}

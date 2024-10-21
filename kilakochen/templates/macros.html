@@ -9,22 +9,27 @@
                  this should match `loop.index0`, and for the template it should be
                  '_'
     #}
-    {%- macro render_ingredient_form(subform, index) %}
-            <div id="ingredient-{{ index }}-form" class="row {% if index != '_' %}subform{% else %}d-none{% endif %} row"  data-index="{{ index }}">
-                <hr/>
-                <div class="form-group col-md-3">
-                    <label>Zutat</label>
-                    {{ subform.zutat(class="form-control") }}
-                </div>
-                <div class="form-group col-md-3">
-                    <label>Menge</label>
-                    {{ subform.menge(class="form-control", placeholder="Menge") }}
-                </div>
-                <div class="form-group col-md-3">
-                    <label>Einheit</label>
-                    {{ subform.einheit(class="form-control") }}
-                </div>
-                <a class="remove col-md-3" href="#">Remove</a>
-                <hr/>
-            </div>
-    {%- endmacro %}
+{%- macro render_ingredient_form(subform, index) %}
+    <div id="zutaten-{{ index }}-form" class="row {% if index != '_' %}subform{% else %}d-none{% endif %} row"
+         data-index="{{ index }}">
+        <hr/>
+        <div class="form-group col-md-3">
+            <label>Zutat</label>
+            {{ subform.zutat(class="form-control") }}
+        </div>
+        <div class="form-group col-md-3">
+            <label>Menge</label>
+            {{ subform.menge(class="form-control", placeholder="Menge") }}
+        </div>
+        <div class="form-group col-md-3">
+            <label>Einheit</label>
+            {{ subform.einheit(class="form-control") }}
+        </div>
+        <div class="col-md-3">
+            <button type="button" id="remove-ingredient-{{ index }}-btn" class="btn btn-warning remove" href="#">Zutat
+                entfernen
+            </button>
+        </div>
+        <hr/>
+    </div>
+{%- endmacro %}

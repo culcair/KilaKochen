@@ -3,30 +3,30 @@
 {% from 'bootstrap5/table.html' import render_table %}
 
 {% block content %}
-<div class="container">
-    <div class="row">
-        <div class="text-center">Anzahl aller Benutzer in der Datenbank: {{ data|count}}</div>
-    </div>
-    <table class="table table-striped table-hover">
-        <thead class="table-dark">
+    <div class="container">
+        <div class="row">
+            <div class="text-center">Anzahl aller Benutzer in der Datenbank: {{ data|count }}</div>
+        </div>
+        <table class="table table-striped table-hover">
+            <thead class="table-dark">
             <tr>
                 <th scope="col">ID</th>
                 <th scope="col">Benutzername</th>
                 <th scope="col">Vorname</th>
                 <th scope="col">Nachname</th>
-                <th scope="col">Status</th>                
+                <th scope="col">Status</th>
             </tr>
-        </thead>
-    {% for user in data %}
-    <tr>
-        <td>{{ user.id }}</td>
-        <td>{{ user.user }}</td>
-        <td>{{ user.vorname }}</td>
-        <td>{{ user.name }}</td>        
-        <td>{{ user.active }}</td>        
-    </tr>
-    {% endfor %}
-    </table>
+            </thead>
+            {% for user in data %}
+                <tr>
+                    <td>{{ user.id }}</td>
+                    <td>{{ user.user }}</td>
+                    <td>{{ user.vorname }}</td>
+                    <td>{{ user.name }}</td>
+                    <td>{{ user.active }}</td>
+                </tr>
+            {% endfor %}
+        </table>
 
-</div>
+    </div>
 {% endblock %}

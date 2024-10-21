@@ -1,7 +1,8 @@
 from flask_login import current_user, login_required
+from flask_wtf import FlaskForm
 from sqlalchemy import select
 from kilakochen.main import bp    
-from flask import abort, redirect, render_template, url_for
+from flask import redirect, render_template, url_for
 from flask_weasyprint import HTML, render_pdf
 from datetime import datetime,timedelta
 from kilakochen.models import Allergene, Essensplan, Rezepte, Zutaten
@@ -23,14 +24,14 @@ def get_rezepte(kategorie):
 @bp.route('/day/<string:raw_date>/edit', methods=['GET', 'POST'])
 @bp.route('/today/edit', methods=['GET', 'POST'],defaults= {"raw_date" : datetime.today().date()})
 @login_required
-def day_edit(raw_date):
+def day_edit(raw_date :str) :
     if type(raw_date) == str:
         given_date = datetime.fromisoformat(raw_date).date()
     else:
         given_date = raw_date
             
-    plan = Essensplan.query.filter_by(Datum=given_date).one_or_none()
-    form = EditHeuteForm()
+    plan : Essensplan = Essensplan.query.filter_by(Datum=given_date).one_or_none()
+    form : EditHeuteForm = EditHeuteForm()
     
     if plan is not None:
         form.datum.data = plan.Datum
@@ -78,11 +79,11 @@ def day_edit(raw_date):
 
 @bp.route('/day/<string:raw_date>')
 @bp.route('/today')
-def day(raw_date = datetime.today().date()):
-    if type(raw_date) == str:
-        given_date = datetime.fromisoformat(raw_date).date()
+def day(raw_date = None):
+    if raw_date is None:
+        given_date = datetime.today().date()
     else:
-        given_date = raw_date
+        given_date = datetime.fromisoformat(raw_date).date()
  
     data = Essensplan.query.filter_by(Datum=given_date).one_or_none()
 
@@ -141,18 +142,19 @@ def week_overview():
 
 @bp.route('/week/<string:raw_date>/print')
 @bp.route('/week/print')
-def print_week(raw_date = datetime.today().date()):
-    if type(raw_date) == str:
-        given_date = datetime.fromisoformat(raw_date).date()
+def print_week(raw_date = None):
+    if raw_date is None:
+        given_date = datetime.today().date()
     else:
-        given_date = raw_date
-    week = get_week(given_date)
+        given_date = datetime.fromisoformat(raw_date).date()
+
+    given_week = get_week(given_date)
     kw = given_date.isocalendar().week
     plaene = []
-    for day in week:
-        res = db.session.scalars(select(Essensplan).filter_by(Datum=day)).one_or_none()
+    for given_day in given_week:
+        res = db.session.scalars(select(Essensplan).filter_by(Datum=given_day)).one_or_none()
         if res is None:
-            plaene.append(Essensplan(Datum=day))
+            plaene.append(Essensplan(Datum=given_day))
         else:
             plaene.append(res)
 
@@ -169,21 +171,21 @@ def print_week(raw_date = datetime.today().date()):
 
 @bp.route('/week/<string:raw_date>')
 @bp.route('/week')
-def week(raw_date = datetime.today().date()):
-    if type(raw_date) == str:
-        given_date = datetime.fromisoformat(raw_date).date()
+def week(raw_date = None):
+    if raw_date is None:
+        given_date = datetime.today().date()
     else:
-        given_date = raw_date
-    week = get_week(given_date)
+        given_date = datetime.fromisoformat(raw_date).date()
+    given_week = get_week(given_date)
     kw = given_date.isocalendar().week
-    previous = week[0] + timedelta(weeks=-1)
-    next = week[0] + timedelta(weeks=1)
+    previous_week = given_week[0] + timedelta(weeks=-1)
+    next_week = given_week[0] + timedelta(weeks=1)
 
     plaene = []
-    for day in week:
-        res = db.session.scalars(select(Essensplan).filter_by(Datum=day)).one_or_none()
+    for given_day in given_week:
+        res = db.session.scalars(select(Essensplan).filter_by(Datum=given_day)).one_or_none()
         if res is None:
-            plaene.append(Essensplan(Datum=day))
+            plaene.append(Essensplan(Datum=given_day))
         else:
             plaene.append(res)
 
@@ -192,8 +194,8 @@ def week(raw_date = datetime.today().date()):
         page_title = "Wochenplan",
         plaene = plaene,
         kw = kw,
-        previous = previous,
-        next = next
+        previous = previous_week,
+        next = next_week
     )
 
 def get_week(given_date,given_offset=0):
@@ -219,9 +221,8 @@ def edit_week(raw_date):
 
     plaene = []
     for week_date in dates:
-        tmp = None
         res = Essensplan.query.filter_by(Datum=week_date).one_or_none()
-        if  res is None:
+        if res is None:
             tmp = Essensplan(Datum=week_date)
         else:
             tmp = res
@@ -230,7 +231,7 @@ def edit_week(raw_date):
     rezepte = Rezepte.query.all() 
 
     return render_template(
-        'edit_wochenplan.html',
+        'edit_week.html',
         page_title = "Wochenplan",
         data=dates,
         plaene=plaene,

@@ -1,12 +1,21 @@
-flask
+flask~=3.0.3
 bootstrap-flask
 flask-sqlalchemy
 pymysql
 flask-babel
-Flask-Login
-Flask-Migrate
-python-dotenv
+Flask-Login~=0.6.3
+Flask-Migrate~=4.0.7
+python-dotenv~=1.0.1
 flask-wtf
 wtforms_sqlalchemy
 
-flask_weasyprint
+flask_weasyprint~=1.1.0
+
+WTForms~=3.1.2
+SQLAlchemy~=2.0.31
+Babel~=2.15.0
+Jinja2~=3.1.4
+MarkupSafe~=2.1.5
+click~=8.1.7
+Werkzeug~=3.0.3
+alembic~=1.13.2

@@ -1,9 +1,65 @@
 {% extends 'base.html' %}
 {% from 'bootstrap5/form.html' import render_form %}
 
+{% import "macros.html" as macros %}
 {% block content %}
-<div class="container">
-    
-</div>
+    <div class="container">
 
+        <div class="container">
+            <h1>Rezept bearbeiten</h1>
+            <form method="POST" action="{{ url_for('recipe.new') }}">
+                {{ form.csrf_token }}
+
+                <!-- Titel des Rezepts -->
+                <div class="form-group">
+                    <label for="titel">Titel</label>
+                    {{ form.titel(class="form-control", placeholder="Titel des Rezepts") }}
+                </div>
+
+                <!-- Zubereitung -->
+                <div class="form-group">
+                    <label for="zubereitung">Zubereitung</label>
+                    {{ form.zubereitung(class="form-control", placeholder="Beschreiben Sie die Zubereitung des Rezepts") }}
+                </div>
+
+                <!-- Autor -->
+                <div class="form-group">
+                    <label for="author">Autor</label>
+                    {{ form.author(class="form-control", placeholder="Autor des Rezepts") }}
+                </div>
+
+                <!-- Kategorie -->
+                <div class="form-group">
+                    <label for="kategorie">Kategorie</label>
+                    {{ form.kategorie(class="form-control") }}
+                </div>
+
+                <!-- Zutaten -->
+                <h3>Zutaten</h3>
+                <div id="ingredients-list" class="subforms-container">
+                    {% for subform in form.zutaten %}
+                        {{ macros.render_ingredient_form(subform, loop.index0) }}
+                    {% endfor %}
+                </div>
+
+                <button type="button" id="add-zutat-btn" class="btn btn-secondary add" href="#">Zutat hinzufügen
+                </button>
+
+                <!-- Submit Button -->
+                <div class="form-group mt-3">
+                    {{ form.submit(class="btn btn-primary", value="Rezept speichern") }}
+                </div>
+            </form>
+
+        </div>
+        {% if form.errors %}
+            {{ form.errors }}
+        {% endif %}
+
+        {# Form template #}
+        {{ macros.render_ingredient_form(_template, '_') }}
+
+    </div>
+
+    <script src="{{ url_for('static', filename='custom.js') }}"></script>
 {% endblock %}

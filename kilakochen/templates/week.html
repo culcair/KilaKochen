@@ -1,88 +1,96 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<div class="container">
-    <nav aria-label="Wochennavigation">
-        <ul class="pagination">
-          <li class="page-item">
-            <a class="page-link" href="{{ url_for('main.week',raw_date=previous) }}" aria-label="zurück">
-              <span aria-hidden="true">&laquo;</span>
-              <span class="sr-only">Zurück</span>
-            </a>
-          </li>
-          <li class="page-item">
-            <a class="page-link" href="{{ url_for('main.week_overview') }}" aria-label="Wochenübersicht">Wochenübersicht</a>
-          </li>
-          <li class="page-item">
-            <a class="page-link" href="{{ url_for('main.week',raw_date=next) }}" aria-label="weiter">
-              <span class="sr-only">Weiter</span>
-              <span aria-hidden="true">&raquo;</span>
-            </a>
-          </li>
-        </ul>
-    </nav>
-    <div class="row">
-        <div class="col-sm-2"><a href="{{ url_for('main.print_week',raw_date=plaene[0].Datum) }}"><img src="{{ url_for('static', filename='print.svg') }}"></a></div>
-        <div class="text-center col-sm-10">
-            <h1>Wochenplan</h1>für die Kalenderwoche <b>{{ kw }}</b> vom {{ plaene[0].Datum | format_date(format="medium") }} bis zum {{ plaene[-1].Datum | format_date(format="medium") }}
+    <div class="container">
+        <nav aria-label="Wochennavigation">
+            <ul class="pagination">
+                <li class="page-item">
+                    <a class="page-link" href="{{ url_for('main.week',raw_date=previous) }}" aria-label="zurück">
+                        <span aria-hidden="true">&laquo;</span>
+                        <span class="sr-only">Zurück</span>
+                    </a>
+                </li>
+                <li class="page-item">
+                    <a class="page-link" href="{{ url_for('main.week_overview') }}" aria-label="Wochenübersicht">Wochenübersicht</a>
+                </li>
+                <li class="page-item">
+                    <a class="page-link" href="{{ url_for('main.week',raw_date=next) }}" aria-label="weiter">
+                        <span class="sr-only">Weiter</span>
+                        <span aria-hidden="true">&raquo;</span>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+        <div class="row">
+            <div class="col-sm-2"><a href="{{ url_for('main.print_week',raw_date=plaene[0].Datum) }}"><img
+                    alt="Druckersymbol" src="{{ url_for('static', filename='print.svg') }}"></a></div>
+            <div class="text-center col-sm-10">
+                <h1>Wochenplan</h1>für die Kalenderwoche <b>{{ kw }}</b>
+                vom {{ plaene[0].Datum | format_date(kl_format="medium") }} bis
+                zum {{ plaene[-1].Datum | format_date(kl_format="medium") }}
+            </div>
+
         </div>
+        <div class="table-responsive">
+            <table class="table table-striped table-hover">
+                <thead class="table-dark">
+                <tr>
+                    <th></th>
+                    {% for entry in plaene %}
+                        {% if current_user.is_authenticated %}
+                            <th scope="col"><a
+                                    href="{{ url_for('main.day_edit',raw_date=entry.Datum) }}">{{ entry.Datum | return_day }}</a>
+                            </th>
+                        {% else %}
+                            <th scope="col">{{ entry.Datum | return_day }}</th>
+                        {% endif %}
+                    {% endfor %}
+                </tr>
 
+                </thead>
+
+                <tr>
+                    <td>Hauptgericht</td>
+                    {% for plan in plaene %}
+                        <td>
+                            {% if plan.Hauptgericht != None %}
+                                <a class="btn btn-primary"
+                                   href="{{ url_for('recipe.view_recipe',id=plan.Hauptgericht.ID) }}">{{ plan.Hauptgericht.Titel }}</a>
+                            {% else %}
+                                -
+                            {% endif %}
+                        </td>
+                    {% endfor %}
+                </tr>
+                <tr>
+                    <td>Beilage</td>
+                    {% for plan in plaene %}
+                        <td>
+                            {% if plan.Beilage != None %}
+                                <a class="btn btn-primary"
+                                   href="{{ url_for('recipe.view_recipe',id=plan.Beilage.ID) }}">{{ plan.Beilage.Titel }}</a>
+                            {% else %}
+                                -
+                            {% endif %}
+                        </td>
+                    {% endfor %}
+
+                </tr>
+                <tr>
+                    <td>Dessert</td>
+                    {% for plan in plaene %}
+                        <td>
+                            {% if plan.Dessert != None %}
+                                <a class="btn btn-primary"
+                                   href="{{ url_for('recipe.view_recipe',id=plan.Dessert.ID) }}">{{ plan.Dessert.Titel }}</a>
+                            {% else %}
+                                -
+                            {% endif %}
+                        </td>
+                    {% endfor %}
+
+                </tr>
+            </table>
+        </div>
     </div>
-    <div class="table-responsive">
-    <table class="table table-striped table-hover">
-        <thead class="table-dark">
-            <tr>
-                <th></th>
-                {% for entry in plaene %}
-                    {% if current_user.is_authenticated %}
-                        <th scope="col"><a href="{{ url_for('main.day_edit',raw_date=entry.Datum) }}">{{ entry.Datum | return_day }}</a></th>
-                    {% else %}
-                        <th scope="col">{{ entry.Datum | return_day }}</th>
-                    {% endif %}
-                {% endfor %}
-            </tr>
-
-        </thead>
-        
-        <tr>
-            <td>Hauptgericht</td>
-            {% for plan in plaene %}
-            <td>
-                {% if plan.Hauptgericht != None %}
-                <a  class="btn btn-primary" href="{{url_for('recipe.view_recipe',id=plan.Hauptgericht.ID)}}">{{ plan.Hauptgericht.Titel}}</a>
-                {% else %}
-                -
-                {% endif %}
-            </td>
-            {% endfor %}
-        </tr>
-        <tr>
-            <td scope="row">Beilage</td>
-            {% for plan in plaene %}
-            <td>
-                {% if plan.Beilage != None %}
-                <a  class="btn btn-primary" href="{{url_for('recipe.view_recipe',id=plan.Beilage.ID)}}">{{ plan.Beilage.Titel}}</a>
-                {% else %}
-                -
-                {% endif %}
-            </td>
-            {% endfor %}
-            
-        </tr>
-        <tr>
-            <td>Dessert</td>
-            {% for plan in plaene %}
-            <td>
-                {% if plan.Dessert != None %}
-                <a  class="btn btn-primary" href="{{url_for('recipe.view_recipe',id=plan.Dessert.ID)}}">{{ plan.Dessert.Titel}}</a>
-                {% else %}
-                -
-                {% endif %}
-            </td>
-            {% endfor %}
-            
-        </tr>
-    </table>
-</div>
-</div>
 {% endblock %}

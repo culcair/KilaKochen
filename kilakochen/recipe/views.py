@@ -1,11 +1,13 @@
 from decimal import Decimal
 from typing import List, Optional
-from sqlalchemy import select
+
+from flask_login import login_required
+from flask_weasyprint import HTML, render_pdf
 from kilakochen.recipe import bp
 from datetime import datetime
 
-from flask import flash, redirect, render_template, request, url_for
-from kilakochen.models import Rezepte, RezepteZutaten, Rezeptkategorien
+from flask import flash, redirect, render_template, url_for
+from kilakochen.models import Rezepte, RezepteZutaten
 
 from kilakochen import db
 from kilakochen.recipe.forms import RezeptForm, ZutatenForm
@@ -69,9 +71,9 @@ def overview():
     )
 
 
-@bp.route("/<int:id>/view")
-def view(id):
-    data = Rezepte.query.filter_by(ID=id).one_or_404()
+@bp.route("/<int:recipe_id>/view")
+def view(recipe_id):
+    data = Rezepte.query.filter_by(ID=recipe_id).one_or_404()
     allergene = set()
     for zutat in data.rezepte_zutaten:
         for allergen in zutat.zutaten.allergene:
@@ -86,25 +88,28 @@ def view(id):
     )
 
 
-@bp.route("/<int:id>/print")
-def recipe_print(id):
-    data = Rezepte.query.filter_by(ID=id).one_or_404()
+@bp.route("/<int:recipe_id>/print")
+def recipe_print(recipe_id):
+    data = Rezepte.query.filter_by(ID=recipe_id).one_or_404()
 
-    filename = "{}_{}.pdf".format("KiLaKochen", data.ID)
-
-    html = render_template(
+    html_string = render_template(
         "recipe/print.html",
         page_title="Rezept - " + data.Titel,
         rezept_name=data.Titel,
         data=data,
     )
-    return html
+
+    tmp = HTML(string=html_string)
+
+    download_filename = "{}_{}.pdf".format("KiLaKochen", data.ID)
+    return render_pdf(tmp,automatic_download=True,download_filename=download_filename)
 
 
 @bp.route("/new", methods=["GET", "POST"])
+@login_required
 def new():
     form = RezeptForm()
-    template_form = ZutatenForm(prefix='ingredient-_-')
+    template_form = ZutatenForm(prefix='zutaten-_-')
     if form.validate_on_submit():
         # Verarbeite das Formular, um das Rezept und die Zutaten zu speichern
         zutaten_liste = []
@@ -132,11 +137,29 @@ def new():
 
     return render_template("recipe/new.html", form=form,_template=template_form)
 
+def populate_recipe_form(recipe: Rezepte) -> RezeptForm:
+    form : RezeptForm = RezeptForm()
+    form.author.data = recipe.author
+    form.kategorie.data = recipe.rezeptkategorien
+    form.zubereitung.data = recipe.Zubereitung
+    # Leere die Zutatenliste, bevor sie neu befüllt wird
+    form.zutaten.entries = []
 
-@bp.route("/<int:id>/edit")
-def edit(id):
-    data = Rezepte.query.filter_by(ID=37).one_or_404()
+    # Füge die vorhandenen Zutaten des Rezeptes hinzu
+    for rezept_zutat in recipe.rezepte_zutaten:
+        # Erstelle ein neues Zutatenformular
+        zutat_form = ZutatenForm()
 
-    return render_template(
-        "recipe/edit.html", page_title="Rezept - " + data.Titel, data=data
-    )
+        # Befülle die Felder des Zutatenformulars
+        zutat_form.zutat.data = rezept_zutat.zutaten  # QuerySelectField für Zutat
+        zutat_form.menge.data = rezept_zutat.Menge  # DecimalField für Menge
+        zutat_form.einheit.data = rezept_zutat.einheiten  # QuerySelectField für Einheit
+
+        # Füge das befüllte Zutatenformular der FieldList hinzu
+        form.zutaten.append_entry(zutat_form)
+
+    return form
+
+@bp.route("/<int:recipe_id>/edit")
+def edit(recipe_id):
+    return redirect(url_for("recipe.view", recipe_id=recipe_id))

@@ -1,265 +1,274 @@
 {% extends 'print_base.html' %}
 
 {% block content %}
-<div class="container">
-    <div>
-        <div class="row align-items-center">
-            <div class="col">
-                <img src="{{ url_for('static', filename='kila-logo.png') }}" alt="Logo Kinderladen Jakobistrasse e.V." class="img-fluid">
+    <div class="container">
+        <div>
+            <div class="row align-items-center">
+                <div class="col">
+                    <img src="{{ url_for('static', filename='kila-logo.png') }}"
+                         alt="Logo Kinderladen Jakobistrasse e.V." class="img-fluid">
+                </div>
+                <div class="col">
+                    Wochenplan für die Kalenderwoche <strong>{{ kw }}</strong> vom
+                    <strong>{{ plaene[0].Datum | format_date(format="medium") }}</strong> bis zum
+                    <strong>{{ plaene[-1].Datum | format_date(format="medium") }}</strong>
+                </div>
             </div>
-            <div class="col">
-                Wochenplan für die Kalenderwoche <strong>{{ kw }}</strong> vom <strong>{{ plaene[0].Datum | format_date(format="medium") }}</strong> bis zum <strong>{{ plaene[-1].Datum | format_date(format="medium") }}</strong>
-            </div>
-        </div>
 
-        <table class="table table-bordered">
-            <thead class="table-light">
+            <table class="table table-bordered">
+                <thead class="table-light">
                 <tr>
                     <th></th>
                     {% for entry in plaene %}
-                            <th scope="col">{{ entry.Datum | return_day  }}</th>
+                        <th scope="col">{{ entry.Datum | return_day }}</th>
                     {% endfor %}
                 </tr>
-            </thead>
-            
-            <tr>
-                <td>Hauptgericht</td>
-                {% for plan in plaene %}
-                <td>
-                    {% if plan.Hauptgericht != None %}
-                    <h6>{{ plan.Hauptgericht.Titel}}</h6>
-                    {% else %}
-                    <h6>-</h6>
-                    {% endif %}
-                </td>
-                {% endfor %}
-            </tr>
+                </thead>
 
-            <tr>
-                <td scope="row">Beilage</td>
-                {% for plan in plaene %}
-                <td>
-                    {% if plan.Beilage != None %}
-                    <h6>{{ plan.Beilage.Titel}}</h6>
-                    {% else %}
-                    <h6>-</h6>
-                    {% endif %}
-                
-                </td>
-                {% endfor %}
-                
-            </tr>
-            <tr>
-                <td>Dessert</td>
-                {% for plan in plaene %}
-                <td>
-                    {% if plan.Dessert != None %}
-                    <h6>{{ plan.Dessert.Titel}}</h6>
-                    {% else %}
-                    <h6>-</h6>
-                    {% endif %}
-                </td>
-                {% endfor %}
-                
-            </tr>
-        </table>
-        <div class="text-center">Nur für den internen Gebrauch vom Kinderladen Jakobistraße e.V. </div>
-    </div>
-    <div class="page-break"></div>
-    <div class="row align-items-center">
-        <div class="col">
-            <img src="{{ url_for('static', filename='kila-logo.png') }}" alt="Logo Kinderladen Jakobistrasse e.V." class="img-fluid">
-        </div>
-        <div class="col">
-            Wochenplan für die Kalenderwoche <strong>{{ kw }}</strong> vom <strong>{{ plaene[0].Datum | format_date(format="medium") }}</strong> bis zum <strong>{{ plaene[-1].Datum | format_date(format="medium") }}</strong>
-        </div>
-    </div>
-    <div class="small-font">
-    <table class="table table-bordered">
-        <thead class="table-light">
-            <tr>
-                <th></th>
-                {% for entry in plaene %}
-                        <th scope="col">{{ entry.Datum | return_day }}</th>
-                {% endfor %}
-            </tr>
+                <tr>
+                    <td>Hauptgericht</td>
+                    {% for plan in plaene %}
+                        <td>
+                            {% if plan.Hauptgericht != None %}
+                                <h6>{{ plan.Hauptgericht.Titel }}</h6>
+                            {% else %}
+                                <h6>-</h6>
+                            {% endif %}
+                        </td>
+                    {% endfor %}
+                </tr>
 
-        </thead>
-        
-        <tr>
-            <td>Hauptgericht</td>
-            {% for plan in plaene %}
-            <td>
-                
-                {% if plan.Hauptgericht != None %}
-                <h6>{{ plan.Hauptgericht.Titel}}</h6>
-                    {% for zutat in plan.Hauptgericht.rezepte_zutaten %}
-                        {{ "%.2f"|format(zutat.Menge)  }} {{ zutat.einheiten.Kuerzel }} {{ zutat.zutaten.Bezeichnung }} </br>
+                <tr>
+                    <td>Beilage</td>
+                    {% for plan in plaene %}
+                        <td>
+                            {% if plan.Beilage != None %}
+                                <h6>{{ plan.Beilage.Titel }}</h6>
+                            {% else %}
+                                <h6>-</h6>
+                            {% endif %}
 
+                        </td>
                     {% endfor %}
 
-                {% else %}
-                <h6>-</h6>
-                {% endif %}
-                
+                </tr>
+                <tr>
+                    <td>Dessert</td>
+                    {% for plan in plaene %}
+                        <td>
+                            {% if plan.Dessert != None %}
+                                <h6>{{ plan.Dessert.Titel }}</h6>
+                            {% else %}
+                                <h6>-</h6>
+                            {% endif %}
+                        </td>
+                    {% endfor %}
 
-            </td>
-            {% endfor %}
-        </tr>
-        <tr>
-            <td scope="row">Beilage</td>
-            {% for plan in plaene %}
-            <td>
-                {% if plan.Beilage != None %}
-                <h6>{{ plan.Beilage.Titel}}</h6>
-                {% for zutat in plan.Beilage.rezepte_zutaten %}
-                    {{ "%.2f"|format(zutat.Menge)  }} {{ zutat.einheiten.Kuerzel }} {{ zutat.zutaten.Bezeichnung }} </br>
-
-                {% endfor %}
-                {% else %}
-                -
-                {% endif %}
-            
-            </td>
-            {% endfor %}
-            
-        </tr>
-        <tr>
-            <td>Dessert</td>
-            {% for plan in plaene %}
-            <td>
-                {% if plan.Dessert != None %}
-                <h6>{{ plan.Dessert.Titel}}</h6>
-                {% for zutat in plan.Dessert.rezepte_zutaten %}
-                    {{ "%.2f"|format(zutat.Menge)  }} {{ zutat.einheiten.Kuerzel }} {{ zutat.zutaten.Bezeichnung }} </br>
-
-                {% endfor %}
-                {% else %}
-                -
-                {% endif %}
-            </td>
-            {% endfor %}
-            
-        </tr>
-    </table>
-    </div>
-    {% for entry in plaene %}
-    {% if not entry.Ausfall %}
-    <div class="page-break"></div>
-    
-    <div class="row align-items-center">
-        <div class="col">
-            <img src="{{ url_for('static', filename='kila-logo.png') }}" alt="Logo Kinderladen Jakobistrasse e.V." class="img-fluid">
+                </tr>
+            </table>
+            <div class="text-center">Nur für den internen Gebrauch vom Kinderladen Jakobistraße e.V.</div>
         </div>
-        <div class="col">
-            {{ entry.Datum |format_date(format="full")}}
+        <div class="page-break"></div>
+        <div class="row align-items-center">
+            <div class="col">
+                <img src="{{ url_for('static', filename='kila-logo.png') }}" alt="Logo Kinderladen Jakobistrasse e.V."
+                     class="img-fluid">
+            </div>
+            <div class="col">
+                Wochenplan für die Kalenderwoche <strong>{{ kw }}</strong> vom
+                <strong>{{ plaene[0].Datum | format_date(format="medium") }}</strong> bis zum
+                <strong>{{ plaene[-1].Datum | format_date(format="medium") }}</strong>
+            </div>
         </div>
-    </div>
-    <div class="small-font">
-    <table class="table  table-bordered">
-            <thead class="table-light">
+        <div class="small-font">
+            <table class="table table-bordered">
+                <thead class="table-light">
                 <tr>
                     <th></th>
-                    <th>Hauptgericht</th>
-                    <th>Beilage</th>
-                    <th>Dessert</th>
+                    {% for entry in plaene %}
+                        <th scope="col">{{ entry.Datum | return_day }}</th>
+                    {% endfor %}
                 </tr>
-    
-            </thead>
-            <tr>
-                <td>Bezeichnung</td>
-                <td>{% if entry.Hauptgericht != None %}{{entry.Hauptgericht.Titel}}{% else %}<h6>-</h6>{% endif %}</td>
-                <td>{% if entry.Beilage != None %}{{entry.Beilage.Titel}}{% else %}<h6>-</h6>{% endif %}</td>
-                <td>{% if entry.Dessert != None %}{{entry.Dessert.Titel}}{% else %}<h6>-</h6>{% endif %}</td>                                
 
-            </tr>
-            <tr>
-                <td>Zutaten</td>
-                <td>
-                    {% if entry.Hauptgericht != None %}
-                    {% for zutat in entry.Hauptgericht.rezepte_zutaten %}
-                        {{ "%.2f"|format(zutat.Menge)  }} {{ zutat.einheiten.Kuerzel }} {{ zutat.zutaten.Bezeichnung }} </br>
-                    {% endfor %}
-                {% else %}
-                <h6>-</h6>
-                {% endif %}
-                </td>
-                <td>
-                    {% if entry.Beilage != None %}
-                    {% for zutat in entry.Beilage.rezepte_zutaten %}
-                        {{ "%.2f"|format(zutat.Menge)  }} {{ zutat.einheiten.Kuerzel }} {{ zutat.zutaten.Bezeichnung }} </br>
-                    {% endfor %}
-                {% else %}
-                <h6>-</h6>
-                {% endif %}
-                </td>
-                <td>
-                    {% if entry.Dessert != None %}
-                    {% for zutat in entry.Dessert.rezepte_zutaten %}
-                        {{ "%.2f"|format(zutat.Menge)  }} {{ zutat.einheiten.Kuerzel }} {{ zutat.zutaten.Bezeichnung }} </br>
-                    {% endfor %}
-                {% else %}
-                <h6>-</h6>
-                {% endif %}
-                </td>                
-            </tr>
-            <tr>
-                <td>Allergene</td>
-                <td> {% if entry.Hauptgericht != None %}
-                    {% for zutat in entry.Hauptgericht.rezepte_zutaten %}
-                    {% for allergen in zutat.zutaten.zutaten_allergene %}
-                        {{ allergen.allergene.Bezeichnung}},
-                    {% endfor %}
-                {% endfor %}
-                {% endif %}
-                </td>
-                <td> {% if entry.Beilage != None %}
-                    {% for zutat in entry.Beilage.rezepte_zutaten %}
-                    {% for allergen in zutat.zutaten.zutaten_allergene %}
-                        {{ allergen.allergene.Bezeichnung}},
-                    {% endfor %}
-                {% endfor %}
-                {% endif %}
-                </td>
-                <td> {% if entry.Dessert != None %}
-                    {% for zutat in entry.Dessert.rezepte_zutaten %}
-                    {% for allergen in zutat.zutaten.zutaten_allergene %}
-                        {{ allergen.allergene.Bezeichnung}},
-                    {% endfor %}
-                {% endfor %}
-                {% endif %}
-                </td>                                
-            </tr>
-            <tr>
-                <td>Zubereitung</td>
-                <td>
-                    {% if entry.Hauptgericht != None %}
-                    {{ entry.Hauptgericht.Zubereitung | nl2br}}
+                </thead>
 
-                {% else %}
-                <h6>-</h6>
-                {% endif %}
-                </td>
-                <td>
-                    {% if entry.Beilage != None %}
-                    {{ entry.Beilage.Zubereitung | nl2br}}
+                <tr>
+                    <td>Hauptgericht</td>
+                    {% for plan in plaene %}
+                        <td>
 
-                {% else %}
-                <h6>-</h6>
-                {% endif %}
-                </td>
-                <td>
-                    {% if entry.Dessert != None %}
-                    {{ entry.Dessert.Zubereitung | nl2br}}
+                            {% if plan.Hauptgericht != None %}
+                                <h6>{{ plan.Hauptgericht.Titel }}</h6>
+                                {% for zutat in plan.Hauptgericht.rezepte_zutaten %}
+                                    <p>{{ "%.2f"|format(zutat.Menge) }} {{ zutat.einheiten.Kuerzel }} {{ zutat.zutaten.Bezeichnung }}</p>
+                                {% endfor %}
 
-                {% else %}
-                <h6>-</h6>
-                {% endif %}
-                </td>                
-            </tr>
-    </table>
+                            {% else %}
+                                <h6>-</h6>
+                            {% endif %}
+
+
+                        </td>
+                    {% endfor %}
+                </tr>
+                <tr>
+                    <td>Beilage</td>
+                    {% for plan in plaene %}
+                        <td>
+                            {% if plan.Beilage != None %}
+                                <h6>{{ plan.Beilage.Titel }}</h6>
+                                {% for zutat in plan.Beilage.rezepte_zutaten %}
+                                    <p>{{ "%.2f"|format(zutat.Menge) }} {{ zutat.einheiten.Kuerzel }} {{ zutat.zutaten.Bezeichnung }}</p>
+
+                                {% endfor %}
+                            {% else %}
+                                -
+                            {% endif %}
+
+                        </td>
+                    {% endfor %}
+
+                </tr>
+                <tr>
+                    <td>Dessert</td>
+                    {% for plan in plaene %}
+                        <td>
+                            {% if plan.Dessert != None %}
+                                <h6>{{ plan.Dessert.Titel }}</h6>
+                                {% for zutat in plan.Dessert.rezepte_zutaten %}
+                                    <p>{{ "%.2f"|format(zutat.Menge) }} {{ zutat.einheiten.Kuerzel }} {{ zutat.zutaten.Bezeichnung }} </p>
+
+                                {% endfor %}
+                            {% else %}
+                                -
+                            {% endif %}
+                        </td>
+                    {% endfor %}
+
+                </tr>
+            </table>
+        </div>
+        {% for entry in plaene %}
+            {% if not entry.Ausfall %}
+                <div class="page-break"></div>
+
+                <div class="row align-items-center">
+                    <div class="col">
+                        <img src="{{ url_for('static', filename='kila-logo.png') }}"
+                             alt="Logo Kinderladen Jakobistrasse e.V." class="img-fluid">
+                    </div>
+                    <div class="col">
+                        {{ entry.Datum |format_date(format="full") }}
+                    </div>
+                </div>
+                <div class="small-font">
+                    <table class="table  table-bordered">
+                        <thead class="table-light">
+                        <tr>
+                            <th></th>
+                            <th>Hauptgericht</th>
+                            <th>Beilage</th>
+                            <th>Dessert</th>
+                        </tr>
+
+                        </thead>
+                        <tr>
+                            <td>Bezeichnung</td>
+                            <td>{% if entry.Hauptgericht != None %}{{ entry.Hauptgericht.Titel }}{% else %}
+                                <h6>-</h6>{% endif %}</td>
+                            <td>{% if entry.Beilage != None %}{{ entry.Beilage.Titel }}{% else %}<h6>-</h6>{% endif %}
+                            </td>
+                            <td>{% if entry.Dessert != None %}{{ entry.Dessert.Titel }}{% else %}<h6>-</h6>{% endif %}
+                            </td>
+
+                        </tr>
+                        <tr>
+                            <td>Zutaten</td>
+                            <td>
+                                {% if entry.Hauptgericht != None %}
+                                    {% for zutat in entry.Hauptgericht.rezepte_zutaten %}
+                                        <p>{{ "%.2f"|format(zutat.Menge) }} {{ zutat.einheiten.Kuerzel }} {{ zutat.zutaten.Bezeichnung }} </p>
+                                    {% endfor %}
+                                {% else %}
+                                    <h6>-</h6>
+                                {% endif %}
+                            </td>
+                            <td>
+                                {% if entry.Beilage != None %}
+                                    {% for zutat in entry.Beilage.rezepte_zutaten %}
+                                        <p>{{ "%.2f"|format(zutat.Menge) }} {{ zutat.einheiten.Kuerzel }} {{ zutat.zutaten.Bezeichnung }} </p>
+                                    {% endfor %}
+                                {% else %}
+                                    <h6>-</h6>
+                                {% endif %}
+                            </td>
+                            <td>
+                                {% if entry.Dessert != None %}
+                                    {% for zutat in entry.Dessert.rezepte_zutaten %}
+                                        <p>{{ "%.2f"|format(zutat.Menge) }} {{ zutat.einheiten.Kuerzel }} {{ zutat.zutaten.Bezeichnung }} </p>
+                                    {% endfor %}
+                                {% else %}
+                                    <h6>-</h6>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Allergene</td>
+                            <td> {% if entry.Hauptgericht != None %}
+                                {% for zutat in entry.Hauptgericht.rezepte_zutaten %}
+                                    {% for allergen in zutat.zutaten.zutaten_allergene %}
+                                        {{ allergen.allergene.Bezeichnung }},
+                                    {% endfor %}
+                                {% endfor %}
+                            {% endif %}
+                            </td>
+                            <td> {% if entry.Beilage != None %}
+                                {% for zutat in entry.Beilage.rezepte_zutaten %}
+                                    {% for allergen in zutat.zutaten.zutaten_allergene %}
+                                        {{ allergen.allergene.Bezeichnung }},
+                                    {% endfor %}
+                                {% endfor %}
+                            {% endif %}
+                            </td>
+                            <td> {% if entry.Dessert != None %}
+                                {% for zutat in entry.Dessert.rezepte_zutaten %}
+                                    {% for allergen in zutat.zutaten.zutaten_allergene %}
+                                        {{ allergen.allergene.Bezeichnung }},
+                                    {% endfor %}
+                                {% endfor %}
+                            {% endif %}
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Zubereitung</td>
+                            <td>
+                                {% if entry.Hauptgericht != None %}
+                                    {{ entry.Hauptgericht.Zubereitung | nl2br }}
+
+                                {% else %}
+                                    <h6>-</h6>
+                                {% endif %}
+                            </td>
+                            <td>
+                                {% if entry.Beilage != None %}
+                                    {{ entry.Beilage.Zubereitung | nl2br }}
+
+                                {% else %}
+                                    <h6>-</h6>
+                                {% endif %}
+                            </td>
+                            <td>
+                                {% if entry.Dessert != None %}
+                                    {{ entry.Dessert.Zubereitung | nl2br }}
+
+                                {% else %}
+                                    <h6>-</h6>
+                                {% endif %}
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            {% endif %}
+        {% endfor %}
     </div>
-    {% endif %}
-    {% endfor %}   
-</div>
 {% endblock %}

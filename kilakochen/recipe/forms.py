@@ -15,7 +15,7 @@ from wtforms import (
 from wtforms.validators import DataRequired, Optional
 from wtforms_sqlalchemy.fields import QuerySelectField
 from wtforms import ValidationError
-from decimal import Decimal
+
 from kilakochen.models import Rezeptkategorien, Zutaten, Einheiten
 
 
@@ -53,7 +53,7 @@ class ZutatenForm(Form):
         validators=[DataRequired()],
     )
     menge = DecimalField(
-        "Menge", places=2, rounding=Decimal("0.01"), validators=[DataRequired()]
+        "Menge", places=2, validators=[DataRequired()]
     )
     einheit = QuerySelectField(
         "Einheit",
@@ -81,7 +81,7 @@ class RezeptForm(FlaskForm):
 
     submit = SubmitField("Rezept erstellen")
 
-    # Optional: Benutzerdefinierte Validierung für Zutaten
-    def validate_zutaten(self, field):
-        if len(field.entries) == 0:
-            raise ValidationError("Mindestens eine Zutat muss hinzugefügt werden.")
+# Optional: Benutzerdefinierte Validierung für Zutaten
+def validate_zutaten(field):
+    if len(field.entries) == 0:
+        raise ValidationError("Mindestens eine Zutat muss hinzugefügt werden.")

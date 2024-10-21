@@ -1,6 +1,6 @@
 from kilakochen.user import bp    
-from flask import flash, jsonify, redirect, render_template, url_for
-from flask_login import current_user, login_required
+from flask import render_template
+from flask_login import login_required
 
 from kilakochen.models import User
 
