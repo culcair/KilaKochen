@@ -55,7 +55,7 @@
                         <td>
                             {% if plan.Hauptgericht != None %}
                                 <a class="btn btn-primary"
-                                   href="{{ url_for('recipe.view_recipe',recipe_id=plan.Hauptgericht.ID) }}">{{ plan.Hauptgericht.Titel }}</a>
+                                   href="{{ url_for('recipe.view',recipe_id=plan.Hauptgericht.ID) }}">{{ plan.Hauptgericht.Titel }}</a>
                             {% else %}
                                 -
                             {% endif %}
@@ -68,7 +68,7 @@
                         <td>
                             {% if plan.Beilage != None %}
                                 <a class="btn btn-primary"
-                                   href="{{ url_for('recipe.view_recipe',recipe_id=plan.Beilage.ID) }}">{{ plan.Beilage.Titel }}</a>
+                                   href="{{ url_for('recipe.view',recipe_id=plan.Beilage.ID) }}">{{ plan.Beilage.Titel }}</a>
                             {% else %}
                                 -
                             {% endif %}
@@ -82,7 +82,7 @@
                         <td>
                             {% if plan.Dessert != None %}
                                 <a class="btn btn-primary"
-                                   href="{{ url_for('recipe.view_recipe',recipe_id=plan.Dessert.ID) }}">{{ plan.Dessert.Titel }}</a>
+                                   href="{{ url_for('recipe.view',recipe_id=plan.Dessert.ID) }}">{{ plan.Dessert.Titel }}</a>
                             {% else %}
                                 -
                             {% endif %}
