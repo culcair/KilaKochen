@@ -22,6 +22,8 @@ login.login_message = _l('Please log in to access this page.')
 babel = Babel()
 bootstrap = Bootstrap5()
 
+bootstrap.bootstrap_js_filename="bootstrap.bundle.min.js"
+
 metadata = MetaData(
     naming_convention={
     "ix": 'ix_%(column_0_label)s',
