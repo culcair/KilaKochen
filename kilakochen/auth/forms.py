@@ -10,7 +10,7 @@ def validate_login(form,field):
 
 def must_be_login(form, field):
 	message = 'falscher Wert'
-	if not field.data == "Login":
+	if not field.data == "login":
 		raise ValidationError(message)
 
 class LoginForm(FlaskForm):
