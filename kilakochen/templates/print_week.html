@@ -10,8 +10,8 @@
                 </div>
                 <div class="col">
                     Wochenplan für die Kalenderwoche <strong>{{ kw }}</strong> vom
-                    <strong>{{ plaene[0].Datum | format_date(format="medium") }}</strong> bis zum
-                    <strong>{{ plaene[-1].Datum | format_date(format="medium") }}</strong>
+                    <strong>{{ plaene[0].Datum | format_date(kl_format="medium") }}</strong> bis zum
+                    <strong>{{ plaene[-1].Datum | format_date(kl_format="medium") }}</strong>
                 </div>
             </div>
 
@@ -76,8 +76,8 @@
             </div>
             <div class="col">
                 Wochenplan für die Kalenderwoche <strong>{{ kw }}</strong> vom
-                <strong>{{ plaene[0].Datum | format_date(format="medium") }}</strong> bis zum
-                <strong>{{ plaene[-1].Datum | format_date(format="medium") }}</strong>
+                <strong>{{ plaene[0].Datum | format_date(kl_format="medium") }}</strong> bis zum
+                <strong>{{ plaene[-1].Datum | format_date(kl_format="medium") }}</strong>
             </div>
         </div>
         <div class="small-font">
@@ -158,7 +158,7 @@
                              alt="Logo Kinderladen Jakobistrasse e.V." class="img-fluid">
                     </div>
                     <div class="col">
-                        {{ entry.Datum |format_date(format="full") }}
+                        {{ entry.Datum |format_date(kl_format="full") }}
                     </div>
                 </div>
                 <div class="small-font">
