@@ -7,6 +7,7 @@ from flask_migrate import Migrate
 from flask_login import LoginManager
 from flask_babel import Babel, lazy_gettext as _l
 from flask_bootstrap import Bootstrap5
+from flask_talisman import Talisman
 from sqlalchemy import MetaData
 from config import Config
 
@@ -20,8 +21,8 @@ login = LoginManager()
 login.login_view = 'auth.login'
 login.login_message = _l('Please log in to access this page.')
 babel = Babel()
+talisman = Talisman()
 bootstrap = Bootstrap5()
-
 bootstrap.bootstrap_js_filename="bootstrap.bundle.min.js"
 
 metadata = MetaData(
@@ -46,6 +47,22 @@ def create_app(config_class=Config):
     babel.init_app(app, locale_selector=get_locale)
     bootstrap.init_app(app)
 
+    csp = {
+	'default-src' : '\'self\'',
+	'img-src' :  '*',
+	'style-src' : [
+        '\'self\'',
+        'https://cdn.jsdelivr.net/',
+        'https://fonts.googleapis.com/'
+    ],
+	'script-src' : [
+        '\'self\'',
+        'https://cdn.jsdelivr.net/'
+    ],
+    'font-src': 'https://fonts.gstatic.com/'
+    }
+    talisman.init_app(app,content_security_policy=csp)
+
     from kilakochen.errors import bp as errors_bp
     app.register_blueprint(errors_bp)
 
@@ -63,6 +80,7 @@ def create_app(config_class=Config):
 
     from kilakochen.cli import bp as cli_bp
     app.register_blueprint(cli_bp)
+
 
     if not app.debug and not app.testing:
         if app.config['MAIL_SERVER']:

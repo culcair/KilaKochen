@@ -20,7 +20,7 @@ class Config:
     LANGUAGES = ["en", "de"]
     MS_TRANSLATOR_KEY = os.environ.get("MS_TRANSLATOR_KEY")
     BOOTSTRAP_BOOTSWATCH_THEME = "minty"
-    BOOTSTRAP_SERVE_LOCAL = True
+    BOOTSTRAP_SERVE_LOCAL = os.environ.get("BOOTSTRAP_SERVE_LOCAL") or False
     SESSION_COOKIE_SECURE = os.environ.get("SESSION_COOKIE_SECURE") or True
     SESSION_COOKIE_SAMESITE = os.environ.get("SESSION_COOKIE_SAMESITE") or "Lax"
     SESSION_COOKIE_HTTPONLY= os.environ.get("SESSION_COOKIE_HTTPONLY") or True

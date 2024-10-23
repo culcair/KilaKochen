@@ -12,6 +12,7 @@ def login():
 
     form = LoginForm()
     if form.validate_on_submit():
+        
         user = User.query.filter_by(user=form.username.data).first()
         if user is None or not user.check_password(form.password.data):
             flash("Falscher Benutzername oder falsches Passwort",category="danger")
