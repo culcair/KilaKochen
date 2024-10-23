@@ -239,6 +239,9 @@ def edit_week(raw_date):
         form = form
     )
 
+@bp.route('/forbidden')
+def forbidden():
+    return render_template('errors/403.html'), 403
 
 @bp.route('/einkaufsliste')
 def einkaufsliste():
@@ -246,3 +249,4 @@ def einkaufsliste():
         'einkaufsliste.html',
         page_title = "Einkaufsliste"
     )
+

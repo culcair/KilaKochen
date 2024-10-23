@@ -7,10 +7,16 @@ def not_found_error(error):
     print(error)
     return render_template('errors/401.html'), 401
 
+@bp.app_errorhandler(403)
+def not_allowed(error):
+    print(error)
+    return render_template('errors/403.html'), 403
+
 @bp.app_errorhandler(404)
 def not_found_error(error):
     print(error)
     return render_template('errors/404.html'), 404
+
 
 
 @bp.app_errorhandler(500)
