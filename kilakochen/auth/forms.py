@@ -1,6 +1,7 @@
 from flask_wtf          import FlaskForm
 from wtforms            import StringField, PasswordField, SubmitField
-from wtforms.validators import DataRequired, ValidationError
+from wtforms.validators import DataRequired, ValidationError, AnyOf
+
 
 def validate_login(form,field):
 	message = 'Benutzername ist nicht alphanumerisch'
@@ -12,4 +13,4 @@ class LoginForm(FlaskForm):
 
 	username    = StringField  ('Username'  , validators=[DataRequired(),validate_login])
 	password    = PasswordField('Password'  , validators=[DataRequired()])
-	login       = SubmitField('Login')
+	login       = SubmitField('Login',validators=[AnyOf("Login")])
