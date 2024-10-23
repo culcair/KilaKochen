@@ -13,6 +13,11 @@
                 <li class="page-item">
                     <a class="page-link" href="{{ url_for('main.week_overview') }}" aria-label="Wochenübersicht">Wochenübersicht</a>
                 </li>
+                {% if not current_user.is_anonymous  %}
+                    <li class="page-item">
+                        <a class="page-link" href="{{ url_for('main.print_week',raw_date=plaene[0].Datum) }}">Wochenplan drucken</a>
+                    </li>
+            {% endif %}
                 <li class="page-item">
                     <a class="page-link" href="{{ url_for('main.week',raw_date=next) }}" aria-label="weiter">
                         <span class="sr-only">Weiter</span>
@@ -22,8 +27,7 @@
             </ul>
         </nav>
         <div class="row">
-            <div class="col-sm-2"><a href="{{ url_for('main.print_week',raw_date=plaene[0].Datum) }}"><img
-                    alt="Druckersymbol" src="{{ url_for('static', filename='print.svg') }}"></a></div>
+
             <div class="text-center col-sm-10">
                 <h1>Wochenplan</h1>für die Kalenderwoche <b>{{ kw }}</b>
                 vom {{ plaene[0].Datum | format_date(kl_format="medium") }} bis
