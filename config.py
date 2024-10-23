@@ -4,7 +4,6 @@ from dotenv import load_dotenv
 basedir = os.path.abspath(os.path.dirname(__file__))
 load_dotenv(os.path.join(basedir, ".env"))
 
-
 class Config:
     SECRET_KEY = os.environ.get("SECRET_KEY") or "you-will-never-guess"
     SQLALCHEMY_DATABASE_URI = os.environ.get(
@@ -25,3 +24,4 @@ class Config:
     SESSION_COOKIE_SAMESITE = os.environ.get("SESSION_COOKIE_SAMESITE") or "Lax"
     SESSION_COOKIE_HTTPONLY= os.environ.get("SESSION_COOKIE_HTTPONLY") or True
     REMEMBER_COOKIE_SECURE = os.environ.get("REMEMBER_COOKIE_SECURE") or True
+    CONTENT_SECURITY_POLICY = os.environ.get("CONTENT_SECURITY_POLICY")

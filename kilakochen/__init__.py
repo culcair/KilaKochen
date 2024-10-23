@@ -47,21 +47,7 @@ def create_app(config_class=Config):
     babel.init_app(app, locale_selector=get_locale)
     bootstrap.init_app(app)
 
-    csp = {
-	'default-src' : '\'self\'',
-	'img-src' :  '*',
-	'style-src' : [
-        '\'self\'',
-        'https://cdn.jsdelivr.net/',
-        'https://fonts.googleapis.com/'
-    ],
-	'script-src' : [
-        '\'self\'',
-        'https://cdn.jsdelivr.net/'
-    ],
-    'font-src': 'https://fonts.gstatic.com/'
-    }
-    talisman.init_app(app,content_security_policy=csp)
+    talisman.init_app(app)
 
     from kilakochen.errors import bp as errors_bp
     app.register_blueprint(errors_bp)
@@ -81,8 +67,11 @@ def create_app(config_class=Config):
     from kilakochen.cli import bp as cli_bp
     app.register_blueprint(cli_bp)
 
+    if app.config['CONTENT_SECURITY_POLICY']:
+        talisman.content_security_policy = app.config['CONTENT_SECURITY_POLICY']
 
     if not app.debug and not app.testing:
+
         if app.config['MAIL_SERVER']:
             auth = None
             if app.config['MAIL_USERNAME'] or app.config['MAIL_PASSWORD']:
