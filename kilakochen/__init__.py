@@ -10,7 +10,7 @@ from flask_bootstrap import Bootstrap5
 from flask_talisman import Talisman
 from sqlalchemy import MetaData
 from config import Config
-
+from flask_wtf import CSRFProtect
 
 def get_locale():
     return request.accept_languages.best_match(current_app.config['LANGUAGES'])
@@ -23,7 +23,7 @@ login.login_message = _l('Please log in to access this page.')
 babel = Babel()
 talisman = Talisman()
 bootstrap = Bootstrap5()
-bootstrap.bootstrap_js_filename="bootstrap.bundle.min.js"
+csrf =CSRFProtect()
 
 metadata = MetaData(
     naming_convention={
@@ -37,6 +37,14 @@ metadata = MetaData(
 
 db=SQLAlchemy(metadata=metadata)
 
+def get_version() -> str :
+    try:
+        with open(".git/refs/heads/main","r") as git_file:
+            app_version = git_file.readline()[:8]
+    except FileNotFoundError as e :
+        app_version = ""
+    return app_version
+
 def create_app(config_class=Config):
     app = Flask(__name__)
     app.config.from_object(config_class)
@@ -46,7 +54,7 @@ def create_app(config_class=Config):
     login.init_app(app)
     babel.init_app(app, locale_selector=get_locale)
     bootstrap.init_app(app)
-
+    csrf.init_app(app)
     talisman.init_app(app)
 
     from kilakochen.errors import bp as errors_bp
@@ -70,7 +78,10 @@ def create_app(config_class=Config):
     if app.config['CONTENT_SECURITY_POLICY']:
         talisman.content_security_policy = app.config['CONTENT_SECURITY_POLICY']
 
+    app.config["KILAKOCHEN_VERSION"] = get_version()
+
     if not app.debug and not app.testing:
+        bootstrap.bootstrap_js_filename = app.config["BOOTSTRAP_JS_FILENAME"]
 
         if app.config['MAIL_SERVER']:
             auth = None

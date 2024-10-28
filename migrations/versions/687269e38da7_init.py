@@ -70,8 +70,8 @@ def upgrade():
 
     op.create_table('user',
     sa.Column('ID', sa.INTEGER(), nullable=False),
-    sa.Column('name', sa.Text(), nullable=False),
-    sa.Column('vorname', sa.Text(), nullable=False),
+    sa.Column('given_name', sa.Text(), nullable=False),
+    sa.Column('first_name', sa.Text(), nullable=False),
     sa.Column('user', sa.Text(), nullable=False),
     sa.Column('password', sa.Text(), nullable=False),
     sa.Column('mail', sa.Text(), nullable=False),

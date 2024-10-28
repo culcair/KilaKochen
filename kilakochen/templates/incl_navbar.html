@@ -28,6 +28,18 @@
                 {%- endif %}
                 <a class="nav-link nav-item" href="{{ url_for('main.ingredients') }}">Zutaten</a>
                 <a class="nav-link nav-item" href="{{ url_for('main.week_overview') }}">Wochenplan</a>
+                {% if current_user.is_authenticated %}
+                        <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
+                           aria-expanded="false">
+                            Benutzer
+                        </a>
+                        <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                            <li><a class="dropdown-item" href="{{ url_for('user.overview') }}">Übersicht</a></li>
+                            <li><a class="dropdown-item" href="{{ url_for('user.new') }}">Neuer Benutzer</a></li>
+                        </ul>
+                    </li>
+                {% endif %}
             </div>
             {% if current_user.is_anonymous -%}
                 <div class="ms-auto">
@@ -36,7 +48,7 @@
                 </div>
             {%- else -%}
                 <div class="d-flex ms-auto">
-                    <div>Benutzer: {{ current_user.user }}</div>
+                    <div>{{ current_user.first_name }} {{ current_user.given_name }} ({{ current_user.username }})</div>
                     <div><a href="{{ url_for('auth.logout') }}"><img
                             src="{{ url_for('static', filename='logout.svg') }}" alt="logout"/></a></div>
                 </div>

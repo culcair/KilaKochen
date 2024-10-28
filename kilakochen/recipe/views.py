@@ -121,8 +121,6 @@ def new():
                     "einheit_id": zutat_form.einheit.data.ID,
                 }
             )
-        print(zutaten_liste)
-
         # Verwende die oben definierte create_new_recipe-Funktion
         result = create_new_recipe(
             titel=form.titel.data,

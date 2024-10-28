@@ -1,8 +1,7 @@
-from distutils.log import ERROR
-
 from flask_wtf          import FlaskForm
 from wtforms            import StringField, PasswordField, SubmitField
-from wtforms.validators import DataRequired, ValidationError, AnyOf
+from wtforms.fields.simple import BooleanField
+from wtforms.validators import DataRequired, ValidationError, Email, EqualTo
 
 
 def validate_login(form,field):
@@ -10,13 +9,10 @@ def validate_login(form,field):
 	if not field.data.isalnum():
 		raise ValidationError(message)
 
-def must_be_login(form, field):
-	message = 'falscher Wert'
-	if not( len(field.raw_data) == 1 and field.raw_data[0] == "Login"):
-		raise ValidationError(message)
-
 class LoginForm(FlaskForm):
 
 	username    = StringField  ('Username'  , validators=[DataRequired(),validate_login])
 	password    = PasswordField('Password'  , validators=[DataRequired()])
-	login       = SubmitField('Login', validators=[must_be_login])
+	login       = SubmitField('Login')
+	remember_me = BooleanField ('Remember Me')
+

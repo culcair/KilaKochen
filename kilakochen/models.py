@@ -11,7 +11,7 @@ from sqlalchemy import (
     String,
     DATETIME,
     Text,
-    text,
+    text, BOOLEAN,
 )
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from datetime import datetime,timezone
@@ -31,31 +31,54 @@ def load_user(user_id):
 
 
 class User(db.Model, UserMixin):
-    id: Mapped[int] = mapped_column(INTEGER, primary_key=True)
-    name: Mapped[str] = mapped_column(Text)
-    vorname: Mapped[str] = mapped_column(Text)
-    user: Mapped[str] = mapped_column(Text)
-    password: Mapped[str] = mapped_column(Text)
-    mail: Mapped[str] = mapped_column(Text, nullable=True)
-    level: Mapped[int] = mapped_column(INTEGER, nullable=True)
-    active: Mapped[int] = mapped_column(INTEGER, default=1)
+    ADMIN_LEVEL = 15
+    EDITOR_LEVEL = 10
+    USER_LEVEL = 5
 
-    def set_password(self, password) -> None:
+    ACCESS_LEVEL = {
+        USER_LEVEL : "USER",
+        EDITOR_LEVEL : "EDITOR",
+        ADMIN_LEVEL : "ADMIN"
+    }
+
+    id: Mapped[int] = mapped_column(INTEGER, primary_key=True)
+    first_name: Mapped[str] = mapped_column(Text)
+    given_name: Mapped[str] = mapped_column(Text)
+    username: Mapped[str] = mapped_column(Text,unique=True)
+    password: Mapped[str] = mapped_column(Text)
+    email: Mapped[str] = mapped_column(Text, nullable=True)
+    level: Mapped[int] = mapped_column(INTEGER, nullable=True)
+    active: Mapped[bool] = mapped_column(BOOLEAN, default=False)
+    last_seen: Mapped[datetime] = mapped_column(DATETIME,nullable=True)
+    created_at: Mapped[datetime] = mapped_column(
+        DATETIME, default=lambda: datetime.now(timezone.utc),
+        nullable=True
+    )
+    updated_at: Mapped[datetime] = mapped_column(
+        DATETIME, default=lambda: datetime.now(timezone.utc),
+        nullable=True
+    )
+
+    def  set_password(self, password) -> None:
         self.password = generate_password_hash(password)
 
     def check_password(self, password) -> bool:
         return check_password_hash(self.password, password)
 
-    def __init__(self, name, vorname, user, level=1, active=1, user_id=None) -> None:
-        self.name = name
-        self.vorname = vorname
-        self.user = user
-        self.id = user_id
+    @staticmethod
+    def test_password(password):
+        return generate_password_hash(password)
+
+    def __init__(self, username, given_name, first_name, level=1, active=True,email=None) -> None:
+        self.given_name = given_name
+        self.first_name = first_name
+        self.username = username
         self.level = level
         self.active = active
+        self.email = email
 
     def __repr__(self) -> str:
-        return f"<User {self.user} {self.id}>"
+        return f"<User {self.username} {self.id}>"
 
 
 class Allergene(db.Model):
