@@ -5,9 +5,57 @@
 {% block content %}
     <div class="container">
         <div class="row">
-            <div class="text-center">Anzahl aller Benutzer in der Datenbank: {{ data|count }}</div>
+            <h6 class="text-center"> Anzahl aller Benutzer in der Datenbank: {{ data|count }}</h6>
         </div>
-        {{ render_table(data,responsive=True,table_classes="table-striped table-hover",header_classes="table-dark",show_actions=True,edit_url=('user.edit',[('user_id',':id')]),delete_url=('user.delete',[('user_id',':id')]) )         }}
+
+
+            <table class="table-responsive table table-striped table-hover">
+                <thead class="table-dark">
+                    <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">Username</th>
+                        <th scope="col">First Name</th>
+                        <th scope="col">Given Name</th>
+                        <th scope="col">Email</th>
+                        <th scope="col">Level</th>
+                        <th scope="col">Active</th>
+                        <th scope="col">Last Seen</th>
+                        <th scope="col">Created At</th>
+                        <th scope="col">Updated At</th>
+                        <th scope="col">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                {%  for user in data %}
+                    <tr>
+                        <th scope="row">{{ user.id }}</th>
+                        <td>{{ user.username }}</td>
+                        <td>{{ user.first_name }}</td>
+                        <td>{{ user.given_name }}</td>
+
+                        <td>{{ user.email }}</td>
+                        <td>{{ user.level }}</td>
+                        <td>{{ user.active }}</td>
+                        <td>{{ user.last_seen }}</td>
+                        <td>{{ user.created_at }}</td>
+                        <td>{{ user.updated_at }}</td>
+                        <td>
+                            <a class="action-icon text-decoration-none" href="{{ url_for('user.edit', user_id=user.id) }}" title="Edit User">
+                            <svg class="bi" width="1em" height="1em" fill="currentColor"> <use xlink:href="/bootstrap/static/icons/bootstrap-icons.svg#pencil-fill"></use></svg>
+                            </a>
+                            <form class="d-inline" action="{{ url_for('user.delete', user_id=user.id) }}" method="post">
+                                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+                                <button type="submit" class="btn btn-link p-0 border-0 align-baseline" title="Delete">
+                                    <svg class="bi" width="1em" height="1em" fill="currentColor"><use xlink:href="/bootstrap/static/icons/bootstrap-icons.svg#trash-fill"></use>></svg>
+                                </button>
+                                </form>
+
+                        </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
 
     </div>
+
 {% endblock %}

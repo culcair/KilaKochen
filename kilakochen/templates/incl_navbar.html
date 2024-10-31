@@ -27,7 +27,7 @@
                     </li>
                 {%- endif %}
                 <a class="nav-link nav-item" href="{{ url_for('main.ingredients') }}">Zutaten</a>
-                <a class="nav-link nav-item" href="{{ url_for('main.week_overview') }}">Wochenplan</a>
+                <a class="nav-link nav-item" href="{{ url_for('main.week') }}">Wochenplan</a>
                 {% if current_user.is_authenticated %}
                         <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"

@@ -27,3 +27,4 @@ bootstrap*js*
 
 .flaskenv
 *sql
+/app.db.save

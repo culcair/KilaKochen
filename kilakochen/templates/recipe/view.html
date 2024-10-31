@@ -15,6 +15,7 @@
                 <a class="btn btn-primary" href="{{ url_for('recipe.recipe_print',recipe_id=data.ID) }}">Drucken</a>
                 <a class="btn btn-primary" href="{{ url_for('recipe.edit',recipe_id=data.ID) }}">Editieren</a>
                 {% endif %}
+                <a class="btn btn-primary" href="{{ back_ref_url }}">Zurück</a>
             </div>
         </div>
 

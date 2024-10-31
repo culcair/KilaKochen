@@ -17,8 +17,7 @@ from kilakochen.user.forms import CreateUserForm, EditUserForm
 @bp.route('/overview', methods=['GET', 'POST'])
 @login_required
 def overview():
-    all_users = db.session.query(User).options(load_only(User.id,User.given_name, User.email)).all()
-
+    all_users = db.session.query(User).all()
     return render_template(
         'user/overview.html',
         data=all_users

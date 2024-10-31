@@ -6,7 +6,7 @@ from flask_weasyprint import HTML, render_pdf
 from kilakochen.recipe import bp
 from datetime import datetime
 
-from flask import flash, redirect, render_template, url_for
+from flask import flash, redirect, render_template, url_for, request
 from kilakochen.models import Rezepte, RezepteZutaten
 
 from kilakochen import db
@@ -73,6 +73,10 @@ def overview():
 
 @bp.route("/<int:recipe_id>/view")
 def view(recipe_id):
+    if request.referrer:
+        back_ref_url = request.referrer
+    else:
+        back_ref_url=""
     data = Rezepte.query.filter_by(ID=recipe_id).one_or_404()
     allergene = set()
     for zutat in data.rezepte_zutaten:
@@ -85,6 +89,7 @@ def view(recipe_id):
         rezept_name=data.Titel,
         data=data,
         allergene=", ".join(allergene),
+        back_ref_url=back_ref_url
     )
 
 

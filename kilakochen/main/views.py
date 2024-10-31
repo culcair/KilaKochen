@@ -1,13 +1,12 @@
 from flask_login import current_user, login_required
-from flask_wtf import FlaskForm
 from sqlalchemy import select
 from kilakochen.main import bp    
 from flask import redirect, render_template, url_for
 from flask_weasyprint import HTML, render_pdf
-from datetime import datetime,timedelta
+from datetime import datetime, timedelta, date
 from kilakochen.models import Allergene, Essensplan, Rezepte, Zutaten
 
-from kilakochen.main.forms import EditHeuteForm, EditWocheForm
+from kilakochen.main.forms import EditHeuteForm
 from kilakochen import db
 
 @bp.route('/')
@@ -20,19 +19,7 @@ def get_rezepte(kategorie):
     choices = [(None,"")] + [(x.ID, x.Titel) for x in res]
     return choices
 
-
-@bp.route('/day/<string:raw_date>/edit', methods=['GET', 'POST'])
-@bp.route('/today/edit', methods=['GET', 'POST'],defaults= {"raw_date" : datetime.today().date()})
-@login_required
-def day_edit(raw_date :str) :
-    if type(raw_date) == str:
-        given_date = datetime.fromisoformat(raw_date).date()
-    else:
-        given_date = raw_date
-            
-    plan : Essensplan = Essensplan.query.filter_by(Datum=given_date).one_or_none()
-    form : EditHeuteForm = EditHeuteForm()
-    
+def populate_editheuteform(plan, form, given_date):
     if plan is not None:
         form.datum.data = plan.Datum
         if plan.Hauptgericht is not None:
@@ -49,10 +36,27 @@ def day_edit(raw_date :str) :
         else:
             form.dessert.choices = get_rezepte("D")
     else:
+        plan = Essensplan(Datum=given_date)
         form.hauptgericht.choices = get_rezepte("H")
         form.beilage.choices = get_rezepte("B")
         form.dessert.choices = get_rezepte("D")
         form.datum.data = given_date
+
+    return plan, form
+
+@bp.route('/day/<string:raw_date>/edit', methods=['GET', 'POST'])
+@bp.route('/today/edit', methods=['GET', 'POST'],defaults= {"raw_date" : datetime.today().date()})
+@login_required
+def day_edit(raw_date :str) :
+    if type(raw_date) == str:
+        given_date = datetime.fromisoformat(raw_date).date()
+    else:
+        given_date = raw_date
+            
+    plan : Essensplan = Essensplan.query.filter_by(Datum=given_date).one_or_none()
+    form : EditHeuteForm = EditHeuteForm()
+    
+    plan, form = populate_editheuteform(plan, form, given_date)
 
     if form.validate_on_submit():
         if plan is None:
@@ -80,11 +84,8 @@ def day_edit(raw_date :str) :
 @bp.route('/day/<string:raw_date>')
 @bp.route('/today')
 def day(raw_date = None):
-    if raw_date is None:
-        given_date = datetime.today().date()
-    else:
-        given_date = datetime.fromisoformat(raw_date).date()
- 
+    given_date = get_date(raw_date)
+
     data = Essensplan.query.filter_by(Datum=given_date).one_or_none()
 
     if data is None:
@@ -99,7 +100,7 @@ def day(raw_date = None):
             'today.html',
             date = given_date,
             page_title = "Essensplan von heute",
-            plan=data
+            plan=data,
         )
 
 @bp.route('/ingredients')
@@ -115,11 +116,11 @@ def ingredients():
 
 @bp.route('/week/overview')
 def week_overview():
-    date = datetime.today().date()
+    given_date = datetime.today().date()
     prefix = 3
     weeks = []
     for i in range(2-prefix,2+prefix):
-        tmp = get_week(date,i)
+        tmp = get_week(given_date,i)
 
         weeks.append(
             {
@@ -129,7 +130,7 @@ def week_overview():
             "last" : tmp[-1]
             }
         )
-    kw = date.isocalendar().week
+    kw = given_date.isocalendar().week
    
     return render_template(
         'week_overview.html',
@@ -140,7 +141,7 @@ def week_overview():
 
 
 
-@bp.route('/week/<string:raw_date>/print')
+@bp.route('/week/print/<string:raw_date>')
 @bp.route('/week/print')
 def print_week(raw_date = None):
     if raw_date is None:
@@ -183,11 +184,11 @@ def week(raw_date = None):
 
     plaene = []
     for given_day in given_week:
-        res = db.session.scalars(select(Essensplan).filter_by(Datum=given_day)).one_or_none()
-        if res is None:
+        plan = db.session.scalars(select(Essensplan).filter_by(Datum=given_day)).one_or_none()
+        if plan is None:
             plaene.append(Essensplan(Datum=given_day))
         else:
-            plaene.append(res)
+            plaene.append(plan)
 
     return render_template(
         'week.html',
@@ -206,37 +207,60 @@ def get_week(given_date,given_offset=0):
     dates = [start + timedelta(days=d) for d in range(5)]
     return dates
 
+def get_date(raw_date : None | str) -> date:
+    if raw_date is None:
+        given_date = datetime.today().date()
+    else:
+        given_date = datetime.fromisoformat(raw_date).date()
 
-@bp.route('/week/edit/<string:raw_date>')
-@bp.route('/week/edit/', defaults = {'raw_date' : datetime.today().date()})
+    return given_date
+
+@bp.route('/week/edit/<string:raw_date>', methods=['GET', 'POST'])
+@bp.route('/week/edit', methods=['GET', 'POST'],defaults= {"raw_date" : datetime.today().date()})
 @login_required
 def edit_week(raw_date):
-    form = EditWocheForm()
-    if type(raw_date) == str:
-        given_date = datetime.fromisoformat(raw_date).date()
-    else:
-        given_date = raw_date
-
-    dates = get_week(given_date)
+    given_date = get_date(raw_date)
+    given_week = get_week(given_date)
+    kw = given_date.isocalendar().week
+    previous_week = given_week[0] + timedelta(weeks=-1)
+    next_week = given_week[0] + timedelta(weeks=1)
 
     plaene = []
-    for week_date in dates:
-        res = Essensplan.query.filter_by(Datum=week_date).one_or_none()
-        if res is None:
-            tmp = Essensplan(Datum=week_date)
-        else:
-            tmp = res
-        plaene.append(tmp)
+    day_forms = []
+    for given_day in given_week:
+        plan = db.session.scalars(select(Essensplan).filter_by(Datum=given_day)).one_or_none()
+        form = EditHeuteForm(prefix=f"plan_{given_day}")
+        plan, form = populate_editheuteform(plan,form,given_day)
+        day_forms.append(form)
+        plaene.append(plan)
 
-    rezepte = Rezepte.query.all() 
+    for day_form in day_forms:
+        if day_form.submit.data:
+            if day_form.validate_on_submit():
+                edit_plan = None
+                for find_plan in plaene:
+                    if find_plan.Datum == day_form.datum.data:
+                        edit_plan = find_plan
+
+                edit_plan.HauptgerichtRezeptID = day_form.hauptgericht.data
+                edit_plan.BeilageRezeptID = day_form.beilage.data
+                edit_plan.DessertRezeptID = day_form.dessert.data
+                edit_plan.Ausfall = day_form.ausfall.data
+                edit_plan.Anmerkung = day_form.anmerkung.data
+                db.session.add(edit_plan)
+                db.session.commit()
+
+            print(f"date: {day_form.datum.data} submitted: {day_form.is_submitted()} submit data: {day_form.submit.data}")
+
 
     return render_template(
         'edit_week.html',
         page_title = "Wochenplan",
-        data=dates,
-        plaene=plaene,
-        rezepte=rezepte,
-        form = form
+        plaene = plaene,
+        forms = day_forms,
+        kw = kw,
+        previous = previous_week,
+        next = next_week
     )
 
 @bp.route('/forbidden')

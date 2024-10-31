@@ -1,19 +1,29 @@
 {% extends 'base.html' %}
+
+{% from 'bootstrap5/table.html' import render_table %}
+
 {% block content %}
     <div class="container">
         <div class="row">
-            <div class="text-center">
-                <h1>{{ page_title }}</h1> (Anzahl: {{ data |count }})
-            </div>
+            <h6 class="text-center"> Anzahl aller Rezepte in der Datenbank: {{ data|count }}</h6>
         </div>
-        <table class="table table-responsive">
-            {% for recipe in data -%}
-                <tr>
-                    <td><a class="btn btn-primary" href="{{ url_for('recipe.view', recipe_id=recipe.ID) }}">zum
-                        Rezept</a></td>
-                    <td>{{ recipe.Titel }}</td>
-                </tr>
-            {% endfor %}
-        </table>
+            <table class="table-responsive table table-striped table-hover">
+                <thead class="table-dark">
+                    <tr>
+                        <th scope="col">Rezeptname</th>
+                        <th scope="col">Kategorie</th>
+                    </tr>
+                </thead>
+                <tbody>
+                {%  for recipe in data %}
+                    <tr>
+                        <td><a href="{{ url_for('recipe.view',recipe_id=recipe.ID) }}">{{ recipe.Titel }}</a></td>
+                        <td>{{ recipe.rezeptkategorien.BezeichnungSingular }}</td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+
     </div>
+
 {% endblock %}
