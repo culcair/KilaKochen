@@ -12,7 +12,7 @@ class CreateUserForm(FlaskForm):
 	password = PasswordField('Password', validators=[DataRequired()])
 	password_again = PasswordField('Password (repeated)',
 									   validators=[DataRequired(), EqualTo('password', message='Passwords must match')])
-	email = StringField('Email', validators=[ Email()])
+	email = StringField('Email')
 	access_level =SelectField(u'Access Level', choices=tuple(User.ACCESS_LEVEL.items()))
 	submit = SubmitField('Create')
 
@@ -25,6 +25,6 @@ class EditUserForm(FlaskForm):
 	password = PasswordField('Password', )
 	password_again = PasswordField('Password (repeated)',
 									   validators=[EqualTo('password', message='Passwords must match')])
-	email = StringField('Email', validators=[Email()])
+	email = StringField('Email')
 	access_level =SelectField(u'Access Level', choices=tuple(User.ACCESS_LEVEL.items()))
 	submit = SubmitField('Edit')
