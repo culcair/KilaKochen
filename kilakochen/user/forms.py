@@ -25,6 +25,6 @@ class EditUserForm(FlaskForm):
 	password = PasswordField('Password', )
 	password_again = PasswordField('Password (repeated)',
 									   validators=[EqualTo('password', message='Passwords must match')])
-	email = StringField('Email', validators=[DataRequired(), Email()])
+	email = StringField('Email', validators=[Email()])
 	access_level =SelectField(u'Access Level', choices=tuple(User.ACCESS_LEVEL.items()))
 	submit = SubmitField('Edit')
