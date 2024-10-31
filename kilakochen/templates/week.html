@@ -3,38 +3,39 @@
 {% block content %}
     <div class="container">
         <nav aria-label="Wochennavigation">
-            <ul class="pagination">
+            <ul class="pagination justify-content-center">
                 <li class="page-item">
-                    <a class="page-link" href="{{ url_for('main.week',raw_date=previous) }}" aria-label="zurück">
+                    <a class="page-link" href="{{ url_for('main.week',raw_date=previous) }}" aria-label="Vorherige Woche">
                         <span aria-hidden="true">&laquo;</span>
-                        <span class="sr-only">Zurück</span>
+                        <span class="sr-only">Vorherige Woche</span>
                     </a>
                 </li>
                 <li class="page-item">
-                    <a class="page-link" href="{{ url_for('main.week_overview') }}" aria-label="Wochenübersicht">Wochenübersicht</a>
+                    <a class="page-link" href="{{ url_for('main.week_overview') }}" aria-label="Übersicht">Übersicht</a>
                 </li>
-                {% if not current_user.is_anonymous  %}
+                {% if  current_user.is_authenticated  %}
                     <li class="page-item">
-                        <a class="page-link" href="{{ url_for('main.print_week',raw_date=plaene[0].Datum) }}">Wochenplan drucken</a>
+                        <a class="page-link" href="{{ url_for('main.print_week',raw_date=plaene[0].Datum) }}">Drucken</a>
+                    </li>
+                    <li class="page-item">
+                        <a class="page-link" href="{{ url_for('main.edit_week',raw_date=plaene[0].Datum) }}">Editieren</a>
                     </li>
             {% endif %}
                 <li class="page-item">
-                    <a class="page-link" href="{{ url_for('main.week',raw_date=next) }}" aria-label="weiter">
-                        <span class="sr-only">Weiter</span>
+                    <a class="page-link" href="{{ url_for('main.week',raw_date=next) }}" aria-label="Nächste Woche">
+                        <span class="sr-only">Nächste Woche</span>
                         <span aria-hidden="true">&raquo;</span>
                     </a>
                 </li>
             </ul>
         </nav>
-        <div class="row">
-
-            <div class="text-center col-sm-10">
+        <div class="text-center">
                 <h1>Wochenplan</h1>für die Kalenderwoche <b>{{ kw }}</b>
                 vom {{ plaene[0].Datum | format_date(kl_format="medium") }} bis
                 zum {{ plaene[-1].Datum | format_date(kl_format="medium") }}
-            </div>
-
         </div>
+
+
         <div class="table-responsive">
             <table class="table table-striped table-hover">
                 <thead class="table-dark">
