@@ -8,14 +8,22 @@
 {% block content %}
     <div class="container">
         <div class="row text-center">
-            <div class="col"><h1>{{ rezept_name }}</h1></div>
-            <div class="col btn-group" role="group">
-                <a class="btn btn-primary" href="{{ url_for('recipe.overview') }}">Übersicht</a>
+            <div class="row"><h1>{{ rezept_name }}</h1></div>
+            <div class="row">
+                <a class="col" href="{{ url_for('recipe.overview') }}" title="overview">
+                    <svg class="bi" width="1em" height="1em" fill="currentColor"> <use href="/bootstrap/static/icons/bootstrap-icons.svg#house-fill"></use></svg>
+                </a>
                 {% if current_user.is_authenticated -%}
-                <a class="btn btn-primary" href="{{ url_for('recipe.recipe_print',recipe_id=data.ID) }}">Drucken</a>
-                <a class="btn btn-primary" href="{{ url_for('recipe.edit',recipe_id=data.ID) }}">Editieren</a>
+                <a class="col" href="{{ url_for('recipe.recipe_print',recipe_id=data.ID) }}">
+                <svg class="bi" width="1em" height="1em" fill="currentColor"> <use href="/bootstrap/static/icons/bootstrap-icons.svg#printer-fill"></use></svg>
+                </a>
+                <a class="col" href="{{ url_for('recipe.edit',recipe_id=data.ID) }}" title="edit recipe">
+                <svg class="bi" width="1em" height="1em" fill="currentColor"> <use href="/bootstrap/static/icons/bootstrap-icons.svg#pencil-fill"></use></svg>
+                </a>
                 {% endif %}
-                <a class="btn btn-primary" href="{{ back_ref_url }}">Zurück</a>
+                <a class="col" href="{{ back_ref_url }}">
+                <svg class="bi" width="1em" height="1em" fill="currentColor"> <use href="/bootstrap/static/icons/bootstrap-icons.svg#backspace-fill"></use></svg>
+                </a>
             </div>
         </div>
 

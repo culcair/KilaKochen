@@ -2,33 +2,27 @@
 
 {% block content %}
     <div class="container">
-        <nav aria-label="Wochennavigation">
-            <ul class="pagination justify-content-center">
-                <li class="page-item">
-                    <a class="page-link" href="{{ url_for('main.week',raw_date=previous) }}" aria-label="Vorherige Woche">
-                        <span aria-hidden="true">&laquo;</span>
-                        <span class="sr-only">Vorherige Woche</span>
-                    </a>
-                </li>
-                <li class="page-item">
-                    <a class="page-link" href="{{ url_for('main.week_overview') }}" aria-label="Übersicht">Übersicht</a>
-                </li>
-                {% if  current_user.is_authenticated  %}
-                    <li class="page-item">
-                        <a class="page-link" href="{{ url_for('main.print_week',raw_date=plaene[0].Datum) }}">Drucken</a>
-                    </li>
-                    <li class="page-item">
-                        <a class="page-link" href="{{ url_for('main.edit_week',raw_date=plaene[0].Datum) }}">Editieren</a>
-                    </li>
+        <div class="row text-center">
+            <a class="col" href="{{ url_for('main.week',raw_date=previous) }}" aria-label="Vorherige Woche">
+                <span aria-hidden="true">&laquo;</span>
+                <span class="visually-hidden">Vorherige Woche</span>
+            </a>
+            <a class="col" href="{{ url_for('main.week_overview') }}" title="overview">
+                <svg class="bi" width="1em" height="1em" fill="currentColor"> <use xlink:href="/bootstrap/static/icons/bootstrap-icons.svg#house-fill"></use></svg>
+            </a>
+            {% if  current_user.is_authenticated  %}
+            <a class="col" href="{{ url_for('main.print_week',raw_date=plaene[0].Datum) }}">
+                <svg class="bi" width="1em" height="1em" fill="currentColor"> <use xlink:href="/bootstrap/static/icons/bootstrap-icons.svg#printer-fill"></use></svg>
+            </a>
+            <a class="col" href="{{ url_for('main.edit_week',raw_date=plaene[0].Datum) }}">
+                <svg class="bi" width="1em" height="1em" fill="currentColor"> <use xlink:href="/bootstrap/static/icons/bootstrap-icons.svg#pencil-fill"></use></svg>
+            </a>
             {% endif %}
-                <li class="page-item">
-                    <a class="page-link" href="{{ url_for('main.week',raw_date=next) }}" aria-label="Nächste Woche">
-                        <span class="sr-only">Nächste Woche</span>
-                        <span aria-hidden="true">&raquo;</span>
-                    </a>
-                </li>
-            </ul>
-        </nav>
+            <a class="col" href="{{ url_for('main.week',raw_date=next) }}" aria-label="Nächste Woche">
+                <span class="visually-hidden">Nächste Woche</span>
+                <span aria-hidden="true">&raquo;</span>
+            </a>
+        </div>
         <div class="text-center">
                 <h1>Wochenplan</h1>für die Kalenderwoche <b>{{ kw }}</b>
                 vom {{ plaene[0].Datum | format_date(kl_format="medium") }} bis

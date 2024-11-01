@@ -6,13 +6,14 @@
            <nav aria-label="Wochennavigation">
             <ul class="pagination justify-content-center">
                 <li class="page-item">
-                    <a class="page-link" href="{{ url_for('main.week',raw_date=previous) }}" aria-label="Vorherige Woche">
-                        <span aria-hidden="true">&laquo;</span>
-                        <span class="sr-only">Vorherige Woche</span>
+                    <a class="page-link" href="{{ url_for('main.week',raw_date=previous) }}" aria-label="">
+                        <span aria-hidden="true">&laquo;</span> <span class="visually-hidden"></span>
                     </a>
                 </li>
                 <li class="page-item">
-                    <a class="page-link" href="{{ url_for('main.week_overview') }}" aria-label="Übersicht">Übersicht</a>
+                    <a class="page-link" href="{{ url_for('main.week_overview') }}" aria-label="Übersicht">
+                        <span aria-hidden="true">&laquo;</span> <span class="visually-hidden">Übersicht</span>
+                    </a>
                 </li>
                 {% if  current_user.is_authenticated  %}
                     <li class="page-item">
@@ -24,7 +25,7 @@
             {% endif %}
                 <li class="page-item">
                     <a class="page-link" href="{{ url_for('main.week',raw_date=next) }}" aria-label="Nächste Woche">
-                        <span class="sr-only">Nächste Woche</span>
+                        <span class="visually-hidden">Nächste Woche</span>
                         <span aria-hidden="true">&raquo;</span>
                     </a>
                 </li>
@@ -37,7 +38,8 @@
                 zum {{ plaene[-1].Datum | format_date(kl_format="medium") }}
 
         </div>
-        <table class="table table-responsive">
+        <div class="table-responsive">
+        <table class="table">
             <thead class="table-dark">
             <tr>
                 {% for entry in plaene %}
@@ -56,5 +58,6 @@
 
             </tr>
         </table>
+        </div>
     </div>
 {% endblock %}
