@@ -7,8 +7,6 @@
         <div class="row">
             <h6 class="text-center"> Anzahl aller Benutzer in der Datenbank: {{ data|count }}</h6>
         </div>
-
-
             <table class="table-responsive table table-striped table-hover">
                 <thead class="table-dark">
                     <tr>
@@ -41,12 +39,12 @@
                         <td>{{ user.updated_at }}</td>
                         <td>
                             <a class="action-icon text-decoration-none" href="{{ url_for('user.edit', user_id=user.id) }}" title="Edit User">
-                            <svg class="bi" width="1em" height="1em" fill="currentColor"> <use xlink:href="/bootstrap/static/icons/bootstrap-icons.svg#pencil-fill"></use></svg>
+                            <svg class="bi" > <use href="/bootstrap/static/icons/bootstrap-icons.svg#pencil-fill"></use></svg>
                             </a>
                             <form class="d-inline" action="{{ url_for('user.delete', user_id=user.id) }}" method="post">
                                 <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
                                 <button type="submit" class="btn btn-link p-0 border-0 align-baseline" title="Delete">
-                                    <svg class="bi" width="1em" height="1em" fill="currentColor"><use xlink:href="/bootstrap/static/icons/bootstrap-icons.svg#trash-fill"></use>></svg>
+                                    <svg class="bi" width="1em" height="1em" fill="currentColor"><use href="/bootstrap/static/icons/bootstrap-icons.svg#trash-fill"></use>></svg>
                                 </button>
                                 </form>
 
