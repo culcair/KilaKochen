@@ -2,6 +2,9 @@
 
 {% block content %}
     <div class="container">
+    {%  if plan == None %}
+    <div>Für den {{ date.strftime('%d.%m.%Y') }} gibt es noch keinen Speiseplan</div>
+    {% else %}
         <table>
             <thead>
             <tr>
@@ -11,9 +14,9 @@
             <tr>
                 <td>Hauptgericht</td>
                 <td>
-                    {% if plan.Hauptgericht != None %}
+                    {% if plan.main_dish != None %}
                         <a class="btn btn-primary"
-                           href="{{ url_for('recipe.view',recipe_id=plan.Hauptgericht.ID) }}">{{ plan.Hauptgericht.Titel }}</a>
+                           href="{{ url_for('recipe.view',recipe_id=plan.main_dish.id) }}">{{ plan.main_dish.name }}</a>
                     {% else %}
                         -
                     {% endif %}
@@ -22,9 +25,9 @@
             <tr>
                 <td>Beilage</td>
                 <td>
-                    {% if plan.Beilage != None %}
+                    {% if plan.side_dish != None %}
                         <a class="btn btn-primary"
-                           href="{{ url_for('recipe.view',recipe_id=plan.Beilage.ID) }}">{{ plan.Beilage.Titel }}</a>
+                           href="{{ url_for('recipe.view',recipe_id=plan.side_dish.id) }}">{{ plan.side_dish.name }}</a>
                     {% else %}
                         -
                     {% endif %}
@@ -33,9 +36,9 @@
             <tr>
                 <td>Dessert</td>
                 <td>
-                    {% if plan.Dessert != None %}
+                    {% if plan.dessert != None %}
                         <a class="btn btn-primary"
-                           href="{{ url_for('recipe.view',recipe_id=plan.Dessert.ID) }}">{{ plan.Dessert.Titel }}</a>
+                           href="{{ url_for('recipe.view',recipe_id=plan.dessert.id) }}">{{ plan.dessert.name }}</a>
                     {% else %}
                         -
                     {% endif %}
@@ -44,8 +47,8 @@
             <tr>
                 <td>Ausfall</td>
                 <td>
-                    {% if plan.Ausfall != None %}
-                        {{ plan.Ausfall }}
+                    {% if plan.outage != None %}
+                        {{ plan.outage }}
                     {% else %}
                         -
                     {% endif %}
@@ -54,8 +57,8 @@
             <tr>
                 <td>Anmerkung</td>
                 <td>
-                    {% if plan.Anmerkung != None %}
-                        {{ plan.Anmerkung }}
+                    {% if plan.comment != None %}
+                        {{ plan.comment }}
                     {% else %}
                         -
                     {% endif %}
@@ -63,5 +66,6 @@
                 </td>
             </tr>
         </table>
+    {% endif %}
     </div>
 {% endblock %}

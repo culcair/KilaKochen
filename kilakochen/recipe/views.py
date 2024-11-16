@@ -1,101 +1,77 @@
 from decimal import Decimal
+from pprint import pprint
 from typing import List, Optional
 
-from flask_login import login_required
+from flask_login import login_required, current_user
 from flask_weasyprint import HTML, render_pdf
+
+from kilakochen.models import Recipe, Ingredient, RecipeIngredient
 from kilakochen.recipe import bp
 from datetime import datetime
 
 from flask import flash, redirect, render_template, url_for, request
-from kilakochen.models import Rezepte, RezepteZutaten
+from kilakochen.old_models import Rezepte, RezepteZutaten
 
 from kilakochen import db
-from kilakochen.recipe.forms import RezeptForm, ZutatenForm
+from kilakochen.recipe.forms import RezeptForm, ZutatenForm, RecipeForm, IngredientForm
 
 
-def create_new_recipe(
-    titel: str,
-    zubereitung: str,
-    author: str,
-    kategorie_id: Optional[int],
-    zutaten: List[dict],
-):
+def create_new_recipe( form : RecipeForm ) -> str:
     """
     Erstellt ein neues Rezept und fügt die Zutaten hinzu.
 
-    :param titel: Titel des Rezepts
-    :param zubereitung: Zubereitungsbeschreibung
-    :param author: Autor des Rezepts
-    :param kategorie_id: ID der Rezeptkategorie (optional)
-    :param zutaten: Liste der Zutaten mit Menge und Einheit. Beispiel:
-                    [{'zutat_id': 1, 'menge': Decimal('100'), 'einheit_id': 1}, ...]
     """
     try:
-        # Erstelle neues Rezept
-        neues_rezept = Rezepte(
-            Titel=titel,
-            Zubereitung=zubereitung,
-            author=author,
-            created_at=datetime.now().date(),
-            KategorieID=kategorie_id,
-            updated_at=datetime.now(),
-        )
-        db.session.add(neues_rezept)
-        db.session.commit()
-
-        # Füge die Zutaten zum Rezept hinzu
-        for zutat in zutaten:
-            neue_zutat = RezepteZutaten(
-                RezeptID=neues_rezept.ID,
-                ZutatID=zutat["zutat_id"],
-                Menge=Decimal(zutat["menge"]),
-                EinheitID=zutat["einheit_id"],
-                Stand=datetime.now(),
-            )
-            db.session.add(neue_zutat)
-
-        db.session.commit()
-        return f"Rezept '{titel}' wurde erfolgreich erstellt!"
-
+        if db.session.query(
+            Recipe.query.filter_by(name=form.name.data).exists()
+        ).scalar():
+            return f"Fehler"
+        else:
+            return "Alles gut"
     except Exception as e:
-        db.session.rollback()
-        return f"Fehler beim Erstellen des Rezepts: {str(e)}"
+        return f"Fehler"
+
 
 
 @bp.route("/")
 @bp.route("/overview")
 def overview():
-    data = Rezepte.query.order_by(Rezepte.Titel).all()
+#    data = Rezepte.query.order_by(Rezepte.Titel).all()
+    if current_user.is_authenticated:
+        data = Recipe.query.order_by(Recipe.name).all()
+    else:
+        data = Recipe.query.filter_by(active=True).order_by(Recipe.name).all()
     return render_template(
         "recipe/overview.html", page_title="Übersicht der Rezepte", data=data
     )
 
 
-@bp.route("/<int:recipe_id>/view")
+@bp.route("/view/<int:recipe_id>")
 def view(recipe_id):
     if request.referrer:
         back_ref_url = request.referrer
     else:
-        back_ref_url=""
-    data = Rezepte.query.filter_by(ID=recipe_id).one_or_404()
-    allergene = set()
-    for zutat in data.rezepte_zutaten:
-        for allergen in zutat.zutaten.allergene:
-            allergene.add(allergen.Bezeichnung)
+        back_ref_url = ""
+    data = Recipe.query.filter_by(id=recipe_id).one_or_404()
+    allergens = set()
+    for recipe_ingredient in data.ingredients:
+        for allergen in recipe_ingredient.ingredient.allergens:
+            allergens.add(allergen.name)
+
 
     return render_template(
         "recipe/view.html",
-        page_title="Rezept | " + data.Titel,
-        rezept_name=data.Titel,
+        page_title="Rezept | " + data.name,
+        rezept_name=data.name,
         data=data,
-        allergene=", ".join(allergene),
-        back_ref_url=back_ref_url
+        allergens=' , '.join(allergens),
+        back_ref_url=back_ref_url,
     )
 
 
-@bp.route("/<int:recipe_id>/print")
+@bp.route("/print/<int:recipe_id>")
 def recipe_print(recipe_id):
-    data = Rezepte.query.filter_by(ID=recipe_id).one_or_404()
+    data = Recipe.query.filter_by(id=recipe_id).one_or_404()
 
     html_string = render_template(
         "recipe/print.html",
@@ -106,63 +82,35 @@ def recipe_print(recipe_id):
 
     tmp = HTML(string=html_string)
 
-    download_filename = "{}_{}.pdf".format("KiLaKochen", data.ID)
-    return render_pdf(tmp,automatic_download=True,download_filename=download_filename)
+    download_filename = "{}_{}.pdf".format("KiLaKochen", data.id)
+    return render_pdf(tmp, automatic_download=True, download_filename=download_filename)
 
 
 @bp.route("/new", methods=["GET", "POST"])
 @login_required
 def new():
-    form = RezeptForm()
-    template_form = ZutatenForm(prefix='zutaten-_-')
+    form = RecipeForm()
+    template_form = IngredientForm(prefix="ingredient-_-")
     if form.validate_on_submit():
-        # Verarbeite das Formular, um das Rezept und die Zutaten zu speichern
-        zutaten_liste = []
-        for zutat_form in form.zutaten.entries:
-            zutaten_liste.append(
-                {
-                    "zutat_id": zutat_form.zutat.data.ID,
-                    "menge": zutat_form.menge.data,
-                    "einheit_id": zutat_form.einheit.data.ID,
-                }
-            )
-        # Verwende die oben definierte create_new_recipe-Funktion
-        result = create_new_recipe(
-            titel=form.titel.data,
-            zubereitung=form.zubereitung.data,
-            author=form.author.data,
-            kategorie_id=form.kategorie.data.ID if form.kategorie.data else None,
-            zutaten=zutaten_liste,
-            
-        )
-        flash(result,category="info")
+        result = create_new_recipe(form)
+        flash(result, category="info")
         return redirect(url_for("recipe.overview"))
 
-    return render_template("recipe/new.html", form=form,_template=template_form)
+    return render_template("recipe/new.html", form=form, _template=template_form)
 
-def populate_recipe_form(recipe: Rezepte) -> RezeptForm:
-    form : RezeptForm = RezeptForm()
-    form.author.data = recipe.author
-    form.kategorie.data = recipe.rezeptkategorien
-    form.zubereitung.data = recipe.Zubereitung
-    # Leere die Zutatenliste, bevor sie neu befüllt wird
-    form.zutaten.entries = []
 
-    # Füge die vorhandenen Zutaten des Rezeptes hinzu
-    for rezept_zutat in recipe.rezepte_zutaten:
-        # Erstelle ein neues Zutatenformular
-        zutat_form = ZutatenForm()
-
-        # Befülle die Felder des Zutatenformulars
-        zutat_form.zutat.data = rezept_zutat.zutaten  # QuerySelectField für Zutat
-        zutat_form.menge.data = rezept_zutat.Menge  # DecimalField für Menge
-        zutat_form.einheit.data = rezept_zutat.einheiten  # QuerySelectField für Einheit
-
-        # Füge das befüllte Zutatenformular der FieldList hinzu
-        form.zutaten.append_entry(zutat_form)
-
-    return form
-
-@bp.route("/<int:recipe_id>/edit")
+@bp.route("/edit/<int:recipe_id>", methods=["GET", "POST"])
 def edit(recipe_id):
-    return redirect(url_for("recipe.view", recipe_id=recipe_id))
+    recipe = Recipe.query.filter_by(id=recipe_id).one_or_404()
+    form = RecipeForm(obj=recipe)
+    template_form = IngredientForm(prefix="ingredient-_-")
+
+    if form.validate_on_submit():
+        form.populate_obj(recipe)
+        db.session.commit()
+        url_recipe = url_for("recipe.view",recipe_id=recipe.id)
+        flash(f'Das Rezept <a href="{url_recipe}">{recipe.name}</a> wurde aktualisiert',category="success")
+        return redirect(url_for("recipe.overview"))
+
+    return render_template("recipe/edit.html", form=form, _template=template_form,recipe=recipe)
+

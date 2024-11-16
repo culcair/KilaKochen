@@ -19,21 +19,21 @@
             </thead>
             {% for zutat in data %}
                 <tr>
-                    <td>{{ zutat.Bezeichnung }}</td>
-                    <td>{{ zutat.zutatengruppen.Bezeichnung }}</td>
+
                     <td>
-                        {% for allergen in zutat.allergene %}
+                        {{ zutat.name }}</td>
+                    <td>{{ zutat.group.description }}</td>
+                    <td>
+                        {% for allergen in zutat.allergens %}
                             <a data-bs-toggle="tooltip" data-bs-placement="top"
-                               title="{{ allergen.Bezeichnung }}">{{ allergen.Kuerzel }}</a>
+                               title="{{ allergen.name }}">{{ allergen.code }}</a>
                         {% endfor %}
                     </td>
                 </tr>
             {% endfor %}
         </table>
-        <div>
-            {% for allergen in allergene %}
-                {{ allergen.Kuerzel }}={{ allergen.Bezeichnung }},
-            {% endfor %}
+        <div class="row">
+            {{ allergens }}
         </div>
     </div>
 {% endblock %}

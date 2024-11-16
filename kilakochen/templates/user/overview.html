@@ -7,7 +7,8 @@
         <div class="row">
             <h6 class="text-center"> Anzahl aller Benutzer in der Datenbank: {{ data|count }}</h6>
         </div>
-            <table class="table-responsive table table-striped table-hover">
+        <div class="table-responsive">
+            <table class="table table-striped table-hover">
                 <thead class="table-dark">
                     <tr>
                         <th scope="col">#</th>
@@ -33,18 +34,28 @@
 
                         <td>{{ user.email }}</td>
                         <td>{{ user.level }}</td>
-                        <td>{{ user.active }}</td>
+                        <td>
+                            {% if user.active %}
+                                        <svg class="text-primary kl-icon-sm"> <use href="/bootstrap/static/icons/bootstrap-icons.svg#check-square-fill"></use></svg>
+                                    {% else %}
+                                        <svg class="text-primary kl-icon-sm"> <use href="/bootstrap/static/icons/bootstrap-icons.svg#dash-square-fill"></use></svg>
+                                    {% endif %}
+                        </td>
                         <td>{{ user.last_seen }}</td>
                         <td>{{ user.created_at }}</td>
                         <td>{{ user.updated_at }}</td>
                         <td>
                             <a class="action-icon text-decoration-none" href="{{ url_for('user.edit', user_id=user.id) }}" title="Edit User">
-                            <svg class="bi" > <use href="/bootstrap/static/icons/bootstrap-icons.svg#pencil-fill"></use></svg>
+                            <svg class="bi kl-icon-sm"> <use href="/bootstrap/static/icons/bootstrap-icons.svg#pencil-fill"></use></svg>
                             </a>
-                            <form class="d-inline" action="{{ url_for('user.delete', user_id=user.id) }}" method="post">
+                            <form class="d-inline" action="{{ url_for('user.status_change', user_id=user.id) }}" method="post">
                                 <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
-                                <button type="submit" class="btn btn-link p-0 border-0 align-baseline" title="Delete">
-                                    <svg class="bi" width="1em" height="1em" fill="currentColor"><use href="/bootstrap/static/icons/bootstrap-icons.svg#trash-fill"></use>></svg>
+                                <button type="submit" class="btn btn-link p-0 border-0 align-baseline" title="Change Status">
+                                    {% if user.active %}
+                                        <svg class="bi kl-icon-sm"> <use href="/bootstrap/static/icons/bootstrap-icons.svg#sign-stop-fill"></use></svg>
+                                    {% else %}
+                                        <svg class="bi kl-icon-sm"> <use href="/bootstrap/static/icons/bootstrap-icons.svg#door-open-fill"></use></svg>
+                                    {% endif %}
                                 </button>
                                 </form>
 
@@ -53,7 +64,7 @@
                 {% endfor %}
                 </tbody>
             </table>
-
+        </div>
     </div>
 
 {% endblock %}

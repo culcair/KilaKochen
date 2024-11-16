@@ -12,11 +12,11 @@
                 <span class="visually-hidden">Übersicht</span>
             </a>
             {% if  current_user.is_authenticated  %}
-            <a class="col" href="{{ url_for('main.print_week',raw_date=plaene[0].Datum) }}">
+            <a class="col" href="{{ url_for('main.print_week',raw_date=plaene[0].date) }}">
                 <svg class="bi kl-icon"> <use href="/bootstrap/static/icons/bootstrap-icons.svg#printer-fill"></use></svg>
                 <span class="visually-hidden">Drucken</span>
             </a>
-            <a class="col" href="{{ url_for('main.edit_week',raw_date=plaene[0].Datum) }}">
+            <a class="col" href="{{ url_for('main.edit_week',raw_date=plaene[0].date) }}">
                 <svg class="bi kl-icon"> <use href="/bootstrap/static/icons/bootstrap-icons.svg#pencil-fill"></use></svg>
                 <span class="visually-hidden">Editieren</span>
             </a>
@@ -28,8 +28,8 @@
         </div>
         <div class="text-center">
                 <h1>Wochenplan</h1>für die Kalenderwoche <b>{{ kw }}</b>
-                vom {{ plaene[0].Datum | format_date(kl_format="medium") }} bis
-                zum {{ plaene[-1].Datum | format_date(kl_format="medium") }}
+                vom {{ plaene[0].date | format_date(kl_format="medium") }} bis
+                zum {{ plaene[-1].date | format_date(kl_format="medium") }}
         </div>
 
 
@@ -41,10 +41,10 @@
                     {% for entry in plaene %}
                         {% if current_user.is_authenticated %}
                             <th scope="col"><a
-                                    href="{{ url_for('main.day_edit',raw_date=entry.Datum) }}">{{ entry.Datum | return_day }}</a>
+                                    href="{{ url_for('main.day_edit',raw_date=entry.date) }}">{{ entry.date | return_day }}</a>
                             </th>
                         {% else %}
-                            <th scope="col">{{ entry.Datum | return_day }}</th>
+                            <th scope="col">{{ entry.date | return_day }}</th>
                         {% endif %}
                     {% endfor %}
                 </tr>
@@ -55,9 +55,9 @@
                     <td>Hauptgericht</td>
                     {% for plan in plaene %}
                         <td>
-                            {% if plan.Hauptgericht != None %}
+                            {% if plan.main_dish != None %}
                                 <a class="btn btn-primary"
-                                   href="{{ url_for('recipe.view',recipe_id=plan.Hauptgericht.ID) }}">{{ plan.Hauptgericht.Titel }}</a>
+                                   href="{{ url_for('recipe.view',recipe_id=plan.main_dish.id) }}">{{ plan.main_dish.name }}</a>
                             {% else %}
                                 -
                             {% endif %}
@@ -68,9 +68,9 @@
                     <td>Beilage</td>
                     {% for plan in plaene %}
                         <td>
-                            {% if plan.Beilage != None %}
+                            {% if plan.side_dish != None %}
                                 <a class="btn btn-primary"
-                                   href="{{ url_for('recipe.view',recipe_id=plan.Beilage.ID) }}">{{ plan.Beilage.Titel }}</a>
+                                   href="{{ url_for('recipe.view',recipe_id=plan.side_dish.id) }}">{{ plan.side_dish.name }}</a>
                             {% else %}
                                 -
                             {% endif %}
@@ -82,9 +82,9 @@
                     <td>Dessert</td>
                     {% for plan in plaene %}
                         <td>
-                            {% if plan.Dessert != None %}
+                            {% if plan.dessert != None %}
                                 <a class="btn btn-primary"
-                                   href="{{ url_for('recipe.view',recipe_id=plan.Dessert.ID) }}">{{ plan.Dessert.Titel }}</a>
+                                   href="{{ url_for('recipe.view',recipe_id=plan.dessert.id) }}">{{ plan.dessert.name }}</a>
                             {% else %}
                                 -
                             {% endif %}

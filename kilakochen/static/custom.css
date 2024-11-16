@@ -1,10 +1,16 @@
 .kl-content {
     padding-top: 90px;
-    padding-bottom: 60px;
+    padding-bottom: 90px;
 }
 
 .kl-icon {
     width: 2em;
     height: 2em;
+    fill: currentColor
+}
+
+.kl-icon-sm {
+    width: 1em;
+    height: 1em;
     fill: currentColor
 }

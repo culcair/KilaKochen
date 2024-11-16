@@ -1,22 +1,16 @@
-from typing import Any, List, Optional
+from typing import List
 
+from sqlalchemy import Table, Column, FLOAT, Date
 from sqlalchemy import (
-    CHAR,
-    DECIMAL,
     INTEGER,
-    TEXT,
-    Date,
-    Double,
-    ForeignKeyConstraint,
     String,
     DATETIME,
     Text,
-    text, BOOLEAN,
+    BOOLEAN,
+    ForeignKey,
 )
 from sqlalchemy.orm import Mapped, mapped_column, relationship
-from datetime import datetime,timezone
-
-import decimal
+from datetime import datetime, timezone
 
 from flask_login import UserMixin
 
@@ -35,31 +29,25 @@ class User(db.Model, UserMixin):
     EDITOR_LEVEL = 10
     USER_LEVEL = 5
 
-    ACCESS_LEVEL = {
-        USER_LEVEL : "USER",
-        EDITOR_LEVEL : "EDITOR",
-        ADMIN_LEVEL : "ADMIN"
-    }
+    ACCESS_LEVEL = {USER_LEVEL: "USER", EDITOR_LEVEL: "EDITOR", ADMIN_LEVEL: "ADMIN"}
 
     id: Mapped[int] = mapped_column(INTEGER, primary_key=True)
     first_name: Mapped[str] = mapped_column(Text)
     given_name: Mapped[str] = mapped_column(Text)
-    username: Mapped[str] = mapped_column(Text,unique=True)
+    username: Mapped[str] = mapped_column(Text, unique=True)
     password: Mapped[str] = mapped_column(Text)
     email: Mapped[str] = mapped_column(Text, nullable=True)
     level: Mapped[int] = mapped_column(INTEGER, nullable=True)
     active: Mapped[bool] = mapped_column(BOOLEAN, default=False)
-    last_seen: Mapped[datetime] = mapped_column(DATETIME,nullable=True)
+    last_seen: Mapped[datetime] = mapped_column(DATETIME, nullable=True)
     created_at: Mapped[datetime] = mapped_column(
-        DATETIME, default=lambda: datetime.now(timezone.utc),
-        nullable=True
+        DATETIME, default=lambda: datetime.now(timezone.utc), nullable=True
     )
     updated_at: Mapped[datetime] = mapped_column(
-        DATETIME, default=lambda: datetime.now(timezone.utc),
-        nullable=True
+        DATETIME, default=lambda: datetime.now(timezone.utc), nullable=True
     )
 
-    def  set_password(self, password) -> None:
+    def set_password(self, password) -> None:
         self.password = generate_password_hash(password)
 
     def check_password(self, password) -> bool:
@@ -69,7 +57,9 @@ class User(db.Model, UserMixin):
     def test_password(password):
         return generate_password_hash(password)
 
-    def __init__(self, username, given_name, first_name, level=1, active=True,email=None) -> None:
+    def __init__(
+        self, username=None, given_name=None, first_name=None, level=1, active=True, email=None
+    ) -> None:
         self.given_name = given_name
         self.first_name = first_name
         self.username = username
@@ -81,245 +71,205 @@ class User(db.Model, UserMixin):
         return f"<User {self.username} {self.id}>"
 
 
-class Allergene(db.Model):
-    ID: Mapped[int] = mapped_column(INTEGER, primary_key=True)
-    Kuerzel: Mapped[str] = mapped_column(CHAR(2), index=True)
-    Bezeichnung: Mapped[str] = mapped_column(String(50), index=True)
-    Aktiv: Mapped[int] = mapped_column(INTEGER, default=text("1"))
-    Stand: Mapped[datetime] = mapped_column(
-        DATETIME, default=lambda: datetime.now(timezone.utc)
-    )
-    Beschreibung: Mapped[Optional[str]] = mapped_column(Text)
-    Kommentar: Mapped[Optional[str]] = mapped_column(Text)
-    zutaten = relationship(
-        "Zutaten", secondary="zutaten_allergene", back_populates="allergene"
-    )
+class Ingredient(db.Model):
+    __tablename__ = "ingredient"
 
+    id: Mapped[int] = mapped_column(INTEGER, primary_key=True)
+    name: Mapped[str] = mapped_column(String, nullable=False, unique=True)
 
-class Einheiten(db.Model):
-    ID: Mapped[int] = mapped_column(INTEGER, primary_key=True)
-    Kuerzel: Mapped[str] = mapped_column(CHAR(3), index=True)
-    Bezeichnung: Mapped[str] = mapped_column(String(50), index=True)
-    Beschreibung: Mapped[str] = mapped_column(TEXT)
-    Aktiv: Mapped[int] = mapped_column(INTEGER, server_default=text("1"))
-    Stand: Mapped[datetime] = mapped_column(
-        DATETIME, default=lambda: datetime.now(timezone.utc)
-    )
-    BasiseinheitID: Mapped[Optional[int]] = mapped_column(INTEGER)
-    BasiseinheitFaktor: Mapped[Optional[decimal.Decimal]] = mapped_column(
-        DECIMAL(16, 8)
-    )
-    Kommentar: Mapped[Optional[str]] = mapped_column(Text)
-    Sortierung: Mapped[Optional[int]] = mapped_column(INTEGER)
+    active: Mapped[bool] = mapped_column(BOOLEAN, default=True)
 
-    rezepte_zutaten: Mapped[List["RezepteZutaten"]] = relationship(
-        "RezepteZutaten", back_populates="einheiten"
+    group_id: Mapped[int] = mapped_column(
+        ForeignKey("ingredients_group.id"), nullable=True
+    )
+    group: Mapped["IngredientsGroup"] = relationship(
+        "IngredientsGroup", back_populates="ingredients"
     )
 
-
-class Rezeptkategorien(db.Model):
-    ID: Mapped[int] = mapped_column(INTEGER, primary_key=True)
-    BezeichnungSingular: Mapped[str] = mapped_column(String(50), index=True)
-    BezeichnungPlural: Mapped[str] = mapped_column(String(50), index=True)
-    URL: Mapped[str] = mapped_column(String(60), index=True)
-    Aktiv: Mapped[int] = mapped_column(INTEGER, server_default=text("1"))
-    Stand: Mapped[datetime] = mapped_column(
-        DATETIME, default=lambda: datetime.now(timezone.utc)
-    )
-    Ueberarbeitet: Mapped[Any] = mapped_column(INTEGER, default=0)
-    Beschreibung: Mapped[Optional[str]] = mapped_column(TEXT)
-    Kuerzel: Mapped[Optional[str]] = mapped_column(CHAR(3), index=True)
-    Sortierung: Mapped[Optional[int]] = mapped_column(INTEGER)
-
-    rezepte: Mapped[List["Rezepte"]] = relationship(
-        "Rezepte", back_populates="rezeptkategorien"
+    recipes: Mapped[list["Recipe"]] = relationship(
+        "RecipeIngredient", back_populates="ingredient"
     )
 
-
-class Zutatengruppen(db.Model):
-    ID: Mapped[int] = mapped_column(INTEGER, primary_key=True)
-    Bezeichnung: Mapped[str] = mapped_column(String(50), index=True)
-    Aktiv: Mapped[int] = mapped_column(INTEGER, server_default=text("1"))
-    Stand: Mapped[datetime] = mapped_column(
-        DATETIME, default=lambda: datetime.now(timezone.utc)
+    # Many-to-Many Beziehung zu Ingredient
+    allergens: Mapped[list["Allergen"]] = relationship(
+        "Allergen", secondary="ingredient_allergen", back_populates="ingredients"
     )
-    Ueberarbeitet: Mapped[Any] = mapped_column(INTEGER, default=0)
-    Kuerzel: Mapped[Optional[str]] = mapped_column(CHAR(3), index=True)
-    Sortierung: Mapped[Optional[int]] = mapped_column(INTEGER)
-
-    zutaten: Mapped[List["Zutaten"]] = relationship(
-        "Zutaten", back_populates="zutatengruppen"
+    created_at: Mapped[datetime] = mapped_column(
+        DATETIME, default=lambda: datetime.now(timezone.utc), nullable=True
     )
-
-
-class Rezepte(db.Model):
-    __table_args__ = (
-        ForeignKeyConstraint(
-            ["KategorieID"], ["rezeptkategorien.ID"], name="rezepte_rezeptkategorien"
-        ),
-    )
-
-    ID: Mapped[int] = mapped_column(INTEGER, primary_key=True)
-    Titel: Mapped[str] = mapped_column(String(50), index=True)
-    Zubereitung: Mapped[str] = mapped_column(TEXT)
     updated_at: Mapped[datetime] = mapped_column(
-        DATETIME, default=lambda: datetime.now(timezone.utc)
-    )
-    Ueberarbeitet: Mapped[Any] = mapped_column(INTEGER, default=0)
-    author: Mapped[str] = mapped_column(TEXT)
-    created_at: Mapped[datetime.date] = mapped_column(Date)
-    KategorieID: Mapped[Optional[int]] = mapped_column(INTEGER)
-
-    rezeptkategorien: Mapped["Rezeptkategorien"] = relationship(
-        "Rezeptkategorien", back_populates="rezepte"
-    )
-    essensplan_beilage: Mapped[List["Essensplan"]] = relationship(
-        "Essensplan",
-        foreign_keys="[Essensplan.BeilageRezeptID]",
-        back_populates="Beilage",
-    )
-    essensplan_dessert: Mapped[List["Essensplan"]] = relationship(
-        "Essensplan",
-        foreign_keys="[Essensplan.DessertRezeptID]",
-        back_populates="Dessert",
-    )
-    essensplan_hauptgericht: Mapped[List["Essensplan"]] = relationship(
-        "Essensplan",
-        foreign_keys="[Essensplan.HauptgerichtRezeptID]",
-        back_populates="Hauptgericht",
-    )
-    rezepte_zutaten: Mapped[List["RezepteZutaten"]] = relationship(
-        "RezepteZutaten", back_populates="rezepte"
+        DATETIME, default=lambda: datetime.now(timezone.utc), nullable=True
     )
 
 
-class Zutaten(db.Model):
-    __table_args__ = (
-        ForeignKeyConstraint(
-            ["GruppeID"], ["zutatengruppen.ID"], name="zutaten_zutatengruppen"
-        ),
+class Allergen(db.Model):
+    __tablename__ = "allergen"
+
+    id: Mapped[int] = mapped_column(INTEGER, primary_key=True)
+    name: Mapped[str] = mapped_column(String, nullable=False, unique=True)
+    code: Mapped[str] = mapped_column(String(3), nullable=False)
+    description: Mapped[str] = mapped_column(String, nullable=False)
+    active: Mapped[bool] = mapped_column(BOOLEAN, default=False)
+
+    # Many-to-Many Beziehung zu Ingredient
+    ingredients: Mapped[list["Ingredient"]] = relationship(
+        "Ingredient", secondary="ingredient_allergen", back_populates="allergens"
     )
 
-    ID: Mapped[int] = mapped_column(INTEGER, primary_key=True)
-    Bezeichnung: Mapped[str] = mapped_column(String(50), index=True)
-    Stand: Mapped[datetime] = mapped_column(
-        DATETIME, default=lambda: datetime.now(timezone.utc)
+    created_at: Mapped[datetime] = mapped_column(
+        DATETIME, default=lambda: datetime.now(timezone.utc), nullable=True
     )
-    Ueberarbeitet: Mapped[Any] = mapped_column(INTEGER, default=0)
-    Beschreibung: Mapped[Optional[str]] = mapped_column(TEXT)
-    GruppeID: Mapped[Optional[int]] = mapped_column(INTEGER)
-    Aktiv: Mapped[Optional[int]] = mapped_column(INTEGER, server_default=text("1"))
-    Sortierung: Mapped[Optional[int]] = mapped_column(INTEGER)
-    zutat_quelle: Mapped[Optional[str]] = mapped_column(TEXT)
-    zutat_auth: Mapped[Optional[str]] = mapped_column(TEXT)
-    zutat_date: Mapped[Optional[datetime.date]] = mapped_column(Date)
-
-    zutatengruppen: Mapped["Zutatengruppen"] = relationship(
-        "Zutatengruppen", back_populates="zutaten"
-    )
-    rezepte_zutaten: Mapped[List["RezepteZutaten"]] = relationship(
-        "RezepteZutaten", back_populates="zutaten"
-    )
-    allergene = relationship(
-        "Allergene", secondary="zutaten_allergene", back_populates="zutaten"
+    updated_at: Mapped[datetime] = mapped_column(
+        DATETIME, default=lambda: datetime.now(timezone.utc), nullable=True
     )
 
 
-class Essensplan(db.Model):
-    __table_args__ = (
-        ForeignKeyConstraint(
-            ["BeilageRezeptID"], ["rezepte.ID"], name="essensplan_rezepte_Beilage"
-        ),
-        ForeignKeyConstraint(
-            ["DessertRezeptID"], ["rezepte.ID"], name="essensplan_rezepte_Dessert"
-        ),
-        ForeignKeyConstraint(
-            ["HauptgerichtRezeptID"],
-            ["rezepte.ID"],
-            name="essensplan_rezepte_Hautgericht",
-        ),
+ingredient_allergen_table = Table(
+    "ingredient_allergen",
+    db.Model.metadata,
+    Column("IngredientID", INTEGER, db.ForeignKey("ingredient.id"), primary_key=True),
+    Column("AllergenID", INTEGER, db.ForeignKey("allergen.id"), primary_key=True),
+)
+
+
+class IngredientsGroup(db.Model):
+    __tablename__ = "ingredients_group"
+    id: Mapped[int] = mapped_column(INTEGER, primary_key=True)
+    description: Mapped[str] = mapped_column(String)
+    code: Mapped[str] = mapped_column(String(3))
+    active: Mapped[bool] = mapped_column(BOOLEAN, default=False)
+    ingredients: Mapped[list["Ingredient"]] = relationship(
+        "Ingredient", back_populates="group"
+    )
+    created_at: Mapped[datetime] = mapped_column(
+        DATETIME, default=lambda: datetime.now(timezone.utc), nullable=True
+    )
+    updated_at: Mapped[datetime] = mapped_column(
+        DATETIME, default=lambda: datetime.now(timezone.utc), nullable=True
     )
 
-    ID: Mapped[int] = mapped_column(INTEGER, primary_key=True)
-    Datum: Mapped[datetime.date] = mapped_column(Date, index=True)
-    Stand: Mapped[datetime] = mapped_column(
-        DATETIME,
-        default=lambda: datetime.now(timezone.utc),
-        onupdate=lambda: datetime.now(timezone.utc),
-    )
-    HauptgerichtRezeptID: Mapped[Optional[int]] = mapped_column(INTEGER)
-    BeilageRezeptID: Mapped[Optional[int]] = mapped_column(INTEGER)
-    DessertRezeptID: Mapped[Optional[int]] = mapped_column(INTEGER)
-    Ausfall: Mapped[Optional[int]] = mapped_column(INTEGER)
-    Anmerkung: Mapped[Optional[str]] = mapped_column(String(400))
 
-    Beilage: Mapped["Rezepte"] = relationship(
-        "Rezepte", foreign_keys=[BeilageRezeptID], back_populates="essensplan_beilage"
+class RecipeIngredient(db.Model):
+    __tablename__ = "recipe_ingredient"
+
+    recipe_id: Mapped[int] = mapped_column(ForeignKey("recipe.id"), primary_key=True)
+    ingredient_id: Mapped[int] = mapped_column(
+        ForeignKey("ingredient.id"), primary_key=True
     )
-    Dessert: Mapped["Rezepte"] = relationship(
-        "Rezepte", foreign_keys=[DessertRezeptID], back_populates="essensplan_dessert"
+    amount: Mapped[float] = mapped_column(FLOAT, nullable=False)
+
+    # Beziehungen zu Recipe, Ingredient und Unit
+    recipe: Mapped["Recipe"] = relationship("Recipe", back_populates="ingredients")
+    ingredient: Mapped["Ingredient"] = relationship(
+        "Ingredient", back_populates="recipes"
     )
-    Hauptgericht: Mapped["Rezepte"] = relationship(
-        "Rezepte",
-        foreign_keys=[HauptgerichtRezeptID],
-        back_populates="essensplan_hauptgericht",
+
+    unit_id: Mapped[int] = mapped_column(ForeignKey("unit.id"))
+    unit: Mapped["Unit"] = relationship("Unit")
+
+    created_at: Mapped[datetime] = mapped_column(
+        DATETIME, default=lambda: datetime.now(timezone.utc), nullable=True
+    )
+    updated_at: Mapped[datetime] = mapped_column(
+        DATETIME, default=lambda: datetime.now(timezone.utc), nullable=True
+    )
+
+
+class Recipe(db.Model):
+    __tablename__ = "recipe"
+
+    id: Mapped[int] = mapped_column(INTEGER, primary_key=True)
+    name: Mapped[str] = mapped_column(String, nullable=False)
+    description: Mapped[str] = mapped_column(String)
+    active: Mapped[bool] = mapped_column(BOOLEAN, default=False)
+    author: Mapped[str] = mapped_column(String, nullable=False)
+    category_id: Mapped[int] = mapped_column(
+        ForeignKey("recipe_category.id"), nullable=False
+    )
+    category: Mapped["RecipeCategory"] = relationship("RecipeCategory")
+
+    # Beziehung zu RecipeIngredient
+    ingredients: Mapped[list["RecipeIngredient"]] = relationship(
+        "RecipeIngredient", back_populates="recipe", cascade="all, delete-orphan"
+    )
+
+    meal_plan_side_dish: Mapped[List["MealPlan"]] = relationship(
+        "MealPlan",
+        foreign_keys="[MealPlan.side_dish_id]",
+        back_populates="side_dish",
+    )
+    meal_plan_dessert: Mapped[List["MealPlan"]] = relationship(
+        "MealPlan",
+        foreign_keys="[MealPlan.dessert_id]",
+        back_populates="dessert",
+    )
+    meal_plan_main_dish: Mapped[List["MealPlan"]] = relationship(
+        "MealPlan",
+        foreign_keys="[MealPlan.main_dish_id]",
+        back_populates="main_dish",
+    )
+
+    created_at: Mapped[datetime] = mapped_column(
+        DATETIME, default=lambda: datetime.now(timezone.utc), nullable=True
+    )
+    updated_at: Mapped[datetime] = mapped_column(
+        DATETIME, default=lambda: datetime.now(timezone.utc), nullable=True
+    )
+
+
+class RecipeCategory(db.Model):
+    __tablename__ = "recipe_category"
+    id: Mapped[int] = mapped_column(INTEGER, primary_key=True)
+    name: Mapped[str] = mapped_column(String, nullable=False)
+    code: Mapped[str] = mapped_column(String(3))
+    active: Mapped[bool] = mapped_column(BOOLEAN, default=False)
+
+
+class Unit(db.Model):
+    __tablename__ = "unit"
+
+    id: Mapped[int] = mapped_column(INTEGER, primary_key=True)
+    name: Mapped[str] = mapped_column(
+        String, nullable=False, unique=True
+    )  # z.B. "g", "ml", "Stück"
+    code: Mapped[str] = mapped_column(String(3))
+    active: Mapped[bool] = mapped_column(BOOLEAN, default=False)
+    created_at: Mapped[datetime] = mapped_column(
+        DATETIME, default=lambda: datetime.now(timezone.utc), nullable=True
+    )
+    updated_at: Mapped[datetime] = mapped_column(
+        DATETIME, default=lambda: datetime.now(timezone.utc), nullable=True
+    )
+
+
+class MealPlan(db.Model):
+    __tablename__ = "meal_plan"
+    id: Mapped[int] = mapped_column(INTEGER, primary_key=True)
+    outage: Mapped[bool] = mapped_column(BOOLEAN, default=False)
+    comment: Mapped[str] = mapped_column(String, nullable=True)
+    date: Mapped[datetime] = mapped_column(Date, index=True)
+    created_at: Mapped[datetime] = mapped_column(
+        DATETIME, default=lambda: datetime.now(timezone.utc), nullable=True
+    )
+    updated_at: Mapped[datetime] = mapped_column(
+        DATETIME, default=lambda: datetime.now(timezone.utc), nullable=True
+    )
+
+    main_dish_id: Mapped[int] = mapped_column(ForeignKey("recipe.id"), nullable=True)
+    dessert_id: Mapped[int] = mapped_column(ForeignKey("recipe.id"), nullable=True)
+    side_dish_id: Mapped[int] = mapped_column(ForeignKey("recipe.id"), nullable=True)
+
+    side_dish: Mapped["Recipe"] = relationship(
+        "Recipe", foreign_keys=[side_dish_id], back_populates="meal_plan_side_dish"
+    )
+    dessert: Mapped["Recipe"] = relationship(
+        "Recipe", foreign_keys=[dessert_id], back_populates="meal_plan_dessert"
+    )
+    main_dish: Mapped["Recipe"] = relationship(
+        "Recipe",
+        foreign_keys=[main_dish_id],
+        back_populates="meal_plan_main_dish",
     )
 
     def __repr__(self):
-        return "Essensplan " + self.Datum.isoformat() + " " + str(self.ID)
-
-
-class RezepteZutaten(db.Model):
-    __table_args__ = (
-        ForeignKeyConstraint(
-            ["EinheitID"],
-            ["einheiten.ID"],
-            onupdate="CASCADE",
-            name="rezepte_zutaten_einheiten",
-        ),
-        ForeignKeyConstraint(
-            ["RezeptID"],
-            ["rezepte.ID"],
-            ondelete="CASCADE",
-            onupdate="CASCADE",
-            name="rezepte_zutaten_rezepte",
-        ),
-        ForeignKeyConstraint(
-            ["ZutatID"],
-            ["zutaten.ID"],
-            ondelete="CASCADE",
-            onupdate="CASCADE",
-            name="rezepte_zutaten_zutaten",
-        ),
-    )
-
-    ID: Mapped[int] = mapped_column(INTEGER, primary_key=True)
-    RezeptID: Mapped[int] = mapped_column(INTEGER)
-    ZutatID: Mapped[int] = mapped_column(INTEGER)
-    Menge: Mapped[decimal.Decimal] = mapped_column(Double(asdecimal=True))
-    Stand: Mapped[datetime] = mapped_column(
-        DATETIME, default=lambda: datetime.now(timezone.utc)
-    )
-    Ueberarbeitet: Mapped[Any] = mapped_column(INTEGER, default=0)
-    EinheitID: Mapped[Optional[int]] = mapped_column(INTEGER)
-
-    einheiten: Mapped["Einheiten"] = relationship(
-        "Einheiten", back_populates="rezepte_zutaten"
-    )
-    rezepte: Mapped["Rezepte"] = relationship(
-        "Rezepte", back_populates="rezepte_zutaten"
-    )
-    zutaten: Mapped["Zutaten"] = relationship(
-        "Zutaten", back_populates="rezepte_zutaten"
-    )
-
-
-from sqlalchemy import Table, Column
-
-# Kreuztabelle für viele-zu-viele-Beziehung zwischen Zutaten und Allergene
-zutaten_allergene_table = Table(
-    "zutaten_allergene",
-    db.Model.metadata,
-    Column("ZutatID", INTEGER, db.ForeignKey("zutaten.ID"), primary_key=True),
-    Column("AllergenID", INTEGER, db.ForeignKey("allergene.ID"), primary_key=True),
-)
+        return f"MealPlan {self.date.isoformat()} {str(self.id)}"

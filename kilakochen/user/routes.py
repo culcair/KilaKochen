@@ -1,8 +1,6 @@
 from datetime import datetime, timezone
-from typing import Tuple
 
-from sqlalchemy import Column
-from sqlalchemy.orm import load_only
+from sqlalchemy.exc import SQLAlchemyError
 from werkzeug import Response
 
 from kilakochen import db
@@ -14,66 +12,53 @@ from kilakochen.models import User
 from kilakochen.user.forms import CreateUserForm, EditUserForm
 
 
-@bp.route('/overview', methods=['GET', 'POST'])
+@bp.route("/overview", methods=["GET", "POST"])
 @login_required
 def overview():
     all_users = db.session.query(User).all()
-    return render_template(
-        'user/overview.html',
-        data=all_users
-    )
+    return render_template("user/overview.html", data=all_users)
+
 
 def create_user(
-    username: str,
-    first_name: str,
-    given_name: str,
-    password: str,
-    email: str,
-    level:str
+    form : CreateUserForm
 ) -> dict:
     """
     Erzeugt einen neuen Benutzer.
 
-    :param username: Benutzername
-    :param first_name: Vorname
-    :param given_name: Nachname
-    :param password: Passwort
-    :param email: Email
+    :param form: Benutzername
     """
     try:
-        if not db.session.query(User.query.filter_by(username=username).exists()).scalar():
-                new_user = User(
-                    username= username,
-                    first_name=first_name,
-                    given_name=given_name,
-                    email=email,
-                    level=level
-                )
-                db.session.add(new_user)
-                new_user.set_password(password)
-                db.session.commit()
-                return {
-                    "message" :f"Benutzer erfolgreich angelegt ({username})",
-                    "category" : "success"
-                }
+        username = form.username.data
+        if not db.session.query(
+            User.query.filter_by(username=username).exists()
+        ).scalar():
+            new_user = User()
+            form.populate_obj(new_user)
+            db.session.add(new_user)
+            new_user.set_password(form.password.data)
+            db.session.commit()
+            return {
+                "message": f"Benutzer erfolgreich angelegt ({username})",
+                "category": "success",
+            }
 
         else:
             return {
                 "message": f"Benutzername ist nicht eindeutig. Benutzer wurde nicht angelegt (Benutzername={username})",
-                "category": "danger"
+                "category": "danger",
             }
     except Exception as e:
         db.session.rollback()
         return {
-                "message": f"Fehler beim Erstellen des Benutzer: {str(e)}",
-                "category": "warning"
-            }
+            "message": f"Fehler beim Erstellen des Benutzer: {str(e)}",
+            "category": "warning",
+        }
 
 
-@bp.route('/edit:<int:user_id>', methods=['GET', 'POST'])
+@bp.route("/edit:<int:user_id>", methods=["GET", "POST"])
 @login_required
-def edit(user_id :int) -> Response | str | tuple[str, int]:
-    if current_user.is_authenticated :
+def edit(user_id: int) -> Response | str | tuple[str, int]:
+    if current_user.is_authenticated:
         user = User.query.filter_by(id=user_id).first()
         form = EditUserForm(obj=user)
         if form.validate_on_submit():
@@ -82,53 +67,52 @@ def edit(user_id :int) -> Response | str | tuple[str, int]:
             user.email = form.email.data
             user.username = form.username.data
             if form.password.data:
-               user.set_password(form.password.data)
+                user.set_password(form.password.data)
             user.level = form.access_level.data
             user.updated_at = datetime.now(timezone.utc)
             db.session.commit()
-            return redirect(url_for('user.overview'))
+            return redirect(url_for("user.overview"))
 
         return render_template("user/edit.html", form=form)
     else:
-        return render_template('errors/401.html'), 401
+        return render_template("errors/401.html"), 401
 
-@bp.route('/delete:<int:user_id>', methods=['GET','POST'])
+
+@bp.route("/delete:<int:user_id>", methods=["GET", "POST"])
 @login_required
-def delete(user_id :int):
-    if current_user.is_authenticated :
+def status_change(user_id: int):
+    if current_user.is_authenticated:
         if current_user.level >= User.ADMIN_LEVEL:
             try:
-                user = User.query.filter_by(id=user_id).delete()
+                user = User.query.filter_by(id=user_id).first()
+                user.active = not user.active
                 db.session.commit()
-                flash(f'Benutzer {user.username} wurde gelöscht!', 'information')
-            except Exception as e:
+                if user.active:
+                    flash(f"Benutzer {user.username} wurde aktviert!", "success")
+                else:
+                    flash(f"Benutzer {user.username} wurde deaktviert!", "danger")
+            except SQLAlchemyError as e:
+                print(e)
                 db.session.rollback()
 
-            return redirect(url_for('user.overview'))
+            return redirect(url_for("user.overview"))
         else:
 
-            flash(f'Keine Berechtigung zum löschen!', 'danger')
-            return redirect(url_for('user.overview'))
+            flash(f"Keine Berechtigung zum löschen!", "danger")
+            return redirect(url_for("user.overview"))
 
 
-@bp.route('/new', methods=['GET', 'POST'])
+@bp.route("/new", methods=["GET", "POST"])
 @login_required
 def new():
-    if current_user.is_authenticated :
+    if current_user.is_authenticated:
         form = CreateUserForm()
         if form.validate_on_submit():
             if current_user.level >= int(form.access_level.data):
-                result = create_user(
-                    username=form.username.data,
-                    first_name=form.first_name.data,
-                    given_name=form.given_name.data,
-                    password=form.password.data,
-                    email=form.email.data,
-                    level=form.access_level.data,
-                )
-                flash(result["message"],category=result["category"])
-                return redirect(url_for('user.overview'))
+                result = create_user(form)
+                flash(result["message"], category=result["category"])
+                return redirect(url_for("user.overview"))
         else:
             return render_template("user/new.html", form=form)
     else:
-        return render_template('errors/401.html'), 401
+        return render_template("errors/401.html"), 401

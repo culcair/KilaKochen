@@ -17,8 +17,8 @@
                 <tbody>
                 {%  for recipe in data %}
                     <tr>
-                        <td><a href="{{ url_for('recipe.view',recipe_id=recipe.ID) }}">{{ recipe.Titel }}</a></td>
-                        <td>{{ recipe.rezeptkategorien.BezeichnungSingular }}</td>
+                        <td><a href="{{ url_for('recipe.view',recipe_id=recipe.id) }}">{{ recipe.name }}</a></td>
+                        <td>{{ recipe.category.name }}</td>
                     </tr>
                 {% endfor %}
                 </tbody>

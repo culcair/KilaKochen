@@ -26,7 +26,20 @@
                         </ul>
                     </li>
                 {%- endif %}
-                <a class="nav-link nav-item" href="{{ url_for('main.ingredients') }}">Zutaten</a>
+                {% if current_user.is_anonymous -%}
+                    <a class="nav-link nav-item" href="{{ url_for('ingredient.overview') }}">Zutaten</a>
+                {%- else -%}
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
+                           aria-expanded="false">
+                            Zutaten
+                        </a>
+                        <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                            <li><a class="dropdown-item" href="{{ url_for('ingredient.overview') }}">Übersicht</a></li>
+                            <li><a class="dropdown-item" href="{{ url_for('ingredient.new') }}">Neue Zutat</a></li>
+                        </ul>
+                    </li>
+                {%- endif %}
                 <a class="nav-link nav-item" href="{{ url_for('main.week') }}">Wochenplan</a>
                 {% if current_user.is_authenticated %}
                         <li class="nav-item dropdown">

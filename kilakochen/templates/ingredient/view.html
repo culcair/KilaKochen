@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+{% from 'bootstrap5/form.html' import render_form %}
+
+{% block content %}
+    <div class="container">
+        <div class="justify-content-center">
+            <h1>{{ ingredient.name }}</h1>
+            Kategorie: {{ ingredient.group.description }} <br>
+            <div class="row">
+                <div class="col">Allergene:</div>
+                <div class="col">
+                    <ul>
+                        {% for allergen in ingredient.allergens %}<li>{{ allergen.name }}</li> {% endfor %}
+                </ul>
+                </div>
+                </div>
+            </div>
+    </div>
+{% endblock %}

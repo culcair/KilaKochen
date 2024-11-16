@@ -3,47 +3,41 @@
 
 {% block content %}
     <div class="container">
-           <nav aria-label="Wochennavigation">
-            <ul class="pagination justify-content-center">
-                <li class="page-item">
-                    <a class="page-link" href="{{ url_for('main.week',raw_date=previous) }}" aria-label="">
-                        <span aria-hidden="true">&laquo;</span> <span class="visually-hidden"></span>
-                    </a>
-                </li>
-                <li class="page-item">
-                    <a class="page-link" href="{{ url_for('main.week_overview') }}" aria-label="Übersicht">
-                        <span aria-hidden="true">&laquo;</span> <span class="visually-hidden">Übersicht</span>
-                    </a>
-                </li>
-                {% if  current_user.is_authenticated  %}
-                    <li class="page-item">
-                        <a class="page-link" href="{{ url_for('main.print_week',raw_date=plaene[0].Datum) }}">Drucken</a>
-                    </li>
-                    <li class="page-item">
-                        <a class="page-link" href="{{ url_for('main.edit_week',raw_date=plaene[0].Datum) }}">Editieren</a>
-                    </li>
+        <div class="row text-center">
+            <a class="col" href="{{ url_for('main.week',raw_date=previous) }}" aria-label="Vorherige Woche">
+                <svg aria-hidden="true" class="bi kl-icon"><use href="/bootstrap/static/icons/bootstrap-icons.svg#chevron-double-left"></use></svg>
+                <span class="visually-hidden">Vorherige Woche</span>
+            </a>
+            <a class="col" href="{{ url_for('main.week_overview') }}" title="overview">
+                <svg class="bi kl-icon"> <use href="/bootstrap/static/icons/bootstrap-icons.svg#house-fill"></use></svg>
+                <span class="visually-hidden">Übersicht</span>
+            </a>
+            {% if  current_user.is_authenticated  %}
+            <a class="col" href="{{ url_for('main.print_week',raw_date=plaene[0].date) }}">
+                <svg class="bi kl-icon"> <use href="/bootstrap/static/icons/bootstrap-icons.svg#printer-fill"></use></svg>
+                <span class="visually-hidden">Drucken</span>
+            </a>
+            <a class="col" href="{{ url_for('main.week',raw_date=plaene[0].date) }}">
+                <svg class="bi kl-icon"> <use href="/bootstrap/static/icons/bootstrap-icons.svg#eye-fill"></use></svg>
+                <span class="visually-hidden">Wochenübersicht</span>
+            </a>
             {% endif %}
-                <li class="page-item">
-                    <a class="page-link" href="{{ url_for('main.week',raw_date=next) }}" aria-label="Nächste Woche">
-                        <span class="visually-hidden">Nächste Woche</span>
-                        <span aria-hidden="true">&raquo;</span>
-                    </a>
-                </li>
-            </ul>
-        </nav>
-
-                             <div class="text-center">
+            <a class="col" href="{{ url_for('main.week',raw_date=next) }}" aria-label="Nächste Woche">
+                <svg aria-hidden="true" class="bi kl-icon"><use href="/bootstrap/static/icons/bootstrap-icons.svg#chevron-double-right"></use></svg>
+                <span class="visually-hidden">Nächste Woche</span>
+            </a>
+        </div>
+        <div class="text-center">
                 <h1>Wochenplan</h1>für die Kalenderwoche <b>{{ kw }}</b>
-                vom {{ plaene[0].Datum | format_date(kl_format="medium") }} bis
-                zum {{ plaene[-1].Datum | format_date(kl_format="medium") }}
-
+                vom {{ plaene[0].date | format_date(kl_format="medium") }} bis
+                zum {{ plaene[-1].date | format_date(kl_format="medium") }}
         </div>
         <div class="table-responsive">
         <table class="table">
             <thead class="table-dark">
             <tr>
                 {% for entry in plaene %}
-                    <th scope="col">{{ entry.Datum.strftime('%A, %d.%m.%Y') }}</th>
+                    <th scope="col">{{ entry.date.strftime('%A, %d.%m.%Y') }}</th>
                 {% endfor %}
             </tr>
 

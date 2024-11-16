@@ -7,19 +7,19 @@
 
         <div class="container">
             <h1>Rezept bearbeiten</h1>
-            <form method="POST" action="{{ url_for('recipe.new') }}">
+            <form method="POST" action="{{ url_for('recipe.edit', recipe_id=recipe.id) }}">
                 {{ form.csrf_token }}
 
                 <!-- Titel des Rezepts -->
                 <div class="form-group">
                     <label for="titel">Titel</label>
-                    {{ form.titel(class="form-control", placeholder="Titel des Rezepts") }}
+                    {{ form.name(class="form-control", placeholder="Titel des Rezepts") }}
                 </div>
 
                 <!-- Zubereitung -->
                 <div class="form-group">
                     <label for="zubereitung">Zubereitung</label>
-                    {{ form.zubereitung(class="form-control", placeholder="Beschreiben Sie die Zubereitung des Rezepts") }}
+                    {{ form.description(class="form-control", placeholder="Beschreiben Sie die Zubereitung des Rezepts") }}
                 </div>
 
                 <!-- Autor -->
@@ -31,13 +31,13 @@
                 <!-- Kategorie -->
                 <div class="form-group">
                     <label for="kategorie">Kategorie</label>
-                    {{ form.kategorie(class="form-control") }}
+                    {{ form.category(class="form-control") }}
                 </div>
 
                 <!-- Zutaten -->
                 <h3>Zutaten</h3>
                 <div id="ingredients-list" class="subforms-container">
-                    {% for subform in form.zutaten %}
+                    {% for subform in form.ingredients %}
                         {{ macros.render_ingredient_form(subform, loop.index0) }}
                     {% endfor %}
                 </div>
