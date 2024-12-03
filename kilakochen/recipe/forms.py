@@ -15,58 +15,6 @@ from wtforms_sqlalchemy.fields import QuerySelectField
 from wtforms import ValidationError
 
 from kilakochen.models import Ingredient, RecipeCategory, Unit
-from kilakochen.old_models import Rezeptkategorien, Zutaten, Einheiten
-
-
-# Hilfsfunktionen, um Kategorien, Zutaten und Einheiten für SelectFields bereitzustellen
-def get_kategorien():
-    return Rezeptkategorien.query.all()
-
-
-def get_zutaten():
-    return Zutaten.query.filter_by(Aktiv=1).all()
-
-
-def get_einheiten():
-    return Einheiten.query.filter_by(Aktiv=1).all()
-
-
-# Formular für einzelne Zutateneinträge
-class ZutatenForm(Form):
-    zutat = QuerySelectField(
-        "Zutat",
-        query_factory=get_zutaten,
-        allow_blank=False,
-        get_label="Bezeichnung",
-        validators=[DataRequired()],
-    )
-    menge = DecimalField("Menge", places=2, validators=[DataRequired()])
-    einheit = QuerySelectField(
-        "Einheit",
-        query_factory=get_einheiten,
-        allow_blank=False,
-        get_label="Kuerzel",
-        validators=[DataRequired()],
-    )
-
-
-# Hauptformular für das Rezept
-class RezeptForm(FlaskForm):
-    titel = StringField("Titel", validators=[DataRequired()])
-    zubereitung = TextAreaField("Zubereitung", validators=[DataRequired()])
-    author = StringField("Autor", validators=[DataRequired()])
-    kategorie = QuerySelectField(
-        "Kategorie",
-        query_factory=get_kategorien,
-        allow_blank=True,
-        get_label="BezeichnungSingular",
-        validators=[Optional()],
-    )
-
-    zutaten = FieldList(FormField(ZutatenForm), min_entries=1, label="Zutaten")
-
-    submit = SubmitField("Rezept erstellen")
-
 
 # Optional: Benutzerdefinierte Validierung für Zutaten
 def validate_zutaten(field):

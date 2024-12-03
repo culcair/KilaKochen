@@ -4,8 +4,11 @@
 
 {% block content %}
     <div class="container">
-        <div class="row">
-            <h6 class="text-center"> Anzahl aller Rezepte in der Datenbank: {{ data|count }}</h6>
+        <div class="row text-center">
+            <div class="col"><h6 > Alle Rezepte: {{ data|count }}</h6></div>
+            {% for category in categories %}
+            <div class="col">{{ category[0]  }}:{{ category[1]  }}</div>
+            {% endfor %}
         </div>
             <table class="table-responsive table table-striped table-hover">
                 <thead class="table-dark">

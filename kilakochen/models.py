@@ -1,6 +1,6 @@
 from typing import List
 
-from sqlalchemy import Table, Column, FLOAT, Date
+from sqlalchemy import Table, Column, FLOAT, Date, func, Enum
 from sqlalchemy import (
     INTEGER,
     String,
@@ -23,13 +23,21 @@ from kilakochen import login, db
 def load_user(user_id):
     return db.session.get(User, int(user_id))
 
+class TimestampMixin:
+    """Abstrakte Klasse für Erstell- und Änderungsdatum sowie Aktivstatus."""
+    created_at: Mapped["datetime"] = mapped_column(DATETIME, default=func.now(), nullable=False)
+    updated_at: Mapped["datetime"] = mapped_column(DATETIME, default=func.now(), onupdate=func.now(), nullable=False)
+    deleted_at:  Mapped["datetime"] = mapped_column(DATETIME, onupdate=func.now(), nullable=True)
+    is_active: Mapped[bool] = mapped_column(DATETIME, default=True, nullable=False)
+
+#ACCESS_LEVEL_ENUM = Enum(5, 10, 15, name="user_access_level")
 
 class User(db.Model, UserMixin):
     ADMIN_LEVEL = 15
     EDITOR_LEVEL = 10
     USER_LEVEL = 5
 
-    ACCESS_LEVEL = {USER_LEVEL: "USER", EDITOR_LEVEL: "EDITOR", ADMIN_LEVEL: "ADMIN"}
+    ACCESS_LEVEL = {USER_LEVEL: 5, EDITOR_LEVEL: 10, ADMIN_LEVEL: 15}
 
     id: Mapped[int] = mapped_column(INTEGER, primary_key=True)
     first_name: Mapped[str] = mapped_column(Text)

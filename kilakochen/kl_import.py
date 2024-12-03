@@ -1,5 +1,6 @@
 from kilakochen.models import Ingredient, RecipeIngredient, Unit, Recipe, RecipeCategory
-from kilakochen.old_models import Rezepte, Zutaten
+
+
 
 
 def get_ingredient(old_rezept: Rezepte, recipe_id: int) -> list[RecipeIngredient]:

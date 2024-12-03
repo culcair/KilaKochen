@@ -1,19 +1,16 @@
-from decimal import Decimal
-from pprint import pprint
-from typing import List, Optional
+from unicodedata import category
 
 from flask_login import login_required, current_user
 from flask_weasyprint import HTML, render_pdf
+from sqlalchemy import func
 
-from kilakochen.models import Recipe, Ingredient, RecipeIngredient
+from kilakochen.models import Recipe, RecipeCategory
 from kilakochen.recipe import bp
-from datetime import datetime
 
 from flask import flash, redirect, render_template, url_for, request
-from kilakochen.old_models import Rezepte, RezepteZutaten
 
 from kilakochen import db
-from kilakochen.recipe.forms import RezeptForm, ZutatenForm, RecipeForm, IngredientForm
+from kilakochen.recipe.forms import RecipeForm, IngredientForm
 
 
 def create_new_recipe( form : RecipeForm ) -> str:
@@ -32,18 +29,28 @@ def create_new_recipe( form : RecipeForm ) -> str:
         return f"Fehler"
 
 
+def get_count():
+    return (
+        db.session.query(
+            RecipeCategory.name,  # Name der Kategorie
+            func.count(Recipe.id).label("recipe_count")  # Anzahl der Rezepte
+        )
+        .join(Recipe, Recipe.category_id == RecipeCategory.id)  # Join zwischen Recipe und RecipeCategory
+        .group_by(RecipeCategory.name)  # Gruppieren nach Kategorie
+        .all()
+    )
 
 @bp.route("/")
 @bp.route("/overview")
 def overview():
-#    data = Rezepte.query.order_by(Rezepte.Titel).all()
     if current_user.is_authenticated:
         data = Recipe.query.order_by(Recipe.name).all()
     else:
         data = Recipe.query.filter_by(active=True).order_by(Recipe.name).all()
     return render_template(
-        "recipe/overview.html", page_title="Übersicht der Rezepte", data=data
+        "recipe/overview.html", page_title="Übersicht der Rezepte", data=data,categories=get_count()
     )
+
 
 
 @bp.route("/view/<int:recipe_id>")
@@ -75,8 +82,8 @@ def recipe_print(recipe_id):
 
     html_string = render_template(
         "recipe/print.html",
-        page_title="Rezept - " + data.Titel,
-        rezept_name=data.Titel,
+        page_title="Rezept - " + data.name,
+        rezept_name=data.name,
         data=data,
     )
 

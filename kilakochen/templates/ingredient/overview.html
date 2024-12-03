@@ -19,9 +19,11 @@
             </thead>
             {% for zutat in data %}
                 <tr>
-
-                    <td>
-                        {{ zutat.name }}</td>
+                        {%  if current_user.is_authenticated %}
+                        <td><a href="{{ url_for('ingredient.edit',ingredient_id=zutat.id) }}">{{ zutat.name }}</a></td>
+                        {% else %}
+                        <td>{{ zutat.name }}</td>
+                        {% endif %}
                     <td>{{ zutat.group.description }}</td>
                     <td>
                         {% for allergen in zutat.allergens %}

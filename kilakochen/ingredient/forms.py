@@ -20,7 +20,7 @@ def get_allergens():
 
 
 class IngredientForm(FlaskForm):
-    name = StringField("Titel", validators=[DataRequired()])
+    name = StringField("Bezeichnung", validators=[DataRequired()])
     group = QuerySelectField(
         "Kategorie",
         query_factory=get_categories,

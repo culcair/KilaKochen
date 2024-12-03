@@ -10,8 +10,8 @@
                 </div>
                 <div class="col">
                     Wochenplan für die Kalenderwoche <strong>{{ kw }}</strong> vom
-                    <strong>{{ plaene[0].Datum | format_date(kl_format="medium") }}</strong> bis zum
-                    <strong>{{ plaene[-1].Datum | format_date(kl_format="medium") }}</strong>
+                    <strong>{{ plaene[0].date | format_date(kl_format="medium") }}</strong> bis zum
+                    <strong>{{ plaene[-1].date | format_date(kl_format="medium") }}</strong>
                 </div>
             </div>
 
@@ -20,7 +20,7 @@
                 <tr>
                     <th></th>
                     {% for entry in plaene %}
-                        <th scope="col">{{ entry.Datum | return_day }}</th>
+                        <th scope="col">{{ entry.date | return_day }}</th>
                     {% endfor %}
                 </tr>
                 </thead>
@@ -29,8 +29,8 @@
                     <td>Hauptgericht</td>
                     {% for plan in plaene %}
                         <td>
-                            {% if plan.Hauptgericht != None %}
-                                <h6>{{ plan.Hauptgericht.Titel }}</h6>
+                            {% if plan.main_dish != None %}
+                                <h6>{{ plan.main_dish.name }}</h6>
                             {% else %}
                                 <h6>-</h6>
                             {% endif %}
@@ -42,8 +42,8 @@
                     <td>Beilage</td>
                     {% for plan in plaene %}
                         <td>
-                            {% if plan.Beilage != None %}
-                                <h6>{{ plan.Beilage.Titel }}</h6>
+                            {% if plan.side_dish != None %}
+                                <h6>{{ plan.side_dish.name }}</h6>
                             {% else %}
                                 <h6>-</h6>
                             {% endif %}
@@ -56,8 +56,8 @@
                     <td>Dessert</td>
                     {% for plan in plaene %}
                         <td>
-                            {% if plan.Dessert != None %}
-                                <h6>{{ plan.Dessert.Titel }}</h6>
+                            {% if plan.dessert != None %}
+                                <h6>{{ plan.dessert.name }}</h6>
                             {% else %}
                                 <h6>-</h6>
                             {% endif %}
@@ -76,8 +76,8 @@
             </div>
             <div class="col">
                 Wochenplan für die Kalenderwoche <strong>{{ kw }}</strong> vom
-                <strong>{{ plaene[0].Datum | format_date(kl_format="medium") }}</strong> bis zum
-                <strong>{{ plaene[-1].Datum | format_date(kl_format="medium") }}</strong>
+                <strong>{{ plaene[0].date | format_date(kl_format="medium") }}</strong> bis zum
+                <strong>{{ plaene[-1].date | format_date(kl_format="medium") }}</strong>
             </div>
         </div>
         <div class="small-font">
@@ -86,7 +86,7 @@
                 <tr>
                     <th></th>
                     {% for entry in plaene %}
-                        <th scope="col">{{ entry.Datum | return_day }}</th>
+                        <th scope="col">{{ entry.date | return_day }}</th>
                     {% endfor %}
                 </tr>
 
@@ -97,10 +97,10 @@
                     {% for plan in plaene %}
                         <td>
 
-                            {% if plan.Hauptgericht != None %}
-                                <h6>{{ plan.Hauptgericht.Titel }}</h6>
-                                {% for zutat in plan.Hauptgericht.rezepte_zutaten %}
-                                    <p>{{ "%.2f"|format(zutat.Menge) }} {{ zutat.einheiten.Kuerzel }} {{ zutat.zutaten.Bezeichnung }}</p>
+                            {% if plan.main_dish != None %}
+                                <h6>{{ plan.main_dish.name }}</h6>
+                                {% for zutat in plan.main_dish.ingredients %}
+                                    <p>{{ "%.2f"|format(zutat.amount) }} {{ zutat.unit.code }} {{ zutat.ingredient.name }}</p>
                                 {% endfor %}
 
                             {% else %}
@@ -115,10 +115,10 @@
                     <td>Beilage</td>
                     {% for plan in plaene %}
                         <td>
-                            {% if plan.Beilage != None %}
-                                <h6>{{ plan.Beilage.Titel }}</h6>
-                                {% for zutat in plan.Beilage.rezepte_zutaten %}
-                                    <p>{{ "%.2f"|format(zutat.Menge) }} {{ zutat.einheiten.Kuerzel }} {{ zutat.zutaten.Bezeichnung }}</p>
+                            {% if plan.side_dish != None %}
+                                <h6>{{ plan.side_dish.name }}</h6>
+                                {% for zutat in plan.side_dish.ingredients %}
+                                    <p>{{ "%.2f"|format(zutat.amount) }} {{ zutat.unit.code }} {{ zutat.ingredient.name }}</p>
 
                                 {% endfor %}
                             {% else %}
@@ -133,10 +133,10 @@
                     <td>Dessert</td>
                     {% for plan in plaene %}
                         <td>
-                            {% if plan.Dessert != None %}
-                                <h6>{{ plan.Dessert.Titel }}</h6>
-                                {% for zutat in plan.Dessert.rezepte_zutaten %}
-                                    <p>{{ "%.2f"|format(zutat.Menge) }} {{ zutat.einheiten.Kuerzel }} {{ zutat.zutaten.Bezeichnung }} </p>
+                            {% if plan.dessert != None %}
+                                <h6>{{ plan.dessert.name }}</h6>
+                                {% for zutat in plan.dessert.ingredients %}
+                                    <p>{{ "%.2f"|format(zutat.amount) }} {{ zutat.unit.code }} {{ zutat.ingredient.name }}</p>
 
                                 {% endfor %}
                             {% else %}
@@ -149,7 +149,7 @@
             </table>
         </div>
         {% for entry in plaene %}
-            {% if not entry.Ausfall %}
+            {% if not entry.outage %}
                 <div class="page-break"></div>
 
                 <div class="row align-items-center">
@@ -158,7 +158,7 @@
                              alt="Logo Kinderladen Jakobistrasse e.V." class="img-fluid">
                     </div>
                     <div class="col">
-                        {{ entry.Datum |format_date(kl_format="full") }}
+                        {{ entry.date |format_date(kl_format="full") }}
                     </div>
                 </div>
                 <div class="small-font">
@@ -173,39 +173,39 @@
 
                         </thead>
                         <tr>
-                            <td>Bezeichnung</td>
-                            <td>{% if entry.Hauptgericht != None %}{{ entry.Hauptgericht.Titel }}{% else %}
+                            <td>name</td>
+                            <td>{% if entry.main_dish != None %}{{ entry.main_dish.name }}{% else %}
                                 <h6>-</h6>{% endif %}</td>
-                            <td>{% if entry.Beilage != None %}{{ entry.Beilage.Titel }}{% else %}<h6>-</h6>{% endif %}
+                            <td>{% if entry.side_dish != None %}{{ entry.side_dish.name }}{% else %}<h6>-</h6>{% endif %}
                             </td>
-                            <td>{% if entry.Dessert != None %}{{ entry.Dessert.Titel }}{% else %}<h6>-</h6>{% endif %}
+                            <td>{% if entry.dessert != None %}{{ entry.dessert.name }}{% else %}<h6>-</h6>{% endif %}
                             </td>
 
                         </tr>
                         <tr>
-                            <td>Zutaten</td>
+                            <td>ingredient</td>
                             <td>
-                                {% if entry.Hauptgericht != None %}
-                                    {% for zutat in entry.Hauptgericht.rezepte_zutaten %}
-                                        <p>{{ "%.2f"|format(zutat.Menge) }} {{ zutat.einheiten.Kuerzel }} {{ zutat.zutaten.Bezeichnung }} </p>
+                                {% if entry.main_dish != None %}
+                                    {% for zutat in entry.main_dish.ingredients %}
+                                        <p>{{ "%.2f"|format(zutat.amount) }} {{ zutat.unit.code }} {{ zutat.ingredient.name }} </p>
                                     {% endfor %}
                                 {% else %}
                                     <h6>-</h6>
                                 {% endif %}
                             </td>
                             <td>
-                                {% if entry.Beilage != None %}
-                                    {% for zutat in entry.Beilage.rezepte_zutaten %}
-                                        <p>{{ "%.2f"|format(zutat.Menge) }} {{ zutat.einheiten.Kuerzel }} {{ zutat.zutaten.Bezeichnung }} </p>
+                                {% if entry.side_dish != None %}
+                                    {% for zutat in entry.side_dish.ingredients %}
+                                        <p>{{ "%.2f"|format(zutat.amount) }} {{ zutat.unit.code }} {{ zutat.ingredient.name }} </p>
                                     {% endfor %}
                                 {% else %}
                                     <h6>-</h6>
                                 {% endif %}
                             </td>
                             <td>
-                                {% if entry.Dessert != None %}
-                                    {% for zutat in entry.Dessert.rezepte_zutaten %}
-                                        <p>{{ "%.2f"|format(zutat.Menge) }} {{ zutat.einheiten.Kuerzel }} {{ zutat.zutaten.Bezeichnung }} </p>
+                                {% if entry.dessert != None %}
+                                    {% for zutat in entry.dessert.ingredients %}
+                                        <p>{{ "%.2f"|format(zutat.amount) }} {{ zutat.unit.code }} {{ zutat.ingredient.name }} </p>
                                     {% endfor %}
                                 {% else %}
                                     <h6>-</h6>
@@ -214,26 +214,26 @@
                         </tr>
                         <tr>
                             <td>Allergene</td>
-                            <td> {% if entry.Hauptgericht != None %}
-                                {% for zutat in entry.Hauptgericht.rezepte_zutaten %}
-                                    {% for allergen in zutat.zutaten.zutaten_allergene %}
-                                        {{ allergen.allergene.Bezeichnung }},
+                            <td> {% if entry.main_dish != None %}
+                                {% for zutat in entry.main_dish.ingredients %}
+                                    {% for allergen in zutat.ingredient.allergens %}
+                                        {{ allergen.name }},
                                     {% endfor %}
                                 {% endfor %}
                             {% endif %}
                             </td>
-                            <td> {% if entry.Beilage != None %}
-                                {% for zutat in entry.Beilage.rezepte_zutaten %}
-                                    {% for allergen in zutat.zutaten.zutaten_allergene %}
-                                        {{ allergen.allergene.Bezeichnung }},
+                            <td> {% if entry.side_dish != None %}
+                                {% for zutat in entry.side_dish.ingredients %}
+                                    {% for allergen in zutat.ingredient.allergens %}
+                                        {{ allergen.name }},
                                     {% endfor %}
                                 {% endfor %}
                             {% endif %}
                             </td>
-                            <td> {% if entry.Dessert != None %}
-                                {% for zutat in entry.Dessert.rezepte_zutaten %}
-                                    {% for allergen in zutat.zutaten.zutaten_allergene %}
-                                        {{ allergen.allergene.Bezeichnung }},
+                            <td> {% if entry.dessert != None %}
+                                {% for zutat in entry.dessert.ingredients %}
+                                    {% for allergen in zutat.ingredient.allergens %}
+                                        {{ allergen.name }},
                                     {% endfor %}
                                 {% endfor %}
                             {% endif %}
@@ -242,24 +242,24 @@
                         <tr>
                             <td>Zubereitung</td>
                             <td>
-                                {% if entry.Hauptgericht != None %}
-                                    {{ entry.Hauptgericht.Zubereitung | nl2br }}
+                                {% if entry.main_dish != None %}
+                                    {{ entry.main_dish.description | nl2br }}
 
                                 {% else %}
                                     <h6>-</h6>
                                 {% endif %}
                             </td>
                             <td>
-                                {% if entry.Beilage != None %}
-                                    {{ entry.Beilage.Zubereitung | nl2br }}
+                                {% if entry.side_dish != None %}
+                                    {{ entry.side_dish.description | nl2br }}
 
                                 {% else %}
                                     <h6>-</h6>
                                 {% endif %}
                             </td>
                             <td>
-                                {% if entry.Dessert != None %}
-                                    {{ entry.Dessert.Zubereitung | nl2br }}
+                                {% if entry.dessert != None %}
+                                    {{ entry.dessert.description | nl2br }}
 
                                 {% else %}
                                     <h6>-</h6>

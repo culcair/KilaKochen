@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+{% from 'bootstrap5/form.html' import render_field %}
+
+{% block content %}
+    <div class="container">
+            <div class="row text-center">
+            <div class="col"><h1>{{ data.name }}</h1></div>
+            <div class="col">
+                <a class="col" href="{{ url_for('ingredient.overview') }}" title="overview">
+                    <svg class="bi kl-icon"> <use href="/bootstrap/static/icons/bootstrap-icons.svg#house-fill"></use></svg>
+                </a>
+            </div>
+            </div>
+        <div class="row">
+            <form method="POST" action="{{ url_for('ingredient.edit',ingredient_id=data.id) }}">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+                {{ render_field(form.name) }}
+                {{ render_field(form.group) }}
+                {{ render_field(form.allergens) }}
+                {{ render_field(form.submit) }}
+            {% if form.errors %}
+                {{ form.errors }}
+            {% endif %}
+            </form>
+        </div>
+    </div>
+{% endblock %}

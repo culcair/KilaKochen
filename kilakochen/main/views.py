@@ -1,5 +1,3 @@
-from email.policy import default
-
 from flask_login import current_user, login_required
 from sqlalchemy import select
 from sqlalchemy.exc import SQLAlchemyError
@@ -9,8 +7,7 @@ from flask import redirect, render_template, url_for, flash
 from flask_weasyprint import HTML, render_pdf
 from datetime import datetime, timedelta, date
 
-from kilakochen.models import MealPlan
-from kilakochen.old_models import Essensplan, Rezepte
+from kilakochen.models import MealPlan, Recipe
 
 from kilakochen.main.forms import EditDayForm
 from kilakochen import db
@@ -20,12 +17,11 @@ from kilakochen import db
 def index():
     return render_template("index.html", page_title="Startseite")
 
-
 def get_rezepte(kategorie):
     res = (
-        Rezepte.query.with_entities(Rezepte.ID, Rezepte.Titel)
-        .filter(Rezepte.rezeptkategorien.has(Kuerzel=kategorie))
-        .order_by(Rezepte.Titel)
+        Recipe.query.with_entities(Recipe.ID, Recipe.Titel)
+        .filter(Recipe.category.has(code=kategorie))
+        .order_by(Recipe.name)
         .all()
     )
 
@@ -67,11 +63,9 @@ def populate_editheuteform(plan : MealPlan, form : EditDayForm, given_date):
 
 def get_date( raw_date : date | str) -> date :
     """
-
     :param raw_date:
     :return: given_date
     """
-    print(type(raw_date))
     if type(raw_date) == str:
         given_date = datetime.fromisoformat(raw_date).date()
     else:
@@ -88,8 +82,9 @@ def get_date( raw_date : date | str) -> date :
 @login_required
 def day_edit(raw_date: str):
     given_date = get_date(raw_date)
-
+    print(given_date)
     plan: MealPlan = MealPlan.query.filter_by(date=given_date).one_or_none()
+    print(plan)
     if plan is None:
         plan = MealPlan(date=given_date)
 
@@ -103,14 +98,14 @@ def day_edit(raw_date: str):
             flash(f"Speiseplan vom {plan.date} wurde aktualisiert.", "success")
         except SQLAlchemyError as e:
             db.session.rollback()
-            flash(f"Es trat eine Fehler bei der Aktualisierung vom Speiseplan {plan.date} auf.", "danger")
+            flash(f"Es trat eine Fehler bei der Aktualisierung vom Speiseplan {plan.date} auf. {e}", "danger")
+
         return redirect(url_for("main.week", raw_date=given_date))
 
     return render_template("edit_day.html", form=form)
 
-
-@bp.route("/day/<string:raw_date>")
-@bp.route("/today",defaults={"raw_date": datetime.today().date()})
+@bp.get("/day/<string:raw_date>")
+@bp.get("/today",defaults={"raw_date": datetime.today().date()})
 def day(raw_date):
     given_date = get_date(raw_date)
 
@@ -252,10 +247,6 @@ def edit_week(raw_date):
                 db.session.add(edit_plan)
                 db.session.commit()
 
-            print(
-                f"date: {day_form.date.data} submitted: {day_form.is_submitted()} submit data: {day_form.submit.data}"
-            )
-    print(f"{plaene}")
     return render_template(
         "edit_week.html",
         page_title="Wochenplan",

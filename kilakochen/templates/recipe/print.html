@@ -12,10 +12,10 @@
             <th>Zutat</th>
         </tr>
         </thead>
-        {% for zutat in data.rezepte_zutaten -%}
+        {% for zutat in data.ingredients -%}
             <tr>
-                <td>{{ "%.2f"|format(zutat.Menge) }} {{ zutat.einheiten.Kuerzel }}</td>
-                <td>{{ zutat.zutaten.Bezeichnung }}</td>
+                <td>{{ "%.2f"|format(zutat.amount) }} {{ zutat.unit.code }}</td>
+                <td>{{ zutat.ingredient.name }}</td>
             </tr>
         {% endfor %}
     </table>
@@ -24,10 +24,10 @@
         <caption>Allergene</caption>
         <tr>
             <td>
-                {% for zutat in data.rezepte_zutaten %}
-                    {% for allergen in zutat.zutaten.zutaten_allergene %}
+                {% for zutat in data.ingredients %}
+                    {% for allergen in zutat.allergens %}
                         <a data-bs-toggle="tooltip" data-bs-placement="top"
-                           title="{{ allergen.allergene.Bezeichnung }}">{{ allergen.allergene.Bezeichnung }}</a>,
+                           title="{{ allergen.code }}">{{ allergen.code }}</a>,
                     {% endfor %}
                 {% endfor %}
             </td>
@@ -38,9 +38,7 @@
         <caption>Zubereitung</caption>
         <tr>
             <td>
-                {% autoescape false %}
-                    {{ data.Zubereitung | replace("\n", "<br/>") }}
-                {% endautoescape %}
+                    {{ data.description | nl2br }}
             </td>
         </tr>
     </table>
