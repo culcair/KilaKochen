@@ -11,7 +11,7 @@
     #}
 
 {%- macro render_ingredient_form(subform, index) %}
-    <div id="ingredient-{{ index }}-form" class="row {% if index != '_' %}subform{% else %}d-none{% endif %} row"
+    <div id="ingredients-{{ index }}-form" class="row {% if index != '_' %}subform{% else %}d-none{% endif %} row"
          data-index="{{ index }}">
         <hr/>
         <div class="form-group col-md-3">

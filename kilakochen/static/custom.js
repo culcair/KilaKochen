@@ -67,7 +67,7 @@ function removeForm() {
  * Add a new form.
  */
 function addForm() {
-    const templateForm = document.querySelector('#ingredient-_-form');
+    const templateForm = document.querySelector('#ingredients-_-form');
 
     if (!templateForm) {
         console.log('[ERROR] Cannot find template');
