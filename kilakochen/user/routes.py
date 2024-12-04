@@ -1,14 +1,13 @@
 from datetime import datetime, timezone
 
+from flask import render_template, flash, redirect, url_for
+from flask_login import login_required, current_user
 from sqlalchemy.exc import SQLAlchemyError
 from werkzeug import Response
 
 from kilakochen import db
-from kilakochen.user import bp
-from flask import render_template, flash, redirect, url_for
-from flask_login import login_required, current_user
-
 from kilakochen.models import User
+from kilakochen.user import bp
 from kilakochen.user.forms import CreateUserForm, EditUserForm
 
 
@@ -88,9 +87,9 @@ def status_change(user_id: int):
                 user.active = not user.active
                 db.session.commit()
                 if user.active:
-                    flash(f"Benutzer {user.username} wurde aktviert!", "success")
+                    flash(f"Benutzer {user.username} wurde aktiviert!", "success")
                 else:
-                    flash(f"Benutzer {user.username} wurde deaktviert!", "danger")
+                    flash(f"Benutzer {user.username} wurde deaktiviert!", "danger")
             except SQLAlchemyError as e:
                 print(e)
                 db.session.rollback()

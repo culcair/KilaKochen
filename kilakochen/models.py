@@ -1,19 +1,21 @@
+from datetime import datetime, timezone
 from typing import List
 
-from sqlalchemy import Table, Column, FLOAT, Date, func, Enum
+from flask_login import UserMixin
 from sqlalchemy import (
-    INTEGER,
     String,
-    DATETIME,
     Text,
-    BOOLEAN,
+    Boolean,
     ForeignKey,
+    Table,
+    Column,
+    Float,
+    Date,
+    func,
+    DateTime,
+    Integer,
 )
 from sqlalchemy.orm import Mapped, mapped_column, relationship
-from datetime import datetime, timezone
-
-from flask_login import UserMixin
-
 from werkzeug.security import generate_password_hash, check_password_hash
 
 from kilakochen import login, db
@@ -23,14 +25,21 @@ from kilakochen import login, db
 def load_user(user_id):
     return db.session.get(User, int(user_id))
 
+
 class TimestampMixin:
     """Abstrakte Klasse für Erstell- und Änderungsdatum sowie Aktivstatus."""
-    created_at: Mapped["datetime"] = mapped_column(DATETIME, default=func.now(), nullable=False)
-    updated_at: Mapped["datetime"] = mapped_column(DATETIME, default=func.now(), onupdate=func.now(), nullable=False)
-    deleted_at:  Mapped["datetime"] = mapped_column(DATETIME, onupdate=func.now(), nullable=True)
-    is_active: Mapped[bool] = mapped_column(DATETIME, default=True, nullable=False)
 
-#ACCESS_LEVEL_ENUM = Enum(5, 10, 15, name="user_access_level")
+    created_at: Mapped["datetime"] = mapped_column(
+        DateTime, default=func.now(), nullable=False
+    )
+    updated_at: Mapped["datetime"] = mapped_column(
+        DateTime, default=func.now(), onupdate=func.now(), nullable=False
+    )
+    deleted_at: Mapped["datetime"] = mapped_column(
+        DateTime, onupdate=func.now(), nullable=True
+    )
+    is_active: Mapped[bool] = mapped_column(DateTime, default=True, nullable=False)
+
 
 class User(db.Model, UserMixin):
     ADMIN_LEVEL = 15
@@ -39,20 +48,20 @@ class User(db.Model, UserMixin):
 
     ACCESS_LEVEL = {USER_LEVEL: 5, EDITOR_LEVEL: 10, ADMIN_LEVEL: 15}
 
-    id: Mapped[int] = mapped_column(INTEGER, primary_key=True)
+    id: Mapped[int] = mapped_column(Integer, primary_key=True)
     first_name: Mapped[str] = mapped_column(Text)
     given_name: Mapped[str] = mapped_column(Text)
     username: Mapped[str] = mapped_column(Text, unique=True)
     password: Mapped[str] = mapped_column(Text)
     email: Mapped[str] = mapped_column(Text, nullable=True)
-    level: Mapped[int] = mapped_column(INTEGER, nullable=True)
-    active: Mapped[bool] = mapped_column(BOOLEAN, default=False)
-    last_seen: Mapped[datetime] = mapped_column(DATETIME, nullable=True)
+    level: Mapped[int] = mapped_column(Integer, nullable=True)
+    active: Mapped[bool] = mapped_column(Boolean, default=False)
+    last_seen: Mapped[datetime] = mapped_column(DateTime, nullable=True)
     created_at: Mapped[datetime] = mapped_column(
-        DATETIME, default=lambda: datetime.now(timezone.utc), nullable=True
+        DateTime, default=lambda: datetime.now(timezone.utc), nullable=True
     )
     updated_at: Mapped[datetime] = mapped_column(
-        DATETIME, default=lambda: datetime.now(timezone.utc), nullable=True
+        DateTime, default=lambda: datetime.now(timezone.utc), nullable=True
     )
 
     def set_password(self, password) -> None:
@@ -66,7 +75,13 @@ class User(db.Model, UserMixin):
         return generate_password_hash(password)
 
     def __init__(
-        self, username=None, given_name=None, first_name=None, level=1, active=True, email=None
+            self,
+            username=None,
+            given_name=None,
+            first_name=None,
+            level=1,
+            active=True,
+            email=None,
     ) -> None:
         self.given_name = given_name
         self.first_name = first_name
@@ -82,10 +97,10 @@ class User(db.Model, UserMixin):
 class Ingredient(db.Model):
     __tablename__ = "ingredient"
 
-    id: Mapped[int] = mapped_column(INTEGER, primary_key=True)
+    id: Mapped[int] = mapped_column(Integer, primary_key=True)
     name: Mapped[str] = mapped_column(String, nullable=False, unique=True)
 
-    active: Mapped[bool] = mapped_column(BOOLEAN, default=True)
+    active: Mapped[bool] = mapped_column(Boolean, default=True)
 
     group_id: Mapped[int] = mapped_column(
         ForeignKey("ingredients_group.id"), nullable=True
@@ -103,21 +118,21 @@ class Ingredient(db.Model):
         "Allergen", secondary="ingredient_allergen", back_populates="ingredients"
     )
     created_at: Mapped[datetime] = mapped_column(
-        DATETIME, default=lambda: datetime.now(timezone.utc), nullable=True
+        DateTime, default=lambda: datetime.now(timezone.utc), nullable=True
     )
     updated_at: Mapped[datetime] = mapped_column(
-        DATETIME, default=lambda: datetime.now(timezone.utc), nullable=True
+        DateTime, default=lambda: datetime.now(timezone.utc), nullable=True
     )
 
 
 class Allergen(db.Model):
     __tablename__ = "allergen"
 
-    id: Mapped[int] = mapped_column(INTEGER, primary_key=True)
+    id: Mapped[int] = mapped_column(Integer, primary_key=True)
     name: Mapped[str] = mapped_column(String, nullable=False, unique=True)
     code: Mapped[str] = mapped_column(String(3), nullable=False)
     description: Mapped[str] = mapped_column(String, nullable=False)
-    active: Mapped[bool] = mapped_column(BOOLEAN, default=False)
+    active: Mapped[bool] = mapped_column(Boolean, default=False)
 
     # Many-to-Many Beziehung zu Ingredient
     ingredients: Mapped[list["Ingredient"]] = relationship(
@@ -125,35 +140,35 @@ class Allergen(db.Model):
     )
 
     created_at: Mapped[datetime] = mapped_column(
-        DATETIME, default=lambda: datetime.now(timezone.utc), nullable=True
+        DateTime, default=lambda: datetime.now(timezone.utc), nullable=True
     )
     updated_at: Mapped[datetime] = mapped_column(
-        DATETIME, default=lambda: datetime.now(timezone.utc), nullable=True
+        DateTime, default=lambda: datetime.now(timezone.utc), nullable=True
     )
 
 
 ingredient_allergen_table = Table(
     "ingredient_allergen",
     db.Model.metadata,
-    Column("IngredientID", INTEGER, db.ForeignKey("ingredient.id"), primary_key=True),
-    Column("AllergenID", INTEGER, db.ForeignKey("allergen.id"), primary_key=True),
+    Column("IngredientID", Integer, db.ForeignKey("ingredient.id"), primary_key=True),
+    Column("AllergenID", Integer, db.ForeignKey("allergen.id"), primary_key=True),
 )
 
 
 class IngredientsGroup(db.Model):
     __tablename__ = "ingredients_group"
-    id: Mapped[int] = mapped_column(INTEGER, primary_key=True)
+    id: Mapped[int] = mapped_column(Integer, primary_key=True)
     description: Mapped[str] = mapped_column(String)
     code: Mapped[str] = mapped_column(String(3))
-    active: Mapped[bool] = mapped_column(BOOLEAN, default=False)
+    active: Mapped[bool] = mapped_column(Boolean, default=False)
     ingredients: Mapped[list["Ingredient"]] = relationship(
         "Ingredient", back_populates="group"
     )
     created_at: Mapped[datetime] = mapped_column(
-        DATETIME, default=lambda: datetime.now(timezone.utc), nullable=True
+        DateTime, default=lambda: datetime.now(timezone.utc), nullable=True
     )
     updated_at: Mapped[datetime] = mapped_column(
-        DATETIME, default=lambda: datetime.now(timezone.utc), nullable=True
+        DateTime, default=lambda: datetime.now(timezone.utc), nullable=True
     )
 
 
@@ -164,7 +179,7 @@ class RecipeIngredient(db.Model):
     ingredient_id: Mapped[int] = mapped_column(
         ForeignKey("ingredient.id"), primary_key=True
     )
-    amount: Mapped[float] = mapped_column(FLOAT, nullable=False)
+    amount: Mapped[float] = mapped_column(Float, nullable=False)
 
     # Beziehungen zu Recipe, Ingredient und Unit
     recipe: Mapped["Recipe"] = relationship("Recipe", back_populates="ingredients")
@@ -176,20 +191,20 @@ class RecipeIngredient(db.Model):
     unit: Mapped["Unit"] = relationship("Unit")
 
     created_at: Mapped[datetime] = mapped_column(
-        DATETIME, default=lambda: datetime.now(timezone.utc), nullable=True
+        DateTime, default=lambda: datetime.now(timezone.utc), nullable=True
     )
     updated_at: Mapped[datetime] = mapped_column(
-        DATETIME, default=lambda: datetime.now(timezone.utc), nullable=True
+        DateTime, default=lambda: datetime.now(timezone.utc), nullable=True
     )
 
 
 class Recipe(db.Model):
     __tablename__ = "recipe"
 
-    id: Mapped[int] = mapped_column(INTEGER, primary_key=True)
+    id: Mapped[int] = mapped_column(Integer, primary_key=True)
     name: Mapped[str] = mapped_column(String, nullable=False)
     description: Mapped[str] = mapped_column(String)
-    active: Mapped[bool] = mapped_column(BOOLEAN, default=False)
+    active: Mapped[bool] = mapped_column(Boolean, default=False)
     author: Mapped[str] = mapped_column(String, nullable=False)
     category_id: Mapped[int] = mapped_column(
         ForeignKey("recipe_category.id"), nullable=False
@@ -218,49 +233,49 @@ class Recipe(db.Model):
     )
 
     created_at: Mapped[datetime] = mapped_column(
-        DATETIME, default=lambda: datetime.now(timezone.utc), nullable=True
+        DateTime, default=lambda: datetime.now(timezone.utc), nullable=True
     )
     updated_at: Mapped[datetime] = mapped_column(
-        DATETIME, default=lambda: datetime.now(timezone.utc), nullable=True
+        DateTime, default=lambda: datetime.now(timezone.utc), nullable=True
     )
 
 
 class RecipeCategory(db.Model):
     __tablename__ = "recipe_category"
-    id: Mapped[int] = mapped_column(INTEGER, primary_key=True)
+    id: Mapped[int] = mapped_column(Integer, primary_key=True)
     name: Mapped[str] = mapped_column(String, nullable=False)
     code: Mapped[str] = mapped_column(String(3))
-    active: Mapped[bool] = mapped_column(BOOLEAN, default=False)
+    active: Mapped[bool] = mapped_column(Boolean, default=False)
 
 
 class Unit(db.Model):
     __tablename__ = "unit"
 
-    id: Mapped[int] = mapped_column(INTEGER, primary_key=True)
+    id: Mapped[int] = mapped_column(Integer, primary_key=True)
     name: Mapped[str] = mapped_column(
         String, nullable=False, unique=True
     )  # z.B. "g", "ml", "Stück"
     code: Mapped[str] = mapped_column(String(3))
-    active: Mapped[bool] = mapped_column(BOOLEAN, default=False)
+    active: Mapped[bool] = mapped_column(Boolean, default=False)
     created_at: Mapped[datetime] = mapped_column(
-        DATETIME, default=lambda: datetime.now(timezone.utc), nullable=True
+        DateTime, default=lambda: datetime.now(timezone.utc), nullable=True
     )
     updated_at: Mapped[datetime] = mapped_column(
-        DATETIME, default=lambda: datetime.now(timezone.utc), nullable=True
+        DateTime, default=lambda: datetime.now(timezone.utc), nullable=True
     )
 
 
 class MealPlan(db.Model):
     __tablename__ = "meal_plan"
-    id: Mapped[int] = mapped_column(INTEGER, primary_key=True)
-    outage: Mapped[bool] = mapped_column(BOOLEAN, default=False)
+    id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    outage: Mapped[bool] = mapped_column(Boolean, default=False)
     comment: Mapped[str] = mapped_column(String, nullable=True)
     date: Mapped[datetime] = mapped_column(Date, index=True)
     created_at: Mapped[datetime] = mapped_column(
-        DATETIME, default=lambda: datetime.now(timezone.utc), nullable=True
+        DateTime, default=lambda: datetime.now(timezone.utc), nullable=True
     )
     updated_at: Mapped[datetime] = mapped_column(
-        DATETIME, default=lambda: datetime.now(timezone.utc), nullable=True
+        DateTime, default=lambda: datetime.now(timezone.utc), nullable=True
     )
 
     main_dish_id: Mapped[int] = mapped_column(ForeignKey("recipe.id"), nullable=True)
