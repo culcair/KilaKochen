@@ -8,13 +8,13 @@ from wtforms import (
     FieldList,
     DecimalField,
 )
+from wtforms import ValidationError
 from wtforms.fields.simple import BooleanField
-
 from wtforms.validators import DataRequired, Optional
 from wtforms_sqlalchemy.fields import QuerySelectField
-from wtforms import ValidationError
 
 from kilakochen.models import Ingredient, RecipeCategory, Unit
+
 
 # Optional: Benutzerdefinierte Validierung für Zutaten
 def validate_zutaten(field):
@@ -55,7 +55,7 @@ class IngredientForm(Form):
 
 class RecipeForm(FlaskForm):
     name = StringField("Titel", validators=[DataRequired()])
-    description = TextAreaField("Zubereitung", validators=[DataRequired()])
+    description = TextAreaField("Zubereitung", validators=[DataRequired()], render_kw={"rows": 5})
     author = StringField("Autor", validators=[DataRequired()])
     category = QuerySelectField(
         "Kategorie",

@@ -1,32 +1,53 @@
-from unicodedata import category
+import logging
 
+from flask import flash, redirect, render_template, url_for, request
 from flask_login import login_required, current_user
 from flask_weasyprint import HTML, render_pdf
 from sqlalchemy import func
-
-from kilakochen.models import Recipe, RecipeCategory
-from kilakochen.recipe import bp
-
-from flask import flash, redirect, render_template, url_for, request
+from sqlalchemy.exc import SQLAlchemyError
 
 from kilakochen import db
+from kilakochen.models import Recipe, RecipeCategory, RecipeIngredient
+from kilakochen.recipe import bp
 from kilakochen.recipe.forms import RecipeForm, IngredientForm
 
+logger = logging.getLogger("recipe")
 
 def create_new_recipe( form : RecipeForm ) -> str:
     """
     Erstellt ein neues Rezept und fügt die Zutaten hinzu.
 
     """
-    try:
-        if db.session.query(
+    if db.session.query(
             Recipe.query.filter_by(name=form.name.data).exists()
-        ).scalar():
-            return f"Fehler"
-        else:
-            return "Alles gut"
-    except Exception as e:
+    ).scalar():
         return f"Fehler"
+    else:
+        new_recipe = Recipe(
+            name=form.name.data,
+            description=form.description.data,
+            category=form.category.data,
+            author=form.author.data,
+            active=True
+        )
+        db.session.add(new_recipe)
+
+        for entry in form.ingredients.entries:
+            data = entry.data
+            new_ingredient = RecipeIngredient(
+                ingredient=data["ingredient"],
+                amount=data["amount"],
+                unit=data["unit"],
+                recipe=new_recipe
+            )
+            db.session.add(new_ingredient)
+    try:
+        db.session.commit()
+        flash(f"Neues Rezept({new_recipe.name}) wurde angelegt", category="success")
+    except SQLAlchemyError as e:
+        db.session.rollback()
+        logger.error(e)
+        flash(f"Fehler beim Rezept erstellen", category="danger")
 
 
 def get_count():
@@ -97,7 +118,7 @@ def recipe_print(recipe_id):
 @login_required
 def new():
     form = RecipeForm()
-    template_form = IngredientForm(prefix="ingredient-_-")
+    template_form = IngredientForm(prefix="ingredients-_-")
     if form.validate_on_submit():
         result = create_new_recipe(form)
         flash(result, category="info")

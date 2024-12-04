@@ -5,9 +5,9 @@
 {% block content %}
     <div class="container">
         <div class="row text-center">
-            <div class="col"><h6 > Alle Rezepte: {{ data|count }}</h6></div>
+            <div class="col-auto">Alle Rezepte: {{ data|count }}</div>
             {% for category in categories %}
-            <div class="col">{{ category[0]  }}:{{ category[1]  }}</div>
+                <div class="col-auto">{{ category[0] }}:{{ category[1] }}</div>
             {% endfor %}
         </div>
             <table class="table-responsive table table-striped table-hover">
