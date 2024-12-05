@@ -1,57 +1,68 @@
 {% extends 'base.html' %}
 {% from 'bootstrap5/form.html' import render_form %}
-
 {% block content %}
     <div class="container">
         <div class="row text-center">
-            <a class="col" href="{{ url_for('main.week',raw_date=previous) }}" aria-label="Vorherige Woche">
-                <svg aria-hidden="true" class="bi kl-icon"><use href="/bootstrap/static/icons/bootstrap-icons.svg#chevron-double-left"></use></svg>
+            <a class="col"
+               href="{{ url_for('main.week',raw_date=previous) }}"
+               aria-label="Vorherige Woche">
+                <svg aria-hidden="true" class="bi kl-icon">
+                    <use href="/bootstrap/static/icons/bootstrap-icons.svg#chevron-double-left"></use>
+                </svg>
                 <span class="visually-hidden">Vorherige Woche</span>
             </a>
-            <a class="col" href="{{ url_for('main.week_overview') }}" title="overview">
-                <svg class="bi kl-icon"> <use href="/bootstrap/static/icons/bootstrap-icons.svg#house-fill"></use></svg>
+            <a class="col"
+               href="{{ url_for("main.week_overview") }}"
+               title="overview">
+                <svg class="bi kl-icon">
+                    <use href="/bootstrap/static/icons/bootstrap-icons.svg#house-fill"></use>
+                </svg>
                 <span class="visually-hidden">Übersicht</span>
             </a>
-            {% if  current_user.is_authenticated  %}
-            <a class="col" href="{{ url_for('main.print_week',raw_date=plaene[0].date) }}">
-                <svg class="bi kl-icon"> <use href="/bootstrap/static/icons/bootstrap-icons.svg#printer-fill"></use></svg>
-                <span class="visually-hidden">Drucken</span>
-            </a>
-            <a class="col" href="{{ url_for('main.week',raw_date=plaene[0].date) }}">
-                <svg class="bi kl-icon"> <use href="/bootstrap/static/icons/bootstrap-icons.svg#eye-fill"></use></svg>
-                <span class="visually-hidden">Wochenübersicht</span>
-            </a>
+            {% if  current_user.is_authenticated %}
+                <a class="col"
+                   href="{{ url_for('main.print_week',raw_date=plaene[0].date) }}">
+                    <svg class="bi kl-icon">
+                        <use href="/bootstrap/static/icons/bootstrap-icons.svg#printer-fill"></use>
+                    </svg>
+                    <span class="visually-hidden">Drucken</span>
+                </a>
+                <a class="col" href="{{ url_for('main.week',raw_date=plaene[0].date) }}">
+                    <svg class="bi kl-icon">
+                        <use href="/bootstrap/static/icons/bootstrap-icons.svg#eye-fill"></use>
+                    </svg>
+                    <span class="visually-hidden">Wochenübersicht</span>
+                </a>
             {% endif %}
-            <a class="col" href="{{ url_for('main.week',raw_date=next) }}" aria-label="Nächste Woche">
-                <svg aria-hidden="true" class="bi kl-icon"><use href="/bootstrap/static/icons/bootstrap-icons.svg#chevron-double-right"></use></svg>
+            <a class="col"
+               href="{{ url_for('main.week',raw_date=next) }}"
+               aria-label="Nächste Woche">
+                <svg aria-hidden="true" class="bi kl-icon">
+                    <use href="/bootstrap/static/icons/bootstrap-icons.svg#chevron-double-right"></use>
+                </svg>
                 <span class="visually-hidden">Nächste Woche</span>
             </a>
         </div>
         <div class="text-center">
-                <h1>Wochenplan</h1>für die Kalenderwoche <b>{{ kw }}</b>
-                vom {{ plaene[0].date | format_date(kl_format="medium") }} bis
-                zum {{ plaene[-1].date | format_date(kl_format="medium") }}
+            <h1>Wochenplan</h1>
+            für die Kalenderwoche <b>{{ kw }}</b>
+            vom {{ plaene[0].date | format_date(kl_format="medium") }} bis
+            zum {{ plaene[-1].date | format_date(kl_format="medium") }}
         </div>
         <div class="table-responsive">
-        <table class="table">
-            <thead class="table-dark">
-            <tr>
-                {% for entry in plaene %}
-                    <th scope="col">{{ entry.date.strftime('%A, %d.%m.%Y') }}</th>
-                {% endfor %}
-            </tr>
-
-            </thead>
-
-            <tr>
-                {% for form in forms %}
-                    <td>
-                    {{ render_form(form,form_type="inline") }}
-                    </td>
-                {% endfor %}
-
-            </tr>
-        </table>
+            <table class="table">
+                <thead class="table-dark">
+                <tr>
+                    {% for entry in plaene %}
+                        <th scope="col">{{ entry.date.strftime("%A, %d.%m.%Y") }}</th>
+                    {% endfor %}
+                </tr>
+                </thead>
+                <tr>
+                    {% for form in forms %}
+                        <td>{{ render_form(form,form_type="inline") }}</td>{% endfor %}
+                </tr>
+            </table>
         </div>
     </div>
 {% endblock %}

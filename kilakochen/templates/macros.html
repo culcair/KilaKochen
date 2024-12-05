@@ -8,10 +8,10 @@
         - index: Index of the form. For proper subforms rendered in the form loop,
                  this should match `loop.index0`, and for the template it should be
                  '_'
-    #}
-
+#}
 {%- macro render_ingredient_form(subform, index) %}
-    <div id="ingredients-{{ index }}-form" class="row {% if index != '_' %}subform{% else %}d-none{% endif %} row"
+    <div id="ingredients-{{ index }}-form"
+         class="row {% if index != '_' %}subform{% else %}d-none{% endif %} row"
          data-index="{{ index }}">
         <hr/>
         <div class="form-group col-md-3">
@@ -27,7 +27,11 @@
             {{ subform.unit(class="form-control") }}
         </div>
         <div class="col-md-3">
-            <button type="button" id="remove-ingredient-{{ index }}-btn" class="btn btn-warning remove" href="#">Zutat
+            <button type="button"
+                    id="remove-ingredient-{{ index }}-btn"
+                    class="btn btn-warning remove"
+                    href="#">
+                Zutat
                 entfernen
             </button>
         </div>

@@ -1,11 +1,11 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="de">
 <head>
     {% block head %}
         <!-- Required meta tags -->
         <meta charset="utf-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=yes">
-
+        <meta name="viewport"
+              content="width=device-width, initial-scale=1, shrink-to-fit=yes">
         {% block styles %}
             <!-- Bootstrap CSS -->
             {{ bootstrap.load_css() }}
@@ -31,11 +31,8 @@
 <div class="container">
     {% block content %}{% endblock %}
 </div>
-
 <footer>
-    <div class="container text-center">
-        Copyright: Kinderladen Jakobistraße e.V.
-    </div>
+    <div class="container text-center">Copyright: Kinderladen Jakobistraße e.V.</div>
 </footer>
 </body>
 </html>

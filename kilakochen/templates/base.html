@@ -1,68 +1,74 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="de">
 <head>
-
     <title>{{ page_title }}</title>
-    <link rel="icon" type="image/png" href="{{ url_for('static', filename='favicon/favicon-96x96.png') }}" sizes="96x96" />
-    <link rel="icon" type="image/svg+xml" href="{{ url_for('static', filename='favicon/favicon.svg') }}" />
-    <link rel="shortcut icon" href="{{ url_for('static', filename='favicon/favicon.ico') }}">
-    <link rel="apple-touch-icon" sizes="180x180" href="{{ url_for('static', filename='favicon/apple-touch-icon.png') }}" />
-    <meta name="apple-mobile-web-app-title" content="KilaKochen" />
-    <link rel="manifest" href="{{ url_for('static', filename='favicon/site.webmanifest') }}" />
-
-
+    <link rel="icon"
+          type="image/png"
+          href="{{ url_for('static', filename='favicon/favicon-96x96.png') }}"
+          sizes="96x96"/>
+    <link rel="icon"
+          type="image/svg+xml"
+          href="{{ url_for('static', filename='favicon/favicon.svg') }}"/>
+    <link rel="shortcut icon"
+          href="{{ url_for('static', filename='favicon/favicon.ico') }}">
+    <link rel="apple-touch-icon"
+          sizes="180x180"
+          href="{{ url_for('static', filename='favicon/apple-touch-icon.png') }}"/>
+    <meta name="apple-mobile-web-app-title" content="KilaKochen"/>
+    <link rel="manifest"
+          href="{{ url_for('static', filename='favicon/site.webmanifest') }}"/>
     <!-- Required meta tags -->
     <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta property="og:locale" content="de_DE">
     <meta property="og:type" content="website">
-    <meta property="og:image" content="{{ url_for('static', filename='favicon.svg') }}">
-
+    <meta property="og:image"
+          content="{{ url_for('static', filename='favicon.svg') }}">
     {%- block head -%}
     {%- endblock -%}
-
     {%- block styles %}
         <!-- Bootstrap CSS -->
         {{ bootstrap.load_css() }}
-        <link rel="stylesheet" href="{{ url_for('static', filename='custom.css') }}">
+        <link rel="stylesheet"
+              href="{{ url_for('static', filename='custom.css') }}">
     {% endblock %}
 </head>
 <body>
 <header class="position-absolute w-100">
     {% include "incl_navbar.html" %}
 </header>
-
-
 <main class="flex-shrink-0 kl-content">
     <div class="container">
         {% with messages = get_flashed_messages(with_categories=true) %}
             {% if messages %}
                 {% for category, message in messages %}
-                    <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+                    <div class="alert alert-{{ category }} alert-dismissible fade show"
+                         role="alert">
                         {{ message | safe }}
-                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        <button type="button"
+                                class="btn-close"
+                                data-bs-dismiss="alert"
+                                aria-label="Close"></button>
                     </div>
                 {% endfor %}
             {% endif %}
         {% endwith %}
     </div>
     <!-- Start Main content -->
-    {% block content %}
-    {% endblock %}
+    {% block content %}{% endblock %}
     <!-- End Main content -->
 </main>
-
-
 <footer class="footer mt-auto py-3 bg-light fixed-bottom">
     <!-- Footer -->
     {% include "incl_footer.html" %}
 </footer>
 {% block scripts %}
     <!-- Optional JavaScript -->
-    {%  if config['DEBUG'] %}
+    {% if config['DEBUG'] %}
         {{ bootstrap.load_js(with_popper=True) }}
-    {%  else %}
-            {{ bootstrap.load_js(with_popper=False) }}
+    {% else %}
+        {{ bootstrap.load_js(with_popper=False) }}
     {% endif %}
 {% endblock %}
 </body>

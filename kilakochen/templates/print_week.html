@@ -1,12 +1,12 @@
 {% extends 'print_base.html' %}
-
 {% block content %}
     <div class="container">
         <div>
             <div class="row align-items-center">
                 <div class="col">
                     <img src="{{ url_for('static', filename='kila-logo.png') }}"
-                         alt="Logo Kinderladen Jakobistrasse e.V." class="img-fluid">
+                         alt="Logo Kinderladen Jakobistrasse e.V."
+                         class="img-fluid">
                 </div>
                 <div class="col">
                     Wochenplan für die Kalenderwoche <strong>{{ kw }}</strong> vom
@@ -14,17 +14,14 @@
                     <strong>{{ plaene[-1].date | format_date(kl_format="medium") }}</strong>
                 </div>
             </div>
-
             <table class="table table-bordered">
                 <thead class="table-light">
                 <tr>
                     <th></th>
                     {% for entry in plaene %}
-                        <th scope="col">{{ entry.date | return_day }}</th>
-                    {% endfor %}
+                        <th scope="col">{{ entry.date | return_day }}</th>{% endfor %}
                 </tr>
                 </thead>
-
                 <tr>
                     <td>Hauptgericht</td>
                     {% for plan in plaene %}
@@ -37,7 +34,6 @@
                         </td>
                     {% endfor %}
                 </tr>
-
                 <tr>
                     <td>Beilage</td>
                     {% for plan in plaene %}
@@ -47,10 +43,8 @@
                             {% else %}
                                 <h6>-</h6>
                             {% endif %}
-
                         </td>
                     {% endfor %}
-
                 </tr>
                 <tr>
                     <td>Dessert</td>
@@ -63,7 +57,6 @@
                             {% endif %}
                         </td>
                     {% endfor %}
-
                 </tr>
             </table>
             <div class="text-center">Nur für den internen Gebrauch vom Kinderladen Jakobistraße e.V.</div>
@@ -71,7 +64,8 @@
         <div class="page-break"></div>
         <div class="row align-items-center">
             <div class="col">
-                <img src="{{ url_for('static', filename='kila-logo.png') }}" alt="Logo Kinderladen Jakobistrasse e.V."
+                <img src="{{ url_for('static', filename='kila-logo.png') }}"
+                     alt="Logo Kinderladen Jakobistrasse e.V."
                      class="img-fluid">
             </div>
             <div class="col">
@@ -86,28 +80,22 @@
                 <tr>
                     <th></th>
                     {% for entry in plaene %}
-                        <th scope="col">{{ entry.date | return_day }}</th>
-                    {% endfor %}
+                        <th scope="col">{{ entry.date | return_day }}</th>{% endfor %}
                 </tr>
-
                 </thead>
-
                 <tr>
                     <td>Hauptgericht</td>
                     {% for plan in plaene %}
                         <td>
-
                             {% if plan.main_dish != None %}
                                 <h6>{{ plan.main_dish.name }}</h6>
                                 {% for zutat in plan.main_dish.ingredients %}
-                                    <p>{{ "%.2f"|format(zutat.amount) }} {{ zutat.unit.code }} {{ zutat.ingredient.name }}</p>
+                                    {{ "%.2f"|format(zutat.amount) }} {{ zutat.unit.code }} {{ zutat.ingredient.name }}
+                                    <br>
                                 {% endfor %}
-
                             {% else %}
                                 <h6>-</h6>
                             {% endif %}
-
-
                         </td>
                     {% endfor %}
                 </tr>
@@ -118,16 +106,14 @@
                             {% if plan.side_dish != None %}
                                 <h6>{{ plan.side_dish.name }}</h6>
                                 {% for zutat in plan.side_dish.ingredients %}
-                                    <p>{{ "%.2f"|format(zutat.amount) }} {{ zutat.unit.code }} {{ zutat.ingredient.name }}</p>
-
+                                    {{ "%.2f"|format(zutat.amount) }} {{ zutat.unit.code }} {{ zutat.ingredient.name }}
+                                    <br>
                                 {% endfor %}
                             {% else %}
                                 -
                             {% endif %}
-
                         </td>
                     {% endfor %}
-
                 </tr>
                 <tr>
                     <td>Dessert</td>
@@ -136,30 +122,27 @@
                             {% if plan.dessert != None %}
                                 <h6>{{ plan.dessert.name }}</h6>
                                 {% for zutat in plan.dessert.ingredients %}
-                                    <p>{{ "%.2f"|format(zutat.amount) }} {{ zutat.unit.code }} {{ zutat.ingredient.name }}</p>
-
+                                    {{ "%.2f"|format(zutat.amount) }} {{ zutat.unit.code }} {{ zutat.ingredient.name }}<
+                                    br
                                 {% endfor %}
                             {% else %}
-                                -
+                            -
                             {% endif %}
                         </td>
                     {% endfor %}
-
                 </tr>
             </table>
         </div>
         {% for entry in plaene %}
             {% if not entry.outage %}
                 <div class="page-break"></div>
-
                 <div class="row align-items-center">
                     <div class="col">
                         <img src="{{ url_for('static', filename='kila-logo.png') }}"
-                             alt="Logo Kinderladen Jakobistrasse e.V." class="img-fluid">
+                             alt="Logo Kinderladen Jakobistrasse e.V."
+                             class="img-fluid">
                     </div>
-                    <div class="col">
-                        {{ entry.date |format_date(kl_format="full") }}
-                    </div>
+                    <div class="col">{{ entry.date |format_date(kl_format="full") }}</div>
                 </div>
                 <div class="small-font">
                     <table class="table  table-bordered">
@@ -170,24 +153,38 @@
                             <th>Beilage</th>
                             <th>Dessert</th>
                         </tr>
-
                         </thead>
                         <tr>
                             <td>name</td>
-                            <td>{% if entry.main_dish != None %}{{ entry.main_dish.name }}{% else %}
-                                <h6>-</h6>{% endif %}</td>
-                            <td>{% if entry.side_dish != None %}{{ entry.side_dish.name }}{% else %}<h6>-</h6>{% endif %}
+                            <td>
+                                {% if entry.main_dish != None %}
+                                    {{ entry.main_dish.name }}
+                                {% else %}
+                                    <h6>-</h6>
+                                {% endif %}
                             </td>
-                            <td>{% if entry.dessert != None %}{{ entry.dessert.name }}{% else %}<h6>-</h6>{% endif %}
+                            <td>
+                                {% if entry.side_dish != None %}
+                                    {{ entry.side_dish.name }}
+                                {% else %}
+                                    <h6>-</h6>
+                                {% endif %}
                             </td>
-
+                            <td>
+                                {% if entry.dessert != None %}
+                                    {{ entry.dessert.name }}
+                                {% else %}
+                                    <h6>-</h6>
+                                {% endif %}
+                            </td>
                         </tr>
                         <tr>
                             <td>ingredient</td>
                             <td>
                                 {% if entry.main_dish != None %}
                                     {% for zutat in entry.main_dish.ingredients %}
-                                        <p>{{ "%.2f"|format(zutat.amount) }} {{ zutat.unit.code }} {{ zutat.ingredient.name }} </p>
+                                        {{ "%.2f"|format(zutat.amount) }} {{ zutat.unit.code }}
+                                        {{ zutat.ingredient.name }}<br>
                                     {% endfor %}
                                 {% else %}
                                     <h6>-</h6>
@@ -196,7 +193,8 @@
                             <td>
                                 {% if entry.side_dish != None %}
                                     {% for zutat in entry.side_dish.ingredients %}
-                                        <p>{{ "%.2f"|format(zutat.amount) }} {{ zutat.unit.code }} {{ zutat.ingredient.name }} </p>
+                                        {{ "%.2f"|format(zutat.amount) }} {{ zutat.unit.code }}
+                                        {{ zutat.ingredient.name }}<br>
                                     {% endfor %}
                                 {% else %}
                                     <h6>-</h6>
@@ -205,7 +203,8 @@
                             <td>
                                 {% if entry.dessert != None %}
                                     {% for zutat in entry.dessert.ingredients %}
-                                        <p>{{ "%.2f"|format(zutat.amount) }} {{ zutat.unit.code }} {{ zutat.ingredient.name }} </p>
+                                        {{ "%.2f"|format(zutat.amount) }} {{ zutat.unit.code }}
+                                        {{ zutat.ingredient.name }}<br>
                                     {% endfor %}
                                 {% else %}
                                     <h6>-</h6>
@@ -214,29 +213,26 @@
                         </tr>
                         <tr>
                             <td>Allergene</td>
-                            <td> {% if entry.main_dish != None %}
-                                {% for zutat in entry.main_dish.ingredients %}
-                                    {% for allergen in zutat.ingredient.allergens %}
-                                        {{ allergen.name }},
+                            <td>
+                                {% if entry.main_dish != None %}
+                                    {% for zutat in entry.main_dish.ingredients %}
+                                        {% for allergen in zutat.ingredient.allergens %}{{ allergen.name }},{% endfor %}
                                     {% endfor %}
-                                {% endfor %}
-                            {% endif %}
+                                {% endif %}
                             </td>
-                            <td> {% if entry.side_dish != None %}
-                                {% for zutat in entry.side_dish.ingredients %}
-                                    {% for allergen in zutat.ingredient.allergens %}
-                                        {{ allergen.name }},
+                            <td>
+                                {% if entry.side_dish != None %}
+                                    {% for zutat in entry.side_dish.ingredients %}
+                                        {% for allergen in zutat.ingredient.allergens %}{{ allergen.name }},{% endfor %}
                                     {% endfor %}
-                                {% endfor %}
-                            {% endif %}
+                                {% endif %}
                             </td>
-                            <td> {% if entry.dessert != None %}
-                                {% for zutat in entry.dessert.ingredients %}
-                                    {% for allergen in zutat.ingredient.allergens %}
-                                        {{ allergen.name }},
+                            <td>
+                                {% if entry.dessert != None %}
+                                    {% for zutat in entry.dessert.ingredients %}
+                                        {% for allergen in zutat.ingredient.allergens %}{{ allergen.name }},{% endfor %}
                                     {% endfor %}
-                                {% endfor %}
-                            {% endif %}
+                                {% endif %}
                             </td>
                         </tr>
                         <tr>
@@ -244,7 +240,6 @@
                             <td>
                                 {% if entry.main_dish != None %}
                                     {{ entry.main_dish.description | nl2br }}
-
                                 {% else %}
                                     <h6>-</h6>
                                 {% endif %}
@@ -252,7 +247,6 @@
                             <td>
                                 {% if entry.side_dish != None %}
                                     {{ entry.side_dish.description | nl2br }}
-
                                 {% else %}
                                     <h6>-</h6>
                                 {% endif %}
@@ -260,7 +254,6 @@
                             <td>
                                 {% if entry.dessert != None %}
                                     {{ entry.dessert.description | nl2br }}
-
                                 {% else %}
                                     <h6>-</h6>
                                 {% endif %}
