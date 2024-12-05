@@ -3,7 +3,6 @@ from wtforms import (
     StringField,
     SubmitField,
 )
-
 from wtforms.validators import DataRequired, Optional
 from wtforms_sqlalchemy.fields import QuerySelectField, QuerySelectMultipleField
 
@@ -34,7 +33,6 @@ class IngredientForm(FlaskForm):
         query_factory=get_allergens,
         allow_blank=False,
         get_label="name",
-        validators=[DataRequired()],
     )
 
     submit = SubmitField("Zutat erstellen")

@@ -2,6 +2,7 @@ from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, SubmitField
 from wtforms.fields.choices import SelectField
 from wtforms.validators import DataRequired, EqualTo
+
 from kilakochen.models import User
 
 
@@ -18,7 +19,7 @@ class CreateUserForm(FlaskForm):
         ],
     )
     email = StringField("Email")
-    access_level = SelectField("Access Level", choices=tuple(User.ACCESS_LEVEL.items()))
+    level = SelectField("Access Level", choices=tuple(User.ACCESS_LEVEL.items()))
     submit = SubmitField("Create")
 
 
@@ -35,5 +36,5 @@ class EditUserForm(FlaskForm):
         validators=[EqualTo("password", message="Passwords must match")],
     )
     email = StringField("Email")
-    access_level = SelectField("Access Level", choices=tuple(User.ACCESS_LEVEL.items()))
+    level = SelectField("Access Level", choices=tuple(User.ACCESS_LEVEL.items()))
     submit = SubmitField("Edit")

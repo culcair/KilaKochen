@@ -1,19 +1,14 @@
-from http.client import HTTPException
-
 import sqlalchemy
+from flask import flash, redirect, render_template, url_for, request
 from flask_login import login_required
 from sqlalchemy import select
 from sqlalchemy.orm import load_only
 from werkzeug.exceptions import NotFound
 
 from kilakochen import db
-from kilakochen.errors.handlers import not_found_error
-from kilakochen.ingredient.forms import IngredientForm
-from kilakochen.models import Ingredient, Allergen, IngredientsGroup
 from kilakochen.ingredient import bp
-
-
-from flask import flash, redirect, render_template, url_for, request
+from kilakochen.ingredient.forms import IngredientForm
+from kilakochen.models import Ingredient, Allergen
 
 
 @bp.route("/")
@@ -46,10 +41,10 @@ def view(ingredient_id):
     )
 
 
-def edit_or_new_ingredient( form : IngredientForm ) -> (bool, str):
+def edit_or_new_ingredient(form: IngredientForm, modus: str):
     name = form.name.data
     try:
-        if not db.session.query(
+        if modus == "new" and not db.session.query(
             Ingredient.query.filter_by(name=name).exists()
         ).scalar():
             new_ingredient = Ingredient()
@@ -57,6 +52,12 @@ def edit_or_new_ingredient( form : IngredientForm ) -> (bool, str):
             db.session.add(new_ingredient)
             db.session.commit()
             flash(f"Zutat {new_ingredient.name} angelegt.",category="success")
+        elif modus == "edit":
+            ingredient = Ingredient.query.filter_by(name=name).first()
+            form.populate_obj(ingredient)
+            db.session.add(ingredient)
+            db.session.commit()
+            flash(f"Zutat {ingredient.name} angepasst.", category="success")
         else:
             flash(f"Zutat mit dem Namen {name} ist schon vorhanden.",category="warning")
 
@@ -70,7 +71,7 @@ def edit_or_new_ingredient( form : IngredientForm ) -> (bool, str):
 def new():
     form = IngredientForm()
     if form.validate_on_submit():
-        edit_or_new_ingredient(form)
+        edit_or_new_ingredient(form, "new")
         return redirect(url_for("ingredient.overview"))
 
     return render_template("ingredient/new.html", form=form)
@@ -85,7 +86,7 @@ def edit(ingredient_id):
         form = IngredientForm(obj=ingredient)
         form.submit.label.text = f"Änderung speichern"
         if form.validate_on_submit():
-            edit_or_new_ingredient(form)
+            edit_or_new_ingredient(form, "edit")
             return redirect(url_for("ingredient.overview"))
 
         return render_template("ingredient/edit.html",

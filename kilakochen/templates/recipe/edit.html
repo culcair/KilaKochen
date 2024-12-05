@@ -1,14 +1,14 @@
 {% extends 'base.html' %}
-{% from 'bootstrap5/form.html' import render_form %}
+{% from 'bootstrap5/form.html' import render_field %}
 
 {% import "macros.html" as macros %}
 {% block content %}
     <div class="container">
-
         <div class="container">
             <h1>Rezept bearbeiten</h1>
             <form method="POST" action="{{ url_for('recipe.edit', recipe_id=recipe.id) }}">
                 {{ form.csrf_token }}
+                <!-- Titel des Rezepts -->
 
                 <!-- Titel des Rezepts -->
                 <div class="form-group">
@@ -32,6 +32,11 @@
                 <div class="form-group">
                     <label for="kategorie">Kategorie</label>
                     {{ form.category(class="form-control") }}
+                </div>
+                <!-- Status -->
+                <div class="form-group">
+                    <label for="status">Status</label>
+                    {{ render_field(form.active) }}
                 </div>
 
                 <!-- Zutaten -->
