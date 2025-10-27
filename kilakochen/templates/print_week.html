@@ -58,6 +58,18 @@
                         </td>
                     {% endfor %}
                 </tr>
+                <tr>
+                    <td>Kommentar</td>
+                    {% for plan in plaene %}
+                        <td>
+                            {% if plan.comment != None %}
+                                <h6>{{ plan.comment }}</h6>
+                            {% else %}
+                                -
+                            {% endif %}
+                        </td>
+                    {% endfor %}
+                </tr>
             </table>
             <div class="text-center">Nur für den internen Gebrauch vom Kinderladen Jakobistraße e.V.</div>
         </div>
@@ -131,137 +143,8 @@
                         </td>
                     {% endfor %}
                 </tr>
+
             </table>
         </div>
-        {% for entry in plaene %}
-            {% if not entry.outage %}
-                <div class="page-break"></div>
-                <div class="row align-items-center">
-                    <div class="col">
-                        <img src="{{ url_for('static', filename='kila-logo.png') }}"
-                             alt="Logo Kinderladen Jakobistrasse e.V."
-                             class="img-fluid">
-                    </div>
-                    <div class="col">{{ entry.date |format_date(kl_format="full") }}</div>
-                </div>
-                <div class="small-font">
-                    <table class="table  table-bordered">
-                        <thead class="table-light">
-                        <tr>
-                            <th></th>
-                            <th>Hauptgericht</th>
-                            <th>Beilage</th>
-                            <th>Dessert</th>
-                        </tr>
-                        </thead>
-                        <tr>
-                            <td>name</td>
-                            <td>
-                                {% if entry.main_dish != None %}
-                                    {{ entry.main_dish.name }}
-                                {% else %}
-                                    <h6>-</h6>
-                                {% endif %}
-                            </td>
-                            <td>
-                                {% if entry.side_dish != None %}
-                                    {{ entry.side_dish.name }}
-                                {% else %}
-                                    <h6>-</h6>
-                                {% endif %}
-                            </td>
-                            <td>
-                                {% if entry.dessert != None %}
-                                    {{ entry.dessert.name }}
-                                {% else %}
-                                    <h6>-</h6>
-                                {% endif %}
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>ingredient</td>
-                            <td>
-                                {% if entry.main_dish != None %}
-                                    {% for zutat in entry.main_dish.ingredients %}
-                                        {{ "%.2f"|format(zutat.amount) }} {{ zutat.unit.code }}
-                                        {{ zutat.ingredient.name }}<br>
-                                    {% endfor %}
-                                {% else %}
-                                    <h6>-</h6>
-                                {% endif %}
-                            </td>
-                            <td>
-                                {% if entry.side_dish != None %}
-                                    {% for zutat in entry.side_dish.ingredients %}
-                                        {{ "%.2f"|format(zutat.amount) }} {{ zutat.unit.code }}
-                                        {{ zutat.ingredient.name }}<br>
-                                    {% endfor %}
-                                {% else %}
-                                    <h6>-</h6>
-                                {% endif %}
-                            </td>
-                            <td>
-                                {% if entry.dessert != None %}
-                                    {% for zutat in entry.dessert.ingredients %}
-                                        {{ "%.2f"|format(zutat.amount) }} {{ zutat.unit.code }}
-                                        {{ zutat.ingredient.name }}<br>
-                                    {% endfor %}
-                                {% else %}
-                                    <h6>-</h6>
-                                {% endif %}
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>Allergene</td>
-                            <td>
-                                {% if entry.main_dish != None %}
-                                    {% for zutat in entry.main_dish.ingredients %}
-                                        {% for allergen in zutat.ingredient.allergens %}{{ allergen.name }},{% endfor %}
-                                    {% endfor %}
-                                {% endif %}
-                            </td>
-                            <td>
-                                {% if entry.side_dish != None %}
-                                    {% for zutat in entry.side_dish.ingredients %}
-                                        {% for allergen in zutat.ingredient.allergens %}{{ allergen.name }},{% endfor %}
-                                    {% endfor %}
-                                {% endif %}
-                            </td>
-                            <td>
-                                {% if entry.dessert != None %}
-                                    {% for zutat in entry.dessert.ingredients %}
-                                        {% for allergen in zutat.ingredient.allergens %}{{ allergen.name }},{% endfor %}
-                                    {% endfor %}
-                                {% endif %}
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>Zubereitung</td>
-                            <td>
-                                {% if entry.main_dish != None %}
-                                    {{ entry.main_dish.description | nl2br }}
-                                {% else %}
-                                    <h6>-</h6>
-                                {% endif %}
-                            </td>
-                            <td>
-                                {% if entry.side_dish != None %}
-                                    {{ entry.side_dish.description | nl2br }}
-                                {% else %}
-                                    <h6>-</h6>
-                                {% endif %}
-                            </td>
-                            <td>
-                                {% if entry.dessert != None %}
-                                    {{ entry.dessert.description | nl2br }}
-                                {% else %}
-                                    <h6>-</h6>
-                                {% endif %}
-                            </td>
-                        </tr>
-                    </table>
-                </div>
-            {% endif %}
-        {% endfor %}
     </div>
 {% endblock %}

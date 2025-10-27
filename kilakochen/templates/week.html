@@ -104,6 +104,18 @@
                         </td>
                     {% endfor %}
                 </tr>
+                <tr>
+                    <td>Kommentar</td>
+                    {% for plan in plaene %}
+                        <td>
+                            {% if plan.comment != None %}
+                                {{ plan.comment }}
+                            {% else %}
+                                -
+                            {% endif %}
+                        </td>
+                    {% endfor %}
+                </tr>
             </table>
         </div>
     </div>
