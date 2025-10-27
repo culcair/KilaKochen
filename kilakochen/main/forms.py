@@ -7,19 +7,17 @@ from wtforms import (
     TextAreaField,
 )
 from wtforms.validators import Optional
-
 from wtforms_sqlalchemy.fields import QuerySelectField
 
 from kilakochen.models import Recipe, RecipeCategory
 
-from kilakochen import db,current_app
 
 # Hilfsfunktionen, um Kategorien, Zutaten und Einheiten für SelectFields bereitzustellen
 def get_recipes(category: str):
     cat = RecipeCategory.query.filter_by(code=category).first()
     if not cat:
         return []  # Rückgabe einer leeren Liste, falls keine Kategorie gefunden wurde
-    return Recipe.query.filter_by(active=True, category_id=cat.id).all()
+    return Recipe.query.filter_by(active=True, category_id=cat.id).order_by(Recipe.name).all()
 
 
 class EditDayForm(FlaskForm):
