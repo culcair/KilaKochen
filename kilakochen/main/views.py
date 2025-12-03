@@ -28,6 +28,21 @@ def get_rezepte(kategorie):
     choices = [(None, "")] + [(x.ID, x.Titel) for x in res]
     return choices
 
+@bp.route("/stats")
+def stats():
+    meals  = {}
+    for meal_plan in MealPlan.query.all():
+        if meal_plan.main_dish_id in meals:
+            meals[meal_plan.main_dish_id]["count"] += 1
+        else:
+            meals[meal_plan.main_dish_id] = {
+                "count":1,
+                "name" : meal_plan.main_dish.name
+            }
+    return render_template(
+        "stats.html",
+        meals=meals
+    )
 
 def populate_editheuteform(plan : MealPlan, form : EditDayForm, given_date):
     if plan is not None:
@@ -82,9 +97,7 @@ def get_date( raw_date : date | str) -> date :
 @login_required
 def day_edit(raw_date: str):
     given_date = get_date(raw_date)
-    print(given_date)
     plan: MealPlan = MealPlan.query.filter_by(date=given_date).one_or_none()
-    print(plan)
     if plan is None:
         plan = MealPlan(date=given_date)
 
