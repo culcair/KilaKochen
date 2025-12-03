@@ -32,13 +32,16 @@ def get_rezepte(kategorie):
 def stats():
     meals  = {}
     for meal_plan in MealPlan.query.all():
-        if meal_plan.main_dish_id in meals:
-            meals[meal_plan.main_dish_id]["count"] += 1
-        else:
-            meals[meal_plan.main_dish_id] = {
-                "count":1,
-                "name" : meal_plan.main_dish.name
-            }
+        if meal_plan.main_dish is not None:
+
+
+            if meal_plan.main_dish_id in meals:
+                meals[meal_plan.main_dish_id]["count"] += 1
+            else:
+                meals[meal_plan.main_dish_id] = {
+                    "count":1,
+                    "name" : meal_plan.main_dish.name
+                }
     return render_template(
         "stats.html",
         meals=meals
