@@ -84,7 +84,9 @@ def get_date( raw_date : date | str) -> date :
     :param raw_date:
     :return: given_date
     """
-    if type(raw_date) == str:
+    if raw_date is None:
+        given_date = datetime.today().date()
+    elif type(raw_date) == str:
         given_date = datetime.fromisoformat(raw_date).date()
     else:
         given_date = raw_date
@@ -121,8 +123,8 @@ def day_edit(raw_date: str):
     return render_template("edit_day.html", form=form)
 
 @bp.get("/day/<string:raw_date>")
-@bp.get("/today",defaults={"raw_date": datetime.today().date()})
-def day(raw_date):
+@bp.get("/today")
+def day(raw_date = None):
     given_date = get_date(raw_date)
 
     data = MealPlan.query.filter_by(date=given_date).one_or_none()
