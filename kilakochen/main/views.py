@@ -180,7 +180,11 @@ def print_week(raw_date=None):
             plaene.append(res)
 
     html_string = render_template(
-        "print_week.html", page_title="Wochenplan", plaene=plaene, kw=kw
+        "print_week.html",
+        page_title="Wochenplan",
+        page_orientation="landscape",
+        plaene=plaene,
+        kw=kw
     )
     tmp = HTML(string=html_string)
     #    return html_string

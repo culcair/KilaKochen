@@ -106,6 +106,7 @@ def recipe_print(recipe_id):
         page_title="Rezept - " + data.name,
         rezept_name=data.name,
         data=data,
+        page_orientation="portrait",
     )
 
     tmp = HTML(string=html_string)
