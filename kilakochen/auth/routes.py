@@ -29,7 +29,8 @@ def login():
         db.session.commit()
         next_page = request.args.get("next")
         next_page = next_page.replace("\\","")
-        if not next_page or ( urlsplit(next_page).netloc != "" and urlsplit(next_page).scheme != ""):
+        parsed_url = urlsplit(next_page)
+        if not next_page or parsed_url.netloc or parsed_url.scheme:
             next_page = url_for("main.index")
 
         return redirect(next_page)
