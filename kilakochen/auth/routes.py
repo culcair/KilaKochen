@@ -28,8 +28,10 @@ def login():
         user.last_seen = datetime.now(timezone.utc)
         db.session.commit()
         next_page = request.args.get("next")
-        if not next_page or urlsplit(next_page).netloc != "":
+        next_page = next_page.replace("\\","")
+        if not next_page or ( urlsplit(next_page).netloc != "" and urlsplit(next_page).scheme != ""):
             next_page = url_for("main.index")
+
         return redirect(next_page)
 
     return render_template("login.html", form=form)
