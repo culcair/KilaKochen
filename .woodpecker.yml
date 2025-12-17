@@ -1,0 +1,6 @@
+pipeline:
+  mirror:
+    image: alpine/git
+    commands:
+      - git remote add github git@github.com:culcair/KilaKochen.git
+      - git push --mirror github
