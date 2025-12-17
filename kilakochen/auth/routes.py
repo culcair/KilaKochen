@@ -31,15 +31,16 @@ def login():
         next_page = next_page.replace("\\","")
         parsed_url = urlsplit(next_page)
         if (
-            not next_page or
-            parsed_url.netloc or
-            parsed_url.scheme or
-            not next_page.startswith("/") or
-            next_page.startswith("//")
-        ):
-            next_page = url_for("main.index")
+            next_page
+            and not parsed_url.netloc
+            and not parsed_url.scheme
+            and not next_page.startswith("//")
+            and next_page.startswith("/")
+            ):
+            return redirect(next_page)
+        else:
+            return redirect(url_for("main.index"))
 
-        return redirect(next_page)
 
     return render_template("login.html", form=form)
 
