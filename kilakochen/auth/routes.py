@@ -27,10 +27,15 @@ def login():
         flash("Login erfolgreich.", category="success")
         user.last_seen = datetime.now(timezone.utc)
         db.session.commit()
-        next_page = request.args.get("next")
+        next_page = request.args.get("next","")
         next_page = next_page.replace("\\","")
         parsed_url = urlsplit(next_page)
-        if not next_page or parsed_url.netloc or parsed_url.scheme:
+        if (
+            not next_page or
+            parsed_url.netloc or
+            parsed_url.scheme or
+            not next_page.startswith("/")
+        ):
             next_page = url_for("main.index")
 
         return redirect(next_page)
