@@ -34,7 +34,8 @@ def login():
             not next_page or
             parsed_url.netloc or
             parsed_url.scheme or
-            not next_page.startswith("/")
+            not next_page.startswith("/") or
+            next_page.startswith("//")
         ):
             next_page = url_for("main.index")
 
