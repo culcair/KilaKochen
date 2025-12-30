@@ -15,6 +15,7 @@ from sqlalchemy import (
     DateTime,
     Integer,
 )
+from sqlalchemy.ext.associationproxy import association_proxy
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from werkzeug.security import generate_password_hash, check_password_hash
 
@@ -67,8 +68,11 @@ class User(db.Model, UserMixin):
     def set_password(self, password) -> None:
         self.password = generate_password_hash(password)
 
-    def check_password(self, password) -> bool:
-        return check_password_hash(self.password, password)
+    def check_password(self, password:str) -> bool:
+        return check_password_hash(
+            self.password,
+            password
+        )
 
     @staticmethod
     def test_password(password):
@@ -206,6 +210,7 @@ class Recipe(db.Model):
     description: Mapped[str] = mapped_column(String)
     active: Mapped[bool] = mapped_column(Boolean, default=False)
     author: Mapped[str] = mapped_column(String, nullable=False)
+
     category_id: Mapped[int] = mapped_column(
         ForeignKey("recipe_category.id"), nullable=False
     )
@@ -215,6 +220,12 @@ class Recipe(db.Model):
     ingredients: Mapped[list["RecipeIngredient"]] = relationship(
         "RecipeIngredient", back_populates="recipe", cascade="all, delete-orphan"
     )
+    # Allergene direkt über die Zutaten abrufen
+    @property
+    def allergens(self):
+        """Gibt alle Allergene der Zutaten ohne Duplikate zurück."""
+        unique_allergens = {allergen.id: allergen for ri in self.ingredients for allergen in ri.ingredient.allergens}
+        return list(unique_allergens.values())
 
     meal_plan_side_dish: Mapped[List["MealPlan"]] = relationship(
         "MealPlan",

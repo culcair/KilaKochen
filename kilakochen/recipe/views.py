@@ -72,6 +72,21 @@ def overview():
         "recipe/overview.html", page_title="Übersicht der Rezepte", data=data,categories=get_count()
     )
 
+def get_allergens(recipe_id : int, short : bool = False) -> list:
+    """Returns sorted list of allergens for recipe"""
+    data = Recipe.query.filter_by(id=recipe_id).one_or_404()
+    allergens = set()
+
+
+    for recipe_ingredient in data.ingredients:
+        for allergen in recipe_ingredient.ingredient.allergens:
+            if short :
+                allergens.add(allergen.code)
+            else:
+                allergens.add(allergen.name)
+
+    result = sorted(allergens)
+    return result
 
 
 @bp.route("/view/<int:recipe_id>")
@@ -80,11 +95,9 @@ def view(recipe_id):
         back_ref_url = request.referrer
     else:
         back_ref_url = ""
-    data = Recipe.query.filter_by(id=recipe_id).one_or_404()
-    allergens = set()
-    for recipe_ingredient in data.ingredients:
-        for allergen in recipe_ingredient.ingredient.allergens:
-            allergens.add(allergen.name)
+
+    allergens :list = get_allergens(recipe_id)
+    data : Recipe = Recipe.query.filter_by(id=recipe_id).one_or_404()
 
 
     return render_template(
@@ -92,7 +105,7 @@ def view(recipe_id):
         page_title="Rezept | " + data.name,
         rezept_name=data.name,
         data=data,
-        allergens=' , '.join(allergens),
+        allergens=",".join(allergens),
         back_ref_url=back_ref_url,
     )
 
