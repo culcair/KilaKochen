@@ -72,6 +72,10 @@
                             {% if plan.main_dish != None %}
                                 <a class="btn btn-primary"
                                    href="{{ url_for('recipe.view',recipe_id=plan.main_dish.id) }}">{{ plan.main_dish.name }}</a>
+                                </br>
+                                {% for allergen in plan.main_dish.allergens %}
+                                    <small>{{ allergen.code }}</small>
+                                {% endfor %}
                             {% else %}
                                 -
                             {% endif %}
@@ -85,6 +89,10 @@
                             {% if plan.side_dish != None %}
                                 <a class="btn btn-primary"
                                    href="{{ url_for('recipe.view',recipe_id=plan.side_dish.id) }}">{{ plan.side_dish.name }}</a>
+                                </br>
+                                {% for allergen in plan.side_dish.allergens %}
+                                    <small>{{ allergen.code }}</small>
+                                {% endfor %}
                             {% else %}
                                 -
                             {% endif %}
@@ -98,6 +106,10 @@
                             {% if plan.dessert != None %}
                                 <a class="btn btn-primary"
                                    href="{{ url_for('recipe.view',recipe_id=plan.dessert.id) }}">{{ plan.dessert.name }}</a>
+                                </br>
+                                {% for allergen in plan.dessert.allergens %}
+                                    <small>{{ allergen.code }}</small>
+                                {% endfor %}
                             {% else %}
                                 -
                             {% endif %}
@@ -116,6 +128,13 @@
                         </td>
                     {% endfor %}
                 </tr>
+            <caption><small>
+            {% for allergen in overview_allergens %}
+                {{ allergen.code }}&nbsp;:&nbsp;{{ allergen.name }},
+                {% endfor %}
+            </small>
+            </caption>
+
             </table>
         </div>
     </div>

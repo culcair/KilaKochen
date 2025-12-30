@@ -7,7 +7,7 @@ from flask import redirect, render_template, url_for, flash
 from flask_weasyprint import HTML, render_pdf
 from datetime import datetime, timedelta, date
 
-from kilakochen.models import MealPlan, Recipe
+from kilakochen.models import MealPlan, Recipe, Allergen
 
 from kilakochen.main.forms import EditDayForm
 from kilakochen import db
@@ -179,18 +179,37 @@ def print_week(raw_date=None):
         else:
             plaene.append(res)
 
+    overview_allergens = Allergen.query.filter(Allergen.active == True).all()
+
     html_string = render_template(
         "print_week.html",
         page_title="Wochenplan",
         page_orientation="landscape",
         plaene=plaene,
-        kw=kw
+        kw=kw,
+        overview_allergens=overview_allergens
     )
     tmp = HTML(string=html_string)
     #    return html_string
     download_filename = "Wochenplan-KW{}.pdf".format(kw)
     return render_pdf(tmp, automatic_download=True, download_filename=download_filename)
 
+
+def get_allergens(recipe_id : int, short : bool = False) -> list:
+    """Returns sorted list of allergens for recipe"""
+    data = Recipe.query.filter_by(id=recipe_id).one_or_404()
+    allergens = set()
+
+
+    for recipe_ingredient in data.ingredients:
+        for allergen in recipe_ingredient.ingredient.allergens:
+            if short :
+                allergens.add(allergen.code)
+            else:
+                allergens.add(allergen.name)
+
+    result = sorted(allergens)
+    return result
 
 @bp.route("/week/<string:raw_date>")
 @bp.route("/week")
@@ -215,6 +234,8 @@ def week(raw_date=None):
             plaene.append(plan)
 
 
+
+    overview_allergens = Allergen.query.filter(Allergen.active == True).all()
     return render_template(
         "week.html",
         page_title="Wochenplan",
@@ -222,6 +243,7 @@ def week(raw_date=None):
         kw=kw,
         previous=previous_week,
         next=next_week,
+        overview_allergens=overview_allergens
     )
 
 

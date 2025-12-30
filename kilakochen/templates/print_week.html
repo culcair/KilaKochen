@@ -5,7 +5,7 @@
         <div>
             <div class="row align-items-center">
                 <div class="col">
-                    <img src="{{ url_for('static', filename='kila-logo.png') }}"
+                    <img src="{{ url_for('static', filename='kila-logo.svg') }}"
                          alt="Logo Kinderladen Jakobistrasse e.V."
                          class="img-fluid">
                 </div>
@@ -23,12 +23,21 @@
                         <th scope="col">{{ entry.date | return_day }}</th>{% endfor %}
                 </tr>
                 </thead>
+            <caption><small>
+            {% for allergen in overview_allergens %}
+                {{ allergen.code }}&nbsp;:&nbsp;{{ allergen.name }},
+                {% endfor %}
+            </small></caption>
                 <tr>
                     <td>Hauptgericht</td>
                     {% for plan in plaene %}
                         <td>
                             {% if plan.main_dish != None %}
                                 <h6>{{ plan.main_dish.name }}</h6>
+                                {% for allergen in plan.main_dish.allergens %}
+                                    <small>{{ allergen.code }}</small>
+
+                                {% endfor %}
                             {% else %}
                                 <h6>-</h6>
                             {% endif %}
@@ -41,6 +50,9 @@
                         <td>
                             {% if plan.side_dish != None %}
                                 <h6>{{ plan.side_dish.name }}</h6>
+                                {% for allergen in plan.side_dish.allergens %}
+                                    <small>{{ allergen.code }}</small>
+                                {% endfor %}
                             {% else %}
                                 <h6>-</h6>
                             {% endif %}
@@ -53,6 +65,9 @@
                         <td>
                             {% if plan.dessert != None %}
                                 <h6>{{ plan.dessert.name }}</h6>
+                                {% for allergen in plan.dessert.allergens %}
+                                    <small>{{ allergen.code }}</small>
+                                {% endfor %}
                             {% else %}
                                 <h6>-</h6>
                             {% endif %}
@@ -77,7 +92,7 @@
         <div class="page-break"></div>
         <div class="row align-items-center">
             <div class="col">
-                <img src="{{ url_for('static', filename='kila-logo.png') }}"
+                <img src="{{ url_for('static', filename='kila-logo.svg') }}"
                      alt="Logo Kinderladen Jakobistrasse e.V."
                      class="img-fluid">
             </div>
