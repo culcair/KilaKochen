@@ -179,12 +179,15 @@ def print_week(raw_date=None):
         else:
             plaene.append(res)
 
+    overview_allergens = Allergen.query.filter(Allergen.active == True).all()
+
     html_string = render_template(
         "print_week.html",
         page_title="Wochenplan",
         page_orientation="landscape",
         plaene=plaene,
-        kw=kw
+        kw=kw,
+        overview_allergens=overview_allergens
     )
     tmp = HTML(string=html_string)
     #    return html_string
@@ -230,8 +233,7 @@ def week(raw_date=None):
         else:
             plaene.append(plan)
 
-    for plan in plaene:
-        print(plan.main_dish.allergens)
+
 
     overview_allergens = Allergen.query.filter(Allergen.active == True).all()
     return render_template(
