@@ -151,7 +151,7 @@
                                 <h6>{{ plan.dessert.name }}</h6>
                                 {% for zutat in plan.dessert.ingredients %}
                                     {{ "%.2f"|format(zutat.amount) }} {{ zutat.unit.code }} {{ zutat.ingredient.name }}<
-                                    br
+                                    </br>
                                 {% endfor %}
                             {% else %}
                             -
