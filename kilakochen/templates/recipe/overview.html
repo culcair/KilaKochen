@@ -5,9 +5,9 @@
 {% block content %}
     <div class="container">
         <div class="row text-center">
-            <div class="col-auto">Alle Rezepte: {{ data|count }}</div>
+            <div class="col-auto"><a href={{ url_for('recipe.overview')}}>Alle Rezepte</a>: {{ data|count }}</div>
             {% for category in categories %}
-                <div class="col-auto">{{ category[0] }}:{{ category[1] }}</div>
+                 <div class="col-auto"><a href={{ url_for('recipe.overview',category_id=category[2])}}>{{ category[0] }}</a>:{{ category[1] }}</div>
             {% endfor %}
         </div>
             <table class="table-responsive table table-striped table-hover">

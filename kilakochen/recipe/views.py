@@ -54,7 +54,8 @@ def get_count():
     return (
         db.session.query(
             RecipeCategory.name,  # Name der Kategorie
-            func.count(Recipe.id).label("recipe_count")  # Anzahl der Rezepte
+            func.count(Recipe.id).label("recipe_count"),  # Anzahl der Rezepte
+            RecipeCategory.id
         )
         .join(Recipe, Recipe.category_id == RecipeCategory.id)  # Join zwischen Recipe und RecipeCategory
         .group_by(RecipeCategory.name)  # Gruppieren nach Kategorie
@@ -64,12 +65,23 @@ def get_count():
 @bp.route("/")
 @bp.route("/overview")
 def overview():
+    category = request.args.get("category_id")
+    
+    query = Recipe.query.order_by(Recipe.name)
+    if category:
+        query = query.filter(Recipe.category_id == category)
+
     if current_user.is_authenticated:
-        data = Recipe.query.order_by(Recipe.name).all()
+        data = query.all()
     else:
-        data = Recipe.query.filter_by(active=True).order_by(Recipe.name).all()
+        data = query.filter_by(active=True).all()
+
+
     return render_template(
-        "recipe/overview.html", page_title="Übersicht der Rezepte", data=data,categories=get_count()
+        "recipe/overview.html",
+        page_title="Übersicht der Rezepte",
+        data=data,
+        categories=get_count()
     )
 
 def get_allergens(recipe_id : int, short : bool = False) -> list:
@@ -77,7 +89,7 @@ def get_allergens(recipe_id : int, short : bool = False) -> list:
     data = Recipe.query.filter_by(id=recipe_id).one_or_404()
     allergens = set()
 
-
+    
     for recipe_ingredient in data.ingredients:
         for allergen in recipe_ingredient.ingredient.allergens:
             if short :
@@ -98,7 +110,6 @@ def view(recipe_id):
 
     allergens :list = get_allergens(recipe_id)
     data : Recipe = Recipe.query.filter_by(id=recipe_id).one_or_404()
-
 
     return render_template(
         "recipe/view.html",
