@@ -236,6 +236,7 @@ def week(raw_date=None):
 
 
     overview_allergens = Allergen.query.filter(Allergen.active == True).all()
+
     return render_template(
         "week.html",
         page_title="Wochenplan",

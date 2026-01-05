@@ -13,7 +13,7 @@ from kilakochen.recipe.forms import RecipeForm, IngredientForm
 
 logger = logging.getLogger("recipe")
 
-def create_new_recipe( form : RecipeForm ) -> str:
+def create_new_recipe( form : RecipeForm ) -> str | None:
     """
     Erstellt ein neues Rezept und fügt die Zutaten hinzu.
 
@@ -84,23 +84,6 @@ def overview():
         categories=get_count()
     )
 
-def get_allergens(recipe_id : int, short : bool = False) -> list:
-    """Returns sorted list of allergens for recipe"""
-    data = Recipe.query.filter_by(id=recipe_id).one_or_404()
-    allergens = set()
-
-    
-    for recipe_ingredient in data.ingredients:
-        for allergen in recipe_ingredient.ingredient.allergens:
-            if short :
-                allergens.add(allergen.code)
-            else:
-                allergens.add(allergen.name)
-
-    result = sorted(allergens)
-    return result
-
-
 @bp.route("/view/<int:recipe_id>")
 def view(recipe_id):
     if request.referrer:
@@ -108,7 +91,6 @@ def view(recipe_id):
     else:
         back_ref_url = ""
 
-    allergens :list = get_allergens(recipe_id)
     data : Recipe = Recipe.query.filter_by(id=recipe_id).one_or_404()
 
     return render_template(
@@ -116,10 +98,8 @@ def view(recipe_id):
         page_title="Rezept | " + data.name,
         rezept_name=data.name,
         data=data,
-        allergens=",".join(allergens),
         back_ref_url=back_ref_url,
     )
-
 
 @bp.route("/print/<int:recipe_id>")
 def recipe_print(recipe_id):
