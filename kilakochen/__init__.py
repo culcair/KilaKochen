@@ -41,8 +41,8 @@ db = SQLAlchemy(metadata=metadata)
 
 def get_version() -> str:
     try:
-        with open(".git/refs/heads/main", "r") as git_file:
-            app_version = git_file.readline()[:8]
+        with open("VERSION", "r") as version_file:
+            app_version = version_file.readline()
     except FileNotFoundError as e:
         app_version = ""
         print(e)
