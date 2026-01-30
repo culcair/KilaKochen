@@ -34,10 +34,9 @@
                         <td>
                             {% if plan.main_dish != None %}
                                 <h6>{{ plan.main_dish.name }}</h6>
-                                {% for allergen in plan.main_dish.allergens %}
-                                    <small>{{ allergen.code }}</small>
-
-                                {% endfor %}
+                                <small>
+                                {{ plan.main_dish.allergens | map(attribute="code") | join(", ") }}
+                                </small>
                             {% else %}
                                 <h6>-</h6>
                             {% endif %}
@@ -50,9 +49,9 @@
                         <td>
                             {% if plan.side_dish != None %}
                                 <h6>{{ plan.side_dish.name }}</h6>
-                                {% for allergen in plan.side_dish.allergens %}
-                                    <small>{{ allergen.code }}</small>
-                                {% endfor %}
+                                <small>
+                                {{ plan.side_dish.allergens | map(attribute="code") | join(", ") }}
+                                </small>
                             {% else %}
                                 <h6>-</h6>
                             {% endif %}
@@ -65,9 +64,9 @@
                         <td>
                             {% if plan.dessert != None %}
                                 <h6>{{ plan.dessert.name }}</h6>
-                                {% for allergen in plan.dessert.allergens %}
-                                    <small>{{ allergen.code }}</small>
-                                {% endfor %}
+                                <small>
+                                {{ plan.dessert.allergens | map(attribute="code") | join(", ") }}
+                                </small>
                             {% else %}
                                 <h6>-</h6>
                             {% endif %}

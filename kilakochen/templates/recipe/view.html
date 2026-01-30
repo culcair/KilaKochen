@@ -47,8 +47,7 @@
             <caption>Allergene</caption>
             <tr>
                 <td>
-                    {{ recipe.allergens }}
-
+                {{ data.allergens | map(attribute="name") | join(", ") }}
                 </td>
             </tr>
         </table>
