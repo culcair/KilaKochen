@@ -10,6 +10,8 @@ from kilakochen import db
 from kilakochen.models import Recipe, RecipeCategory, RecipeIngredient
 from kilakochen.recipe import bp
 from kilakochen.recipe.forms import RecipeForm, IngredientForm
+from sqlalchemy import func, select
+from typing import Dict, Any
 
 logger = logging.getLogger("recipe")
 
@@ -49,18 +51,59 @@ def create_new_recipe( form : RecipeForm ) -> str | None:
         logger.error(e)
         flash(f"Fehler beim Rezept erstellen", category="danger")
 
+def get_recipe_counts_by_category(
+    *,
+    only_active: bool = True,
+) -> Dict[str, Any]:
+    """
+    Liefert die Anzahl der Rezepte pro Kategorie sowie die Gesamtanzahl.
 
-def get_count():
-    return (
-        db.session.query(
-            RecipeCategory.name,  # Name der Kategorie
-            func.count(Recipe.id).label("recipe_count"),  # Anzahl der Rezepte
-            RecipeCategory.id
+    Rückgabeformat:
+    {
+        "total": int,
+        "categories": [
+            {"id": int, "name": str, "count": int},
+            ...
+        ]
+    }
+    """
+    recipe_join_condition = Recipe.category_id == RecipeCategory.id
+    if only_active:
+        recipe_join_condition &= Recipe.active.is_(True)
+
+    stmt = (
+        select(
+            RecipeCategory.id,
+            RecipeCategory.name,
+            func.count(Recipe.id).label("count"),
         )
-        .join(Recipe, Recipe.category_id == RecipeCategory.id)  # Join zwischen Recipe und RecipeCategory
-        .group_by(RecipeCategory.name)  # Gruppieren nach Kategorie
-        .all()
+        .outerjoin(Recipe, recipe_join_condition)
+        .where(
+            RecipeCategory.active.is_(True)
+            if only_active
+            else True
+        )
+        .group_by(RecipeCategory.id, RecipeCategory.name)
+        .order_by(RecipeCategory.name)
     )
+
+    rows = db.session.execute(stmt).all()
+
+    total = sum(row.count for row in rows)
+
+    return {
+        "total": total,
+        "categories": [
+            {
+                "id": row.id,
+                "name": row.name,
+                "count": row.count,
+            }
+            for row in rows
+        ],
+    }
+
+
 
 @bp.route("/")
 @bp.route("/overview")
@@ -76,12 +119,13 @@ def overview():
     else:
         data = query.filter_by(active=True).all()
 
+    print(get_recipe_counts_by_category())
 
     return render_template(
         "recipe/overview.html",
         page_title="Übersicht der Rezepte",
         data=data,
-        categories=get_count()
+        categories=get_recipe_counts_by_category()
     )
 
 @bp.route("/view/<int:recipe_id>")
