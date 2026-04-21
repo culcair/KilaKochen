@@ -13,6 +13,9 @@ from config import Config
 from flask_wtf import CSRFProtect
 
 
+__version__ = "1.2.0"
+
+
 def get_locale():
     return request.accept_languages.best_match(current_app.config["LANGUAGES"])
 
@@ -39,14 +42,6 @@ metadata = MetaData(
 db = SQLAlchemy(metadata=metadata)
 
 
-def get_version() -> str:
-    try:
-        with open("VERSION", "r") as version_file:
-            app_version = version_file.readline()
-    except FileNotFoundError as e:
-        app_version = ""
-        print(e)
-    return app_version
 
 
 def create_app(config_class=Config):
@@ -93,7 +88,7 @@ def create_app(config_class=Config):
     if app.config["CONTENT_SECURITY_POLICY"]:
         talisman.content_security_policy = app.config["CONTENT_SECURITY_POLICY"]
 
-    app.config["KILAKOCHEN_VERSION"] = get_version()
+    app.config["VERSION"] = __version__
 
     if not app.debug and not app.testing:
         bootstrap.bootstrap_js_filename = app.config["BOOTSTRAP_JS_FILENAME"]
