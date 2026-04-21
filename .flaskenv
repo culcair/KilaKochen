@@ -1,2 +1,2 @@
 FLASK_APP=kilakochen
-FLASK_DEBUG=true
+FLASK_DEBUG=false

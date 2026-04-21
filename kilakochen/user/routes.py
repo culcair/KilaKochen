@@ -30,19 +30,25 @@ def create_user(
 @bp.route("/edit:<int:user_id>", methods=["GET", "POST"])
 @login_required
 def edit(user_id: int) -> Response | str | tuple[str, int]:
-    if current_user.is_authenticated:
-        user = User.query.filter_by(id=user_id).first()
-        form = EditUserForm(obj=user)
-        if form.validate_on_submit():
-            form.populate_obj(user)
-            if form.password.data:
-                user.set_password(form.password.data)
-            db.session.commit()
-            return redirect(url_for("user.overview"))
+    if current_user.level < User.ADMIN_LEVEL and current_user.id != user_id:
+        flash("Keine Berechtigung zum Bearbeiten dieses Benutzers.", "danger")
+        return redirect(url_for("user.overview"))
 
-        return render_template("user/edit.html", form=form)
-    else:
-        return render_template("errors/401.html"), 401
+    user = User.query.filter_by(id=user_id).first()
+    form = EditUserForm(obj=user)
+    if form.validate_on_submit():
+        form.populate_obj(user)
+        if form.password.data:
+            user.set_password(form.password.data)
+        try:
+            db.session.commit()
+            flash(f"Benutzer {user.username} wurde aktualisiert.", "success")
+        except SQLAlchemyError as e:
+            db.session.rollback()
+            flash("Fehler beim Aktualisieren des Benutzers.", "danger")
+        return redirect(url_for("user.overview"))
+
+    return render_template("user/edit.html", form=form)
 
 
 @bp.route("/delete:<int:user_id>", methods=["GET", "POST"])

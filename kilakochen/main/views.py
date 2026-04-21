@@ -116,7 +116,8 @@ def day_edit(raw_date: str):
             flash(f"Speiseplan vom {plan.date} wurde aktualisiert.", "success")
         except SQLAlchemyError as e:
             db.session.rollback()
-            flash(f"Es trat eine Fehler bei der Aktualisierung vom Speiseplan {plan.date} auf. {e}", "danger")
+            bp.logger.error(f"Fehler bei Speiseplan-Update ({plan.date}): {e}")
+            flash(f"Es trat eine Fehler bei der Aktualisierung vom Speiseplan {plan.date} auf.", "danger")
 
         return redirect(url_for("main.week", raw_date=given_date))
 

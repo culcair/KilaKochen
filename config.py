@@ -6,7 +6,10 @@ load_dotenv(os.path.join(basedir, ".env"))
 
 
 class Config:
-    SECRET_KEY = os.environ.get("SECRET_KEY") or "you-will-never-guess"
+    SECRET_KEY = os.environ.get("SECRET_KEY")
+    if not SECRET_KEY:
+        raise ValueError("Kein SECRET_KEY in der Umgebung konfiguriert! Die Anwendung ist unsicher.")
+    
     SQLALCHEMY_DATABASE_URI = os.environ.get(
         "DATABASE_URL"
     ) or "sqlite:///" + os.path.join(basedir, "app.db")

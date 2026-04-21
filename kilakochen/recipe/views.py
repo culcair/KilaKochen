@@ -15,15 +15,15 @@ from typing import Dict, Any
 
 logger = logging.getLogger("recipe")
 
-def create_new_recipe( form : RecipeForm ) -> str | None:
+def create_new_recipe(form: RecipeForm) -> str:
     """
     Erstellt ein neues Rezept und fügt die Zutaten hinzu.
-
+    Returns: Erfolgsmeldung oder Fehlermeldung
     """
     if db.session.query(
             Recipe.query.filter_by(name=form.name.data).exists()
     ).scalar():
-        return f"Fehler"
+        return f"Fehler: Ein Rezept mit dem Namen '{form.name.data}' existiert bereits."
     else:
         new_recipe = Recipe(
             name=form.name.data,
@@ -45,11 +45,11 @@ def create_new_recipe( form : RecipeForm ) -> str | None:
             db.session.add(new_ingredient)
     try:
         db.session.commit()
-        flash(f"Neues Rezept({new_recipe.name}) wurde angelegt", category="success")
+        return f"Neues Rezept ({new_recipe.name}) wurde angelegt."
     except SQLAlchemyError as e:
         db.session.rollback()
-        logger.error(e)
-        flash(f"Fehler beim Rezept erstellen", category="danger")
+        logger.error(f"Fehler beim Erstellen des Rezepts: {e}")
+        return "Fehler beim Erstellen des Rezepts. Bitte versuchen Sie es erneut."
 
 def get_recipe_counts_by_category(
     *,
@@ -170,13 +170,17 @@ def new():
     template_form = IngredientForm(prefix="ingredients-_-")
     if form.validate_on_submit():
         result = create_new_recipe(form)
-        flash(result, category="info")
+        if "Fehler" in result:
+            flash(result, category="danger")
+        else:
+            flash(result, category="success")
         return redirect(url_for("recipe.overview"))
 
     return render_template("recipe/new.html", form=form, _template=template_form)
 
 
 @bp.route("/edit/<int:recipe_id>", methods=["GET", "POST"])
+@login_required
 def edit(recipe_id):
     recipe = Recipe.query.filter_by(id=recipe_id).one_or_404()
     form = RecipeForm(obj=recipe)
@@ -184,9 +188,14 @@ def edit(recipe_id):
 
     if form.validate_on_submit():
         form.populate_obj(recipe)
-        db.session.commit()
-        url_recipe = url_for("recipe.view",recipe_id=recipe.id)
-        flash(f'Das Rezept <a href="{url_recipe}">{recipe.name}</a> wurde aktualisiert',category="success")
+        try:
+            db.session.commit()
+            url_recipe = url_for("recipe.view",recipe_id=recipe.id)
+            flash(f'Das Rezept <a href="{url_recipe}">{recipe.name}</a> wurde aktualisiert',category="success")
+        except SQLAlchemyError as e:
+            db.session.rollback()
+            logger.error(f"Fehler beim Aktualisieren des Rezepts {recipe.id}: {e}")
+            flash("Fehler beim Aktualisieren des Rezepts.", category="danger")
         return redirect(url_for("recipe.overview"))
 
     return render_template("recipe/edit.html", form=form, _template=template_form,recipe=recipe)

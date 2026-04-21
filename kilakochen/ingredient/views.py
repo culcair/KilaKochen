@@ -78,6 +78,7 @@ def new():
 
 
 @bp.route("/edit/<int:ingredient_id>", methods=["GET", "POST"])
+@login_required
 def edit(ingredient_id):
     if db.session.query(
             Ingredient.query.filter_by(id=ingredient_id).exists()
