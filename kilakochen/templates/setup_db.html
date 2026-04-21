@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card border-danger">
+                <div class="card-header bg-danger text-white">
+                    <h4 class="mb-0">Datenbank fehlt</h4>
+                </div>
+                <div class="card-body">
+                    <p class="lead">Es scheint, als ob die Datenbank noch nicht initialisiert wurde oder die Tabellen fehlen.</p>
+                    <p>Möchten Sie die Datenbank jetzt initialisieren? Dabei werden alle benötigten Tabellen angelegt.</p>
+                    <div class="alert alert-warning">
+                        <strong>Hinweis:</strong> Wenn bereits Daten vorhanden sind (z.B. in einer anderen Datenbank-Datei), prüfen Sie bitte Ihre Konfiguration in der <code>.env</code> Datei.
+                    </div>
+                </div>
+                <div class="card-footer text-end">
+                    <form method="POST">
+                        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+                        <button type="submit" class="btn btn-danger">Datenbank initialisieren</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

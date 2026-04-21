@@ -1,14 +1,22 @@
 import pytest
-from kilakochen import create_app
+import os
+# Mock SECRET_KEY for testing
+os.environ['SECRET_KEY'] = 'test-secret-key'
+
+from kilakochen import create_app, db
 
 @pytest.fixture
 def client():
     app = create_app()
     app.config['TESTING'] = True
     app.config['DEBUG'] = True
+    app.config['WTF_CSRF_ENABLED'] = False
     with app.test_client() as client:
         with app.app_context():
+            db.create_all()
             yield client
+            db.session.remove()
+            db.drop_all()
 
 
 class AuthActions(object):

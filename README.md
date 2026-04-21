@@ -43,9 +43,19 @@ Diese Applikation ist der Nachfolger einer ursprünglichen PHP-Implementierung.
    pip install -r requirements.txt
    ```
 4. Datenbank initialisieren:
-   ```bash
-   flask db upgrade
-   ```
+   - Über das Web-Interface: Starten Sie die App (`flask run`) und rufen Sie die Seite auf. Wenn die Datenbank fehlt, werden Sie zum Setup-Assistenten geleitet.
+   - Über CLI (empfohlen für Migrationen):
+     ```bash
+     flask db upgrade
+     ```
+
+## Tests
+
+Um die automatisierten Tests auszuführen, nutzen Sie `pytest`:
+
+```bash
+pytest
+```
 
 ## Konfiguration
 

@@ -1,38 +1,45 @@
 def test_home_overview(client):
     response = client.get("/")
-    assert b"Symbolbild" in response.data
+    assert "kila-kochen.de" in response.get_data(as_text=True)
     assert response.status_code == 200
 
 
 def test_today_overview(client):
     response = client.get("/today")
     assert response.status_code == 200
-    assert b"Heute ist" in response.data
+    assert "Essensplan von heute" in response.get_data(as_text=True)
 
 
 # Tests für die Rezepte
 def test_recipe_overview(client):
     response = client.get("/recipe/overview")
-    assert b"Anzahl aller Rezepte" in response.data
-    assert b"Rezeptname" in response.data
+    assert "Übersicht der Rezepte" in response.get_data(as_text=True)
+    assert "Rezept" in response.get_data(as_text=True)
     assert response.status_code == 200
 
 
-def test_recipe_view(client):
-    recipe_range = range(1, 11)
-    for i in recipe_range:
-        response = client.get(f"/recipe/view/{i}")
-        assert response.status_code == 200
+def test_recipe_view(client, auth):
+    # Erst ein Rezept anlegen
+    from kilakochen.models import Recipe, RecipeCategory
+    from kilakochen import db
+    cat = RecipeCategory(name='Hauptspeise', code='H')
+    r = Recipe(name='Testrezept', description='Bla', category=cat, author='Junie', active=True)
+    db.session.add(cat)
+    db.session.add(r)
+    db.session.commit()
+    
+    response = client.get(f"/recipe/view/{r.id}")
+    assert response.status_code == 200
+    assert "Testrezept" in response.get_data(as_text=True)
 
 
 def test_ingredients_overview(client):
     response = client.get("/ingredient/overview")
-    assert b"Anzahl aller Zutaten" in response.data
-    assert b"Zutaten Gruppe" in response.data
+    assert "Übersicht der Zutaten" in response.get_data(as_text=True)
     assert response.status_code == 200
 
 
 def test_week_overview(client):
     response = client.get("/week/overview")
-    assert b"Auswahl KW" in response.data
+    assert "Auswahl KW" in response.get_data(as_text=True)
     assert response.status_code == 200

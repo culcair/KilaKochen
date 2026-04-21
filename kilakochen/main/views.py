@@ -1,9 +1,9 @@
 from flask_login import current_user, login_required
-from sqlalchemy import select
+from sqlalchemy import select, exc
 from sqlalchemy.exc import SQLAlchemyError
 
 from kilakochen.main import bp
-from flask import redirect, render_template, url_for, flash
+from flask import redirect, render_template, url_for, flash, request
 from flask_weasyprint import HTML, render_pdf
 from datetime import datetime, timedelta, date
 
@@ -312,3 +312,38 @@ def forbidden():
 @bp.route("/einkaufsliste")
 def einkaufsliste():
     return render_template("einkaufsliste.html", page_title="Einkaufsliste")
+
+@bp.route("/setup-db", methods=["GET", "POST"])
+def setup_db():
+    # Prüfen, ob DB bereits initialisiert ist
+    db_exists = False
+
+    try:
+        from kilakochen.models import User
+        db.session.query(User).first()
+        db_exists = True
+    except exc.OperationalError:
+        db_exists = False
+    except Exception:
+        # Andere Fehler werden hier erst mal ignoriert oder als "existiert nicht" gewertet
+        db_exists = False
+
+    if db_exists:
+        flash("Datenbank ist bereits initialisiert.", "info")
+        return redirect(url_for("main.index"))
+
+    if request.method == "POST":
+        try:
+            db.create_all()
+            # Optional: Initialen Admin anlegen, falls gewünscht. 
+            # Hier erst mal nur Tabellen.
+            flash("Datenbank erfolgreich initialisiert.", "success")
+            return redirect(url_for("main.index"))
+        except exc.SQLAlchemyError as e:
+            db.session.rollback()
+            flash(f"Datenbankfehler bei der Initialisierung: {e}", "danger")
+        except Exception as e:
+            db.session.rollback()
+            flash(f"Unerwarteter Fehler bei der Initialisierung: {e}", "danger")
+    
+    return render_template("setup_db.html", page_title="Datenbank Setup")

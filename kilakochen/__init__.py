@@ -1,14 +1,14 @@
 import logging
 from logging.handlers import SMTPHandler, RotatingFileHandler
 import os
-from flask import Flask, request, current_app
+from flask import Flask, request, current_app, redirect, url_for
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 from flask_login import LoginManager
 from flask_babel import Babel, lazy_gettext as _l
 from flask_bootstrap import Bootstrap5
 from flask_talisman import Talisman
-from sqlalchemy import MetaData
+from sqlalchemy import MetaData, exc
 from config import Config
 from flask_wtf import CSRFProtect
 
@@ -89,6 +89,28 @@ def create_app(config_class=Config):
         talisman.content_security_policy = app.config["CONTENT_SECURITY_POLICY"]
 
     app.config["VERSION"] = __version__
+
+    @app.before_request
+    def check_db():
+        # Im Testing-Modus überspringen wir den Check oder regeln das anders
+        if app.testing:
+            return
+
+        # Statische Dateien und die Setup-Route selbst müssen erreichbar sein
+        if request.endpoint in ["static", "main.setup_db"]:
+            return
+
+        # Wir prüfen nur, ob die User-Tabelle existiert
+        try:
+            from kilakochen.models import User
+            db.session.query(User).first()
+        except exc.OperationalError:
+            # Datenbank oder Tabellen fehlen
+            return redirect(url_for("main.setup_db"))
+        except Exception as e:
+            # Andere Fehler sollten geloggt werden
+            current_app.logger.error(f"Datenbankfehler: {e}")
+            return redirect(url_for("main.setup_db"))
 
     if not app.debug and not app.testing:
         bootstrap.bootstrap_js_filename = app.config["BOOTSTRAP_JS_FILENAME"]

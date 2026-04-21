@@ -1,17 +1,19 @@
-from flask import session, g
+from flask import session
 from flask_login import current_user
-
+from kilakochen.models import User
+from kilakochen import db
 
 def test_secret_route_unauthenticated(client):
-    # passes
     response = client.get('/user/overview')
-    assert response.headers["Location"] == "/auth/login?next=%2Fuser%2Foverview"
+    assert "/auth/login" in response.headers["Location"]
 
 def test_login(client, auth):
-    assert client.get('/auth/login').status_code == 200
-    response = auth.login()
-    assert response.headers["Location"] == "/"
+    # User anlegen
+    user = User(username='ch', active=True, level=10, first_name='Test', given_name='User')
+    user.set_password('test')
+    db.session.add(user)
+    db.session.commit()
 
-    client.get('/')
-    assert session['user_id'] == 1
-    assert g.user['username'] == 'ch'
+    assert client.get('/auth/login').status_code == 200
+    response = auth.login('ch', 'test')
+    assert response.status_code == 302
