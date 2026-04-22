@@ -27,19 +27,22 @@
           content="{{ url_for('static', filename='favicon.svg') }}">
     {%- block head -%}
     {%- endblock -%}
-    {%- block styles %}
-        <!-- Bootstrap CSS -->
-        {{ bootstrap.load_css() }}
+    {% block styles %}
+        <link rel="stylesheet"
+              href="{{ url_for('static', filename='vendor/bootstrap/css/bootstrap.min.css') }}">
         <link rel="stylesheet"
               href="{{ url_for('static', filename='custom.css') }}">
     {% endblock %}
+    <style>
+        body { padding-top: 70px; padding-bottom: 70px; }
+    </style>
 </head>
 <body>
 <header class="position-absolute w-100">
     {% include "incl_navbar.html" %}
 </header>
 <main class="flex-shrink-0 kl-content">
-    <div class="container">
+    <div class="container mt-3">
         {% with messages = get_flashed_messages(with_categories=true) %}
             {% if messages %}
                 {% for category, message in messages %}
@@ -64,12 +67,7 @@
     {% include "incl_footer.html" %}
 </footer>
 {% block scripts %}
-    <!-- Optional JavaScript -->
-    {% if config['DEBUG'] %}
-        {{ bootstrap.load_js(with_popper=True) }}
-    {% else %}
-        {{ bootstrap.load_js(with_popper=False) }}
-    {% endif %}
+    <script src="{{ url_for('static', filename='vendor/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
 {% endblock %}
 </body>
 </html>

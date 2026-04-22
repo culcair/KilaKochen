@@ -38,3 +38,39 @@
         <hr/>
     </div>
 {%- endmacro %}
+
+{% macro icon(name, class="") %}
+    <svg class="bi {{ class }} kl-icon">
+        <use href="/bootstrap/static/icons/bootstrap-icons.svg#{{ name }}"></use>
+    </svg>
+{% endmacro %}
+
+{% macro recipe_link(recipe) %}
+    {% if recipe %}
+        <a class="btn btn-primary" href="{{ url_for('recipe.view', recipe_id=recipe.id) }}">{{ recipe.name }}</a>
+        <br>
+        {% for allergen in recipe.allergens %}
+            <small>{{ allergen.code }}</small>
+        {% endfor %}
+    {% else %}
+        -
+    {% endif %}
+{% endmacro %}
+
+{% macro print_recipe_entry(recipe, show_ingredients=False) %}
+    {% if recipe %}
+        <h6>{{ recipe.name }}</h6>
+        {% if show_ingredients %}
+            {% for zutat in recipe.ingredients %}
+                {{ "%.2f"|format(zutat.amount) }} {{ zutat.unit.code }} {{ zutat.ingredient.name }}
+                <br>
+            {% endfor %}
+        {% else %}
+            <small>
+                {{ recipe.allergens | map(attribute="code") | join(", ") }}
+            </small>
+        {% endif %}
+    {% else %}
+        <h6>-</h6>
+    {% endif %}
+{% endmacro %}

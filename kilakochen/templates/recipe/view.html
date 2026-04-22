@@ -1,5 +1,5 @@
 {% extends 'base.html' %}
-{% from 'bootstrap5/table.html' import render_table %}
+{% from 'macros.html' import icon %}
 {%- block head -%}
     {{ super() }}
     <meta property="description" content="Rezepte | {{ rezept_name }}"/>
@@ -7,22 +7,22 @@
 
 {% block content %}
     <div class="container">
-        <div class="row text-center">
-            <div class="row"><h1>{{ rezept_name }}</h1></div>
-            <div class="row">
-                <a class="col" href="{{ url_for('recipe.overview') }}" title="overview">
-                    <svg class="bi kl-icon"> <use href="/bootstrap/static/icons/bootstrap-icons.svg#house-fill"></use></svg>
+        <div class="row text-center mb-4">
+            <h1>{{ rezept_name }}</h1>
+            <div class="row justify-content-center">
+                <a class="col-auto px-3" href="{{ url_for('recipe.overview') }}" title="overview">
+                    {{ icon('house-fill') }}
                 </a>
                 {% if current_user.is_authenticated -%}
-                <a class="col" href="{{ url_for('recipe.recipe_print',recipe_id=data.id) }}">
-                <svg class="bi kl-icon"> <use href="/bootstrap/static/icons/bootstrap-icons.svg#printer-fill"></use></svg>
+                <a class="col-auto px-3" href="{{ url_for('recipe.recipe_print',recipe_id=data.id) }}" title="print">
+                    {{ icon('printer-fill') }}
                 </a>
-                <a class="col" href="{{ url_for('recipe.edit',recipe_id=data.id) }}" title="edit recipe">
-                <svg class="bi kl-icon"> <use href="/bootstrap/static/icons/bootstrap-icons.svg#pencil-fill"></use></svg>
+                <a class="col-auto px-3" href="{{ url_for('recipe.edit',recipe_id=data.id) }}" title="edit recipe">
+                    {{ icon('pencil-fill') }}
                 </a>
                 {% endif %}
-                <a class="col" href="{{ back_ref_url }}">
-                <svg class="bi kl-icon"> <use href="/bootstrap/static/icons/bootstrap-icons.svg#backspace-fill"></use></svg>
+                <a class="col-auto px-3" href="{{ back_ref_url }}" title="back">
+                    {{ icon('backspace-fill') }}
                 </a>
             </div>
         </div>

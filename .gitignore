@@ -19,8 +19,6 @@ dist/
 build/
 *.egg-info/
 
-bootstrap*css*
-bootstrap*js*
 *pem
 *db
 *log

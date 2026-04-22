@@ -1,4 +1,5 @@
 {% extends 'print_base.html' %}
+{% from 'macros.html' import print_recipe_entry %}
 
 {% block content %}
     <div class="container">
@@ -31,58 +32,25 @@
                 <tr>
                     <td>Hauptgericht</td>
                     {% for plan in plaene %}
-                        <td>
-                            {% if plan.main_dish != None %}
-                                <h6>{{ plan.main_dish.name }}</h6>
-                                <small>
-                                {{ plan.main_dish.allergens | map(attribute="code") | join(", ") }}
-                                </small>
-                            {% else %}
-                                <h6>-</h6>
-                            {% endif %}
-                        </td>
+                        <td>{{ print_recipe_entry(plan.main_dish) }}</td>
                     {% endfor %}
                 </tr>
                 <tr>
                     <td>Beilage</td>
                     {% for plan in plaene %}
-                        <td>
-                            {% if plan.side_dish != None %}
-                                <h6>{{ plan.side_dish.name }}</h6>
-                                <small>
-                                {{ plan.side_dish.allergens | map(attribute="code") | join(", ") }}
-                                </small>
-                            {% else %}
-                                <h6>-</h6>
-                            {% endif %}
-                        </td>
+                        <td>{{ print_recipe_entry(plan.side_dish) }}</td>
                     {% endfor %}
                 </tr>
                 <tr>
                     <td>Dessert</td>
                     {% for plan in plaene %}
-                        <td>
-                            {% if plan.dessert != None %}
-                                <h6>{{ plan.dessert.name }}</h6>
-                                <small>
-                                {{ plan.dessert.allergens | map(attribute="code") | join(", ") }}
-                                </small>
-                            {% else %}
-                                <h6>-</h6>
-                            {% endif %}
-                        </td>
+                        <td>{{ print_recipe_entry(plan.dessert) }}</td>
                     {% endfor %}
                 </tr>
                 <tr>
                     <td>Kommentar</td>
                     {% for plan in plaene %}
-                        <td>
-                            {% if plan.comment != None %}
-                                <h6>{{ plan.comment }}</h6>
-                            {% else %}
-                                -
-                            {% endif %}
-                        </td>
+                        <td>{{ plan.comment or '-' }}</td>
                     {% endfor %}
                 </tr>
             </table>
@@ -113,49 +81,19 @@
                 <tr>
                     <td>Hauptgericht</td>
                     {% for plan in plaene %}
-                        <td>
-                            {% if plan.main_dish != None %}
-                                <h6>{{ plan.main_dish.name }}</h6>
-                                {% for zutat in plan.main_dish.ingredients %}
-                                    {{ "%.2f"|format(zutat.amount) }} {{ zutat.unit.code }} {{ zutat.ingredient.name }}
-                                    <br>
-                                {% endfor %}
-                            {% else %}
-                                <h6>-</h6>
-                            {% endif %}
-                        </td>
+                        <td>{{ print_recipe_entry(plan.main_dish, show_ingredients=True) }}</td>
                     {% endfor %}
                 </tr>
                 <tr>
                     <td>Beilage</td>
                     {% for plan in plaene %}
-                        <td>
-                            {% if plan.side_dish != None %}
-                                <h6>{{ plan.side_dish.name }}</h6>
-                                {% for zutat in plan.side_dish.ingredients %}
-                                    {{ "%.2f"|format(zutat.amount) }} {{ zutat.unit.code }} {{ zutat.ingredient.name }}
-                                    <br>
-                                {% endfor %}
-                            {% else %}
-                                -
-                            {% endif %}
-                        </td>
+                        <td>{{ print_recipe_entry(plan.side_dish, show_ingredients=True) }}</td>
                     {% endfor %}
                 </tr>
                 <tr>
                     <td>Dessert</td>
                     {% for plan in plaene %}
-                        <td>
-                            {% if plan.dessert != None %}
-                                <h6>{{ plan.dessert.name }}</h6>
-                                {% for zutat in plan.dessert.ingredients %}
-                                    {{ "%.2f"|format(zutat.amount) }} {{ zutat.unit.code }} {{ zutat.ingredient.name }}
-                                    </br>
-                                {% endfor %}
-                            {% else %}
-                            -
-                            {% endif %}
-                        </td>
+                        <td>{{ print_recipe_entry(plan.dessert, show_ingredients=True) }}</td>
                     {% endfor %}
                 </tr>
 

@@ -1,45 +1,36 @@
 {% extends 'base.html' %}
+{% from 'macros.html' import icon, recipe_link %}
 {% block content %}
     <div class="container">
         <div class="row text-center">
             <a class="col"
                href="{{ url_for('main.week',raw_date=previous) }}"
                aria-label="Vorherige Woche">
-                <svg aria-hidden="true" class="bi kl-icon">
-                    <use href="/bootstrap/static/icons/bootstrap-icons.svg#chevron-double-left"></use>
-                </svg>
+                {{ icon('chevron-double-left') }}
                 <span class="visually-hidden">Vorherige Woche</span>
             </a>
             <a class="col"
                href="{{ url_for("main.week_overview") }}"
                title="overview">
-                <svg class="bi kl-icon">
-                    <use href="/bootstrap/static/icons/bootstrap-icons.svg#house-fill"></use>
-                </svg>
+                {{ icon('house-fill') }}
                 <span class="visually-hidden">Übersicht</span>
             </a>
             {% if  current_user.is_authenticated %}
                 <a class="col"
                    href="{{ url_for('main.print_week',raw_date=plaene[0].date) }}">
-                    <svg class="bi kl-icon">
-                        <use href="/bootstrap/static/icons/bootstrap-icons.svg#printer-fill"></use>
-                    </svg>
+                    {{ icon('printer-fill') }}
                     <span class="visually-hidden">Drucken</span>
                 </a>
                 <a class="col"
                    href="{{ url_for('main.edit_week',raw_date=plaene[0].date) }}">
-                    <svg class="bi kl-icon">
-                        <use href="/bootstrap/static/icons/bootstrap-icons.svg#pencil-fill"></use>
-                    </svg>
+                    {{ icon('pencil-fill') }}
                     <span class="visually-hidden">Editieren</span>
                 </a>
             {% endif %}
             <a class="col"
                href="{{ url_for('main.week',raw_date=next) }}"
                aria-label="Nächste Woche">
-                <svg aria-hidden="true" class="bi kl-icon">
-                    <use href="/bootstrap/static/icons/bootstrap-icons.svg#chevron-double-right"></use>
-                </svg>
+                {{ icon('chevron-double-right') }}
                 <span class="visually-hidden">Nächste Woche</span>
             </a>
         </div>
@@ -68,64 +59,25 @@
                 <tr>
                     <td>Hauptgericht</td>
                     {% for plan in plaene %}
-                        <td>
-                            {% if plan.main_dish != None %}
-                                <a class="btn btn-primary"
-                                   href="{{ url_for('recipe.view',recipe_id=plan.main_dish.id) }}">{{ plan.main_dish.name }}</a>
-                                </br>
-                                {% for allergen in plan.main_dish.allergens %}
-                                    <small>{{ allergen.code }}</small>
-                                {% endfor %}
-                            {% else %}
-                                -
-                            {% endif %}
-                        </td>
+                        <td>{{ recipe_link(plan.main_dish) }}</td>
                     {% endfor %}
                 </tr>
                 <tr>
                     <td>Beilage</td>
                     {% for plan in plaene %}
-                        <td>
-                            {% if plan.side_dish != None %}
-                                <a class="btn btn-primary"
-                                   href="{{ url_for('recipe.view',recipe_id=plan.side_dish.id) }}">{{ plan.side_dish.name }}</a>
-                                </br>
-                                {% for allergen in plan.side_dish.allergens %}
-                                    <small>{{ allergen.code }}</small>
-                                {% endfor %}
-                            {% else %}
-                                -
-                            {% endif %}
-                        </td>
+                        <td>{{ recipe_link(plan.side_dish) }}</td>
                     {% endfor %}
                 </tr>
                 <tr>
                     <td>Dessert</td>
                     {% for plan in plaene %}
-                        <td>
-                            {% if plan.dessert != None %}
-                                <a class="btn btn-primary"
-                                   href="{{ url_for('recipe.view',recipe_id=plan.dessert.id) }}">{{ plan.dessert.name }}</a>
-                                </br>
-                                {% for allergen in plan.dessert.allergens %}
-                                    <small>{{ allergen.code }}</small>
-                                {% endfor %}
-                            {% else %}
-                                -
-                            {% endif %}
-                        </td>
+                        <td>{{ recipe_link(plan.dessert) }}</td>
                     {% endfor %}
                 </tr>
                 <tr>
                     <td>Kommentar</td>
                     {% for plan in plaene %}
-                        <td>
-                            {% if plan.comment != None %}
-                                {{ plan.comment }}
-                            {% else %}
-                                -
-                            {% endif %}
-                        </td>
+                        <td>{{ plan.comment or '-' }}</td>
                     {% endfor %}
                 </tr>
             <caption><small>
