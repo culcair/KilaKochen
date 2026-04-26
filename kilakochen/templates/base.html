@@ -28,8 +28,8 @@
     {%- block head -%}
     {%- endblock -%}
     {% block styles %}
-        <link rel="stylesheet"
-              href="{{ url_for('static', filename='vendor/bootstrap/css/bootstrap.min.css') }}">
+        <!-- Bootstrap CSS -->
+        {{ bootstrap.load_css() }}
         <link rel="stylesheet"
               href="{{ url_for('static', filename='custom.css') }}">
     {% endblock %}
