@@ -13,7 +13,7 @@ from config import Config
 from flask_wtf import CSRFProtect
 
 
-__version__ = "1.2.2"
+__version__ = "1.2.3"
 
 
 def get_locale():
@@ -47,7 +47,7 @@ db = SQLAlchemy(metadata=metadata)
 def create_app(config_class=Config):
     app = Flask(__name__)
     app.config.from_object(config_class)
-    print(app.config["SQLALCHEMY_DATABASE_URI"])
+    app.logger.info(app.config["SQLALCHEMY_DATABASE_URI"])
     db.init_app(app)
     migrate.init_app(app, db)
     login.init_app(app)

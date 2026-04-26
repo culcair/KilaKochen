@@ -119,7 +119,7 @@ def overview():
     else:
         data = query.filter_by(active=True).all()
 
-    print(get_recipe_counts_by_category())
+    logger.info(get_recipe_counts_by_category())
 
     return render_template(
         "recipe/overview.html",

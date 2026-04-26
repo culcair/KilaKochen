@@ -1,4 +1,4 @@
-from flask import render_template, flash, redirect, url_for
+from flask import render_template, flash, redirect, url_for, current_app
 from flask_login import login_required, current_user
 from sqlalchemy.exc import SQLAlchemyError
 from werkzeug import Response
@@ -65,7 +65,7 @@ def status_change(user_id: int):
                 else:
                     flash(f"Benutzer {user.username} wurde deaktiviert!", "danger")
             except SQLAlchemyError as e:
-                print(e)
+                current_app.logger.error(f"Fehler beim Deaktivieren des Benutzers: {e}")
                 db.session.rollback()
 
             return redirect(url_for("user.overview"))

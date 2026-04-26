@@ -1,13 +1,13 @@
 from babel.dates import format_date as f_d
 from jinja2 import pass_eval_context
 from markupsafe import Markup
-
+from flask import current_app
 from kilakochen.main import bp
 
 
 @bp.app_template_filter()
 def format_date(given_date, locale="de", kl_format="medium"):
-    print(type(given_date))
+    current_app.logger.debug(f"format_date: {given_date}")
     return f_d(date=given_date, locale=locale, format=kl_format)
 
 

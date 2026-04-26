@@ -1,9 +1,11 @@
 from kilakochen.models import Ingredient, RecipeIngredient, Unit, Recipe, RecipeCategory
 
+import logging
 
 
+logger = logging.getLogger("recipe_import")
 
-def get_ingredient(old_rezept: Rezepte, recipe_id: int) -> list[RecipeIngredient]:
+def get_ingredient(old_rezept: Recipe, recipe_id: int) -> list[RecipeIngredient]:
     result = []
     for zutat in old_rezept.rezepte_zutaten:
         try:
@@ -20,10 +22,9 @@ def get_ingredient(old_rezept: Rezepte, recipe_id: int) -> list[RecipeIngredient
                 )
                 result.append(tmp)
         except AttributeError as e:
-            print(e)
-            print(
-                f"Rezept: {old_rezept.Titel} Zutaten: {old_rezept.rezepte_zutaten} zutat:{zutat}"
-            )
+            logger.error(e)
+            logger.error(f"Rezept: {old_rezept.Titel} Zutaten: {old_rezept.rezepte_zutaten}")
+
 
     return result
 
@@ -37,9 +38,9 @@ def get_recipe_category_id(bezeichnung: str | None) -> int | None:
 
 
 def migrate_recipes(db):
-    rezepte = Rezepte.query.count()
-    for rezept in Rezepte.query.all():
-        print(rezept.Titel)
+    rezepte = Recipe.query.count()
+    for rezept in Recipe.query.all():
+        logger.info(rezept.Titel)
         if rezept.rezeptkategorien is not None:
             cat_id = get_recipe_category_id(rezept.rezeptkategorien.BezeichnungSingular)
         else:
@@ -59,4 +60,4 @@ def migrate_recipes(db):
 
     recipes = Recipe.query.count()
 
-    print(f"Anzahl alter Rezepte:{rezepte} Anzahl neuer Rezepte:{recipes}")
+    logger.info(f"Anzahl alter Rezepte:{rezepte} Anzahl neuer Rezepte:{recipes}")
