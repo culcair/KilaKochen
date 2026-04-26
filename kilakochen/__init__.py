@@ -13,7 +13,7 @@ from config import Config
 from flask_wtf import CSRFProtect
 
 
-__version__ = "1.2.3"
+__version__ = "1.2.4"
 
 
 def get_locale():
