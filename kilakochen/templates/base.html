@@ -67,7 +67,9 @@
     {% include "incl_footer.html" %}
 </footer>
 {% block scripts %}
-    <script src="{{ url_for('static', filename='vendor/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
+    <!-- Optional JavaScript -->
+    {{ bootstrap.load_js(with_popper=True) }}
+
 {% endblock %}
 </body>
 </html>
