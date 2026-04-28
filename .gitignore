@@ -31,4 +31,3 @@ build/
 # Node/Sass/Frontend assets
 node_modules/
 .sass-cache/
-kilakochen/static/vendor/
