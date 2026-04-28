@@ -113,7 +113,7 @@ def create_app(config_class=Config):
             return redirect(url_for("main.setup_db"))
 
     if not app.debug and not app.testing:
-        bootstrap.bootstrap_js_filename = app.config["BOOTSTRAP_JS_FILENAME"]
+       # bootstrap.bootstrap_js_filename = app.config["BOOTSTRAP_JS_FILENAME"]
 
         if app.config["MAIL_SERVER"]:
             auth = None
