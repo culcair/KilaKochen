@@ -1,0 +1,22 @@
+{
+  "name": "kilakochen-assets",
+  "version": "1.0.0",
+  "description": "Build pipeline for minimal Bootstrap assets",
+  "main": "index.js",
+  "scripts": {
+    "build:css": "sass --load-path=node_modules --quiet-deps --silence-deprecation=import src/scss/main.scss kilakochen/static/vendor/bootstrap/css/bootstrap.min.css --style compressed",
+    "purge:css": "purgecss --css kilakochen/static/vendor/bootstrap/css/bootstrap.min.css --content 'kilakochen/templates/**/*.html' --output kilakochen/static/vendor/bootstrap/css/bootstrap.min.css --safelist alert-success alert-info alert-warning alert-danger alert-primary alert-secondary alert-dismissible fade show",
+    "build:js": "esbuild src/js/main.js --bundle --minify --outfile=kilakochen/static/vendor/bootstrap/js/bootstrap.bundle.min.js",
+    "build": "npm run build:css && npm run purge:css && npm run build:js"
+  },
+  "devDependencies": {
+    "@popperjs/core": "^2.11.8",
+    "bootstrap": "^5.3.0",
+    "esbuild": "^0.28.0",
+    "purgecss": "^5.0.0",
+    "sass": "^1.63.6"
+  },
+  "dependencies": {
+    "bootswatch": "^5.3.0"
+  }
+}

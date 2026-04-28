@@ -1,0 +1,61 @@
+// 1. Grundfunktionen und Variablen laden (für die eigene Verwendung im Projekt)
+// Wir nutzen hier @import, da Bootstrap 5.3 intern noch nicht voll auf @use ausgelegt ist.
+// Eine vollständige Umstellung auf @use würde Fehler in den Bootstrap-Quellen selbst auslösen (z.B. "Undefined mixin").
+$web-font-path: false !default;
+@import "bootstrap/scss/functions";
+@import "bootswatch/dist/minty/variables";
+@import "bootstrap/scss/variables";
+
+// Lokale Montserrat Schriftarten
+@font-face {
+  font-family: 'Montserrat';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url('/static/fonts/montserrat/montserrat-v25-latin-400.woff2') format('woff2');
+}
+
+@font-face {
+  font-family: 'Montserrat';
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url('/static/fonts/montserrat/montserrat-v25-latin-500.woff2') format('woff2');
+}
+
+@font-face {
+  font-family: 'Montserrat';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url('/static/fonts/montserrat/montserrat-v25-latin-700.woff2') format('woff2');
+}
+
+@import "bootstrap/scss/variables-dark";
+@import "bootstrap/scss/maps";
+@import "bootstrap/scss/mixins";
+@import "bootstrap/scss/root";
+
+// 2. Core Komponenten
+@import "bootstrap/scss/reboot";
+@import "bootstrap/scss/type";
+@import "bootstrap/scss/images";
+@import "bootstrap/scss/containers";
+@import "bootstrap/scss/grid";
+@import "bootstrap/scss/tables";
+@import "bootstrap/scss/forms";
+@import "bootstrap/scss/buttons";
+@import "bootstrap/scss/transitions";
+@import "bootstrap/scss/dropdown";
+@import "bootstrap/scss/nav";
+@import "bootstrap/scss/navbar";
+@import "bootstrap/scss/alert";
+@import "bootstrap/scss/close";
+
+// 3. Theme-spezifische Anpassungen von Bootswatch
+@import "bootswatch/dist/minty/bootswatch";
+
+// 4. Utilities
+@import "bootstrap/scss/utilities";
+@import "bootstrap/scss/helpers";
+@import "bootstrap/scss/utilities/api";

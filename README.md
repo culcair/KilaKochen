@@ -18,7 +18,7 @@ Diese Applikation ist der Nachfolger einer ursprünglichen PHP-Implementierung.
 
 - **Backend:** Python mit [Flask](https://flask.palletsprojects.com/)
 - **Datenbank:** SQLAlchemy (standardmäßig SQLite, MySQL-Unterstützung via PyMySQL vorhanden)
-- **Frontend:** Jinja2 Templates mit Bootstrap (via Flask-Bootstrap)
+- **Frontend:** Jinja2 Templates mit Bootstrap 5 (Custom Build via npm/Sass)
 - **Formulare:** Flask-WTF
 - **Migrationen:** Flask-Migrate (Alembic)
 - **PDF-Erzeugung:** Flask-WeasyPrint
@@ -41,8 +41,13 @@ Diese Applikation ist der Nachfolger einer ursprünglichen PHP-Implementierung.
 3. Abhängigkeiten installieren:
    ```bash
    pip install -r requirements.txt
+   npm install
    ```
-4. Datenbank initialisieren:
+4. Assets bauen:
+   ```bash
+   npm run build
+   ```
+5. Datenbank initialisieren:
    - Über das Web-Interface: Starten Sie die App (`flask run`) und rufen Sie die Seite auf. Wenn die Datenbank fehlt, werden Sie zum Setup-Assistenten geleitet.
    - Über CLI (empfohlen für Migrationen):
      ```bash

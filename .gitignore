@@ -27,3 +27,8 @@ build/
 *sql
 /app.db.save
 /qodana.yaml
+
+# Node/Sass/Frontend assets
+node_modules/
+.sass-cache/
+kilakochen/static/vendor/
