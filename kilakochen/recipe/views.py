@@ -184,10 +184,25 @@ def new():
 def edit(recipe_id):
     recipe = Recipe.query.filter_by(id=recipe_id).one_or_404()
     form = RecipeForm(obj=recipe)
-    template_form = IngredientForm(prefix="ingredient-_-")
+    template_form = IngredientForm(prefix="ingredients-_-")
 
     if form.validate_on_submit():
-        form.populate_obj(recipe)
+        recipe.name = form.name.data
+        recipe.description = form.description.data
+        recipe.author = form.author.data
+        recipe.category = form.category.data
+        recipe.active = form.active.data
+        
+        # Zutaten synchronisieren
+        recipe.ingredients.clear()
+        for i_form in form.ingredients:
+            ri = RecipeIngredient(
+                ingredient=i_form.ingredient.data,
+                amount=i_form.amount.data,
+                unit=i_form.unit.data
+            )
+            recipe.ingredients.append(ri)
+
         try:
             db.session.commit()
             url_recipe = url_for("recipe.view",recipe_id=recipe.id)
