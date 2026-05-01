@@ -13,7 +13,7 @@ from config import Config
 from flask_wtf import CSRFProtect
 
 
-__version__ = "1.3.6"
+__version__ = "1.3.7"
 
 
 def get_locale():
@@ -40,8 +40,6 @@ metadata = MetaData(
 )
 
 db = SQLAlchemy(metadata=metadata)
-
-
 
 
 def create_app(config_class=Config):
@@ -113,8 +111,6 @@ def create_app(config_class=Config):
             return redirect(url_for("main.setup_db"))
 
     if not app.debug and not app.testing:
-       # bootstrap.bootstrap_js_filename = app.config["BOOTSTRAP_JS_FILENAME"]
-
         if app.config["MAIL_SERVER"]:
             auth = None
             if app.config["MAIL_USERNAME"] or app.config["MAIL_PASSWORD"]:

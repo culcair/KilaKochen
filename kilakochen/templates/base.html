@@ -39,8 +39,13 @@
             padding-bottom: 70px;
         }
     </style>
-    <script defer src="https://analytics.kinderladen-jakobistrasse.de/script.js"
-            data-website-id="2b134f75-991b-4400-a86a-0a08e3abd185"></script>
+
+    {% if config['UMAMI_SCRIPT_URL'] and config['UMAMI_SITE_ID'] %}
+    <!-- Start of Simple Analytics -->
+    <script defer src="{{ config['UMAMI_SCRIPT_URL'] }}"
+            data-website-id="{{ config['UMAMI_SITE_ID'] }}"></script>
+    <!-- End of Simple Analytics -->
+    {% endif %}
 
 </head>
 <body>
