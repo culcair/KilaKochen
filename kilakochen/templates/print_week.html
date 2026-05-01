@@ -96,7 +96,12 @@
                         <td>{{ print_recipe_entry(plan.dessert, show_ingredients=True) }}</td>
                     {% endfor %}
                 </tr>
-
+                <tr>
+                    <td>Kommentar</td>
+                    {% for plan in plaene %}
+                        <td>{{ plan.comment or '-' }}</td>
+                    {% endfor %}
+                </tr>
             </table>
         </div>
     </div>
